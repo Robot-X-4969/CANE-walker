@@ -1,6 +1,3 @@
-Final Setup
-
-
 US trigger = 30
 US echo (L --> R) = 22-27
 IR return = A0, A2
