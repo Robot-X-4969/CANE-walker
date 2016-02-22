@@ -15,10 +15,12 @@ void loop() {
 }
 
 
-
+//TODO apply changes here to main file
 long ping(int echo) {
+  digitalWrite(trigger, LOW);
+  delayMicroseconds(5);
   digitalWrite(trigger, HIGH);
-  delayMicroseconds(4);
+  delayMicroseconds(10);
   digitalWrite(trigger, LOW);
   long time = pulseIn(echo, HIGH, 50000);
   return time;

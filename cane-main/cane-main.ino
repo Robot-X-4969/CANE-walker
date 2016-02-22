@@ -180,9 +180,11 @@ void runUI()
 
 
 void ping(int t) {
-  digitalWrite(t, HIGH);
-  delayMicroseconds(4);
-  digitalWrite(t, LOW);
+  digitalWrite(trigger, LOW);
+  delayMicroseconds(5);
+  digitalWrite(trigger, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigger, LOW);
 }
 int getDistance(int pin, int trig) {
   ping(trig); //sends out distance signal
