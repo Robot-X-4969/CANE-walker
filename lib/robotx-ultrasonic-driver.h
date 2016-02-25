@@ -1,6 +1,6 @@
 #include "Arduino.h" 
 
-const int PING_TIMEOUT = 5000;
+const long PING_TIMEOUT = 50000;
 int microsToCm(int t);
 class UltrasonicSensorHCSR04 {
     int trigger, echo, state;
@@ -26,14 +26,17 @@ int UltrasonicSensorHCSR04::getDistance() {
 		case 0: //send signal
 			ping();
 			state++;
+			return -1;
+			break;
         case 1: //wait for high signal to start
             if(digitalRead(echo) == HIGH) {
                 state++;
                 tStart = micros();
             }
             return -1;
+			break;
 		case 2: //wait for pulse to complete
-            int elapsed = (int)(micros()-tStart);
+            long elapsed = (int)(micros()-tStart);
             if(digitalRead(echo) == LOW) {
                 state = 0;
 				return microsToCm( elapsed ); 
@@ -43,6 +46,7 @@ int UltrasonicSensorHCSR04::getDistance() {
             } else {
                 return -1;
             }
+			break;
     }
 }
 
@@ -54,6 +58,6 @@ void UltrasonicSensorHCSR04::ping() {
     digitalWrite(trigger, LOW);
 }
 
-int microsToCm(int t) {
+long microsToCm(long t) {
     return t / 38;
 }
