@@ -40,6 +40,10 @@ bool noneFalse(bool arr[]) {
 	return out;
 }
 
+void startUltrasonicScan() {
+	us[0].ping();
+}
+
 
 
 // ************** MAIN PROGRAM ************** //
@@ -47,6 +51,7 @@ bool noneFalse(bool arr[]) {
 void setup() {
 	Serial.begin(9600);
 	FOREACH_US { us[i].initSensor(); }
+	startUltrasonicScan();
 }
 
 void loop() {
@@ -55,13 +60,16 @@ void loop() {
 		scanCompleted[i] = us[i].refresh();
 	}
 	
+	delayMicroseconds(100);
+
 	if(noneFalse(scanCompleted)) {
 		FOREACH_US {
 			Serial.print(us[i].getDistance());
 			Serial.print("\t");
 		}
 		Serial.println();
+		startUltrasonicScan();
 	}
 
-	delayMicroseconds(100);
+
 }
