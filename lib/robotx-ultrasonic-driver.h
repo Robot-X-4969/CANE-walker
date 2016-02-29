@@ -1,6 +1,12 @@
-#include "Arduino.h"
+#ifndef Arduino_h
+	#include "Arduino.h"
+#endif
 
-const long PING_TIMEOUT = 50000;
+#define PING_TIMEOUT 50000
+
+#define MODE_WAIT_FOR_START 1
+#define MODE_WAIT_FOR_END 	2
+#define MODE_DONE 			3
 
 long microsToCm(long t);
 
@@ -8,14 +14,15 @@ class UltrasonicSensorHCSR04 {
     public:
         UltrasonicSensorHCSR04(int trigger, int pin);
         ~UltrasonicSensorHCSR04();
+		void initSensor();
+		void resetDistance();
         int getDistance();
 		bool refresh();
+		void ping();
     private:
-		enum ListenMode { INIT, WAIT_FOR_START, WAIT_FOR_END };
-		ListenMode currentMode;
-		int trigger, echo, distance;
+		int trigger, echo, distance, currentMode;
 		long tStart;
-        void ping();
+		long elapsedTime();
 };
 
 
@@ -23,39 +30,51 @@ UltrasonicSensorHCSR04::UltrasonicSensorHCSR04(int pinTrig, int pinEcho) {
     trigger = pinTrig;
     echo = pinEcho;
     tStart = distance = 0;
-	currentMode = INIT;
 }
 UltrasonicSensorHCSR04::~UltrasonicSensorHCSR04() { }
+
+void UltrasonicSensorHCSR04::initSensor() {
+	pinMode(trigger, OUTPUT);
+	pinMode(echo, INPUT);
+	resetDistance();
+}
+
+void UltrasonicSensorHCSR04::resetDistance() {
+	distance = 0;
+	currentMode = MODE_WAIT_FOR_START;
+}
+
+long UltrasonicSensorHCSR04::elapsedTime() {
+	return micros()-tStart;
+}
 
 int UltrasonicSensorHCSR04::getDistance() {
 	return distance;
 }
 
 bool UltrasonicSensorHCSR04::refresh() {
-	bool isDone = false;
+	long elapsed = 0;
 	switch (currentMode) {
-		case INIT:
-			ping();
-			currentMode = WAIT_FOR_START;
-			break;
-		case WAIT_FOR_START:
+		case MODE_WAIT_FOR_START:
 			if(digitalRead(echo) == HIGH) {
 				tStart = micros();
-                currentMode = WAIT_FOR_END;
+                currentMode = MODE_WAIT_FOR_END;
             }
             break;
-		case WAIT_FOR_END:
-			long elapsed = micros()-tStart;
+		case MODE_WAIT_FOR_END:
             if(digitalRead(echo) == LOW) {
-				distance = (int) microsToCm( elapsed );
-                currentMode = INIT;
-				isDone = true;
-            } else if(elapsed > PING_TIMEOUT) {
-                currentMode = INIT;
-				isDone = true;
+				distance = (int) microsToCm( elapsedTime() );
+				currentMode = MODE_DONE;
+            } else if(elapsedTime() > PING_TIMEOUT) {
+				distance = 0;
+                currentMode = MODE_DONE;
             }
+			break;
+		case MODE_DONE:
+			//nothing needed
+			break;
 	}
-	return isDone;
+	return currentMode == MODE_DONE;
 }
 
 void UltrasonicSensorHCSR04::ping() {
