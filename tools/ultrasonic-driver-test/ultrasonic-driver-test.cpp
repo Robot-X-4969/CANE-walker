@@ -12,8 +12,9 @@
 #define USPIN_RIGHT_FRONT 25
 #define USPIN_RIGHT_MID 26
 #define USPIN_RIGHT_SIDE 27
+#define N_US_SENSORS 6
 
-#define FOREACH_US for(int i = 0; i < nUltrasonicSensors; i++)
+#define FOREACH_US for(int i = 0; i < N_US_SENSORS; i++)
 
 
 // ************* GLOBAL VARS *********** //
@@ -26,23 +27,24 @@ UltrasonicSensorHCSR04 us[] = {
 	UltrasonicSensorHCSR04 (TRIGGER, USPIN_RIGHT_SIDE)
 };
 
-const int nUltrasonicSensors = sizeof(us) / sizeof(us[0]);
-bool scanCompleted[nUltrasonicSensors];
+bool scanCompleted[N_US_SENSORS];
 
 
 // ************* HELPER FUNCTIONS ********** //
 
-bool noneFalse(bool arr[]) {
+bool allDistancesFound() {
 	bool out = true;
-	for(int i = 0; i < sizeof(arr)/sizeof(arr[0]); i++) {
-		out = out && arr[i];
+	Serial.print("dist found: ");
+	for(int i = 0; i < N_US_SENSORS; i++) {
+		out = out && scanCompleted[i];
+		Serial.print( scanCompleted[i] );
+		Serial.print(", ");
 	}
+	Serial.print(" -> ");
+	Serial.println(out);
 	return out;
 }
 
-void startUltrasonicScan() {
-	us[0].ping();
-}
 
 
 
@@ -51,7 +53,8 @@ void startUltrasonicScan() {
 void setup() {
 	Serial.begin(9600);
 	FOREACH_US { us[i].initSensor(); }
-	startUltrasonicScan();
+	Serial.println("setup complete, start pinging");
+	us[0].ping();
 }
 
 void loop() {
@@ -60,16 +63,38 @@ void loop() {
 		scanCompleted[i] = us[i].refresh();
 	}
 	
-	delayMicroseconds(100);
+	delayMicroseconds(50);
 
-	if(noneFalse(scanCompleted)) {
+	if(allDistancesFound()) {
 		FOREACH_US {
 			Serial.print(us[i].getDistance());
-			Serial.print("\t");
+			Serial.print(", ");
+			us[i].resetDistance();
 		}
 		Serial.println();
-		startUltrasonicScan();
+		delayMicroseconds(100); //wait for echoes to clear
+		us[0].ping();
 	}
 
 
 }
+
+/*UltrasonicSensorHCSR04 ustest (4, 2);
+
+void setup() {
+	Serial.begin(9600);
+	ustest.initSensor();
+	ustest.ping();
+}
+
+void loop() {
+//	if(ustest.refresh()) {
+//		Serial.println( ustest.getDistance() );
+//		delay(100);
+//		ustest.resetDistance();
+//		ustest.ping();
+//	}
+//	delayMicroseconds(50);
+	Serial.println(ustest.refresh());
+	delay(10);
+}*/
