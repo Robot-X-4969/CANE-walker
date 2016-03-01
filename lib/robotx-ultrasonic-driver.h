@@ -12,7 +12,7 @@ long microsToCm(long t);
 
 class UltrasonicSensorHCSR04 {
     public:
-        UltrasonicSensorHCSR04(int trigger, int pin);
+        UltrasonicSensorHCSR04(int pinTrig, int pinEcho);
         ~UltrasonicSensorHCSR04();
 		void initSensor();
 		void resetDistance();
@@ -30,13 +30,13 @@ UltrasonicSensorHCSR04::UltrasonicSensorHCSR04(int pinTrig, int pinEcho) {
     trigger = pinTrig;
     echo = pinEcho;
     tStart = distance = 0;
+    resetDistance();
 }
 UltrasonicSensorHCSR04::~UltrasonicSensorHCSR04() { }
 
 void UltrasonicSensorHCSR04::initSensor() {
 	pinMode(trigger, OUTPUT);
 	pinMode(echo, INPUT);
-	resetDistance();
 }
 
 void UltrasonicSensorHCSR04::resetDistance() {
@@ -53,7 +53,6 @@ int UltrasonicSensorHCSR04::getDistance() {
 }
 
 bool UltrasonicSensorHCSR04::refresh() {
-	long elapsed = 0;
 	switch (currentMode) {
 		case MODE_WAIT_FOR_START:
 			if(digitalRead(echo) == HIGH) {
