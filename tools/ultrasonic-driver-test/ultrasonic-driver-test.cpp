@@ -34,14 +34,14 @@ bool scanCompleted[N_US_SENSORS];
 
 bool allDistancesFound() {
 	bool out = true;
-	Serial.print("dist found: ");
+	//Serial.print("dist found: ");
 	for(int i = 0; i < N_US_SENSORS; i++) {
 		out = out && scanCompleted[i];
-		Serial.print( scanCompleted[i] );
-		Serial.print(", ");
+		//Serial.print( scanCompleted[i] );
+		//Serial.print(", ");
 	}
-	Serial.print(" -> ");
-	Serial.println(out);
+	//Serial.print(" -> ");
+	//Serial.println(out);
 	return out;
 }
 
@@ -53,12 +53,12 @@ bool allDistancesFound() {
 void setup() {
 	Serial.begin(9600);
 	FOREACH_US { us[i].initSensor(); }
-	Serial.println("setup complete, start pinging");
+	//Serial.println("setup complete, start pinging");
 	us[0].ping();
 }
 
 void loop() {
-
+	
 	FOREACH_US {
 		scanCompleted[i] = us[i].refresh();
 	}
@@ -66,13 +66,14 @@ void loop() {
 	delayMicroseconds(50);
 
 	if(allDistancesFound()) {
+	//if(scanCompleted[i]) {
 		FOREACH_US {
 			Serial.print(us[i].getDistance());
 			Serial.print(", ");
 			us[i].resetDistance();
 		}
 		Serial.println();
-		delayMicroseconds(100); //wait for echoes to clear
+		delay(500); //wait for echoes to clear
 		us[0].ping();
 	}
 
