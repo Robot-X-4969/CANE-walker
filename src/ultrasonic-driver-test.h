@@ -1,7 +1,9 @@
 #ifndef Arduino_h
 	#include "Arduino.h"
 #endif
-#include "robotx-ultrasonic-driver.h"
+#ifndef Robotx_Ultrasonic_Driver
+	#include "robotx-ultrasonic-driver.h"
+#endif
 
 // ************** DEFINES ************** //
 #define TRIGGER 30
