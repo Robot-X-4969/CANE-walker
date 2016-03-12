@@ -1,25 +1,24 @@
+#define HCSR04SenseTask 
+
 #ifndef Arduino_h
 	#include "Arduino.h"
 #endif
-
-#define PING_TIMEOUT 50000
-
-#define MODE_WAIT_FOR_START 1
-#define MODE_WAIT_FOR_END 	2
-#define MODE_DONE 			3
+#ifndef AsynchronousTask
+	#include "asynchronous-task.h"
+#endif
 
 long microsToCm(long t);
 
-class UltrasonicSensorHCSR04 {
+class HCSR04SenseTask: public AsynchronousTask {
     public:
-        UltrasonicSensorHCSR04(int pinTrig, int pinEcho);
-        ~UltrasonicSensorHCSR04();
+        HCSR04SenseTask(int pinTrig, int pinEcho);
 		void initSensor();
 		void resetDistance();
         int getDistance();
 		bool refresh();
 		void ping();
     private:
+		const long PING_TIMEOUT_MICROS = 50000;
 		int trigger, echo, distance, currentMode;
 		long tStart;
 		long elapsedTime();
@@ -64,7 +63,7 @@ bool UltrasonicSensorHCSR04::refresh() {
             if(digitalRead(echo) == LOW) {
 				distance = (int) microsToCm( elapsedTime() );
 				currentMode = MODE_DONE;
-            } else if(elapsedTime() > PING_TIMEOUT) {
+            } else if(elapsedTime() > PING_TIMEOUT_MICROS) {
 				distance = 0;
                 currentMode = MODE_DONE;
             }
