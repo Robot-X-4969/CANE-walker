@@ -1,8 +1,6 @@
-#ifndef Arduino_h
-	#include "Arduino.h"
-#endif
-#ifndef HCSR04SenseTask
-	#include "hcsr04-task-manager.h"
+
+#ifndef UltrasonicDriver_h
+	#include "ultrasonic-sensor-driver.h"
 #endif
 
 // ************** DEFINES ************** //
@@ -20,13 +18,13 @@
 
 
 // ************* GLOBAL VARS *********** //
-UltrasonicSensorHCSR04 us[] = {
-	UltrasonicSensorHCSR04 (TRIGGER, USPIN_LEFT_SIDE),
-	UltrasonicSensorHCSR04 (TRIGGER, USPIN_LEFT_MID),
-	UltrasonicSensorHCSR04 (TRIGGER, USPIN_LEFT_FRONT),
-	UltrasonicSensorHCSR04 (TRIGGER, USPIN_RIGHT_FRONT),
-	UltrasonicSensorHCSR04 (TRIGGER, USPIN_RIGHT_MID),
-	UltrasonicSensorHCSR04 (TRIGGER, USPIN_RIGHT_SIDE)
+UltrasonicSensor us[] = {
+	UltrasonicSensor (TRIGGER, USPIN_LEFT_SIDE,   400),
+	UltrasonicSensor (TRIGGER, USPIN_LEFT_MID,    400),
+	UltrasonicSensor (TRIGGER, USPIN_LEFT_FRONT,  400),
+	UltrasonicSensor (TRIGGER, USPIN_RIGHT_FRONT, 400),
+	UltrasonicSensor (TRIGGER, USPIN_RIGHT_MID,   400),
+	UltrasonicSensor (TRIGGER, USPIN_RIGHT_SIDE,  400)
 };
 
 bool scanCompleted[N_US_SENSORS];
@@ -54,7 +52,7 @@ bool allDistancesFound() {
 
 void setup() {
 	Serial.begin(9600);
-	FOREACH_US { us[i].initSensor(); }
+	FOREACH_US { us[i].init(); }
 	//Serial.println("setup complete, start pinging");
 	us[0].ping();
 }
@@ -62,7 +60,7 @@ void setup() {
 void loop() {
 	
 	FOREACH_US {
-		scanCompleted[i] = us[i].refresh();
+		scanCompleted[i] = usTask[i].refresh();
 	}
 	
 	delayMicroseconds(50);
@@ -70,9 +68,8 @@ void loop() {
 	if(allDistancesFound()) {
 	//if(scanCompleted[i]) {
 		FOREACH_US {
-			Serial.print(us[i].getDistance());
+			Serial.print(us[i].distance);
 			Serial.print(", ");
-			us[i].resetDistance();
 		}
 		Serial.println();
 		delay(500); //wait for echoes to clear

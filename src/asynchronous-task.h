@@ -1,13 +1,25 @@
-#define AsynchronousTask
+#define AsynchronousTask_h
 
-class AsynchronousTask {
+enum Status { INIT, WORK, DONE };
+
+class AsynchronousTask
+{
 	public:
+		AsynchronousTask();
 		bool refresh();
+		void reset();
 	protected:
-		virtual bool initialize() = 0;
-		virtual bool workToCompletion() = 0;
-		const enum Status { INIT, WORK, DONE };
+		virtual bool initialize() { return true; }
+		virtual bool workToCompletion() { return true; }
 		Status status;
+};
+
+AsynchronousTask::AsynchronousTask() {
+	reset();
+}
+
+void AsynchronousTask::reset() {
+	status = INIT;
 }
 
 bool AsynchronousTask::refresh() {
