@@ -1,0 +1,17 @@
+US trigger = 30
+US echo (L --> R) = 22-27
+IR return = A0, A2
+Sound triggers (mirroring US L-->R) = 40-45
+Vibration outputs (L-->R) = 2-5
+
+vibration:
+	forward:
+		red to solid orange 2
+		blue to orange stripe 1
+	rear:
+		red to blue 4
+		blue to blue stripe 5
+	IR:
+		data to brown 8
+		power to green 6 
+		ground to brown stripe 7 
