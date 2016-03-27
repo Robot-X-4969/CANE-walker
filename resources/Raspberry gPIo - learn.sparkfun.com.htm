@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- mobile mode if small screen device -->
+    
+    <title>Raspberry gPIo - learn.sparkfun.com</title>
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link href="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/theme.css" type="text/css" media="screen">    <link rel="alternate" type="application/atom+xml" title="Education Blog" href="https://learn.sparkfun.com/feeds/blog">
+    <link rel="alternate" type="application/atom+xml" title="Tutorials" href="https://learn.sparkfun.com/feeds/tutorials">
+    <link rel="alternate" type="application/atom+xml" title="Education Blog Comments" href="https://learn.sparkfun.com/feeds/blog_comments">
+    <link rel="alternate" type="application/atom+xml" title="Tutorial Comments" href="https://learn.sparkfun.com/feeds/tutorial_comments">
+
+    <script src="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/analytics.js" async=""></script><script type="text/javascript">
+          var SFECONFIG = {
+      currencies: {"USD":{"code":"USD","title":"US Dollar","symbol_left":"$","symbol_right":"","decimal_point":".","thousands_point":",","decimal_places":"2","value":"1.0000"},"CAD":{"code":"CAD","title":"Canadian Dollar","symbol_left":"$","symbol_right":" CAD","decimal_point":".","thousands_point":",","decimal_places":"2","value":"1.3345"},"AUD":{"code":"AUD","title":"Australian Dollar","symbol_left":"$","symbol_right":" AUD","decimal_point":".","thousands_point":",","decimal_places":"2","value":"1.3823"},"GBP":{"code":"GBP","title":"British Pound","symbol_left":"&pound;","symbol_right":"","decimal_point":".","thousands_point":",","decimal_places":"2","value":"0.6645"},"EUR":{"code":"EUR","title":"Euro","symbol_left":"&euro;","symbol_right":"","decimal_point":".","thousands_point":",","decimal_places":"2","value":"0.9467"}},
+      dnt: false,
+      preferred_currency: 'USD',
+        http_server: 'http://www.sparkfun.com',
+        https_server: 'https://www.sparkfun.com',
+        http_static: 'https://cdn.sparkfun.com',
+        base_url: '/',
+        url: '/',
+        controller: 'tutorials',
+        action: 'view',
+        entity_id: '',
+        auth: false,
+        sparkrev: '1458596017',
+        search_key: 'qLqN6uVRKXnjHd2QapGm'      };
+      var require = {
+        paths: {
+          'jqueryui': 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min'
+        },
+        baseUrl: '/js/',
+        urlArgs: "sparkrev=" + SFECONFIG.sparkrev,
+        deps: ['jqueryui'],
+        callback: function() {
+          $('#learn').learn();
+          $('#learn').sfeutil();
+        }
+      };
+    </script>
+    <script src="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/learn-built.js"></script>
+          <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-3404365-1', 'auto', {'allowLinker': true});
+      ga('require', 'linker');
+      ga('linker:autoLink', ['www.sparkfun.com', 'avc.sparkfun.com'] );
+      ga('require', 'displayfeatures');
+            ga('set', 'dimension1', 'Guest');
+      ga('send', 'pageview');
+
+      </script>
+      <script src="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/jquery-ui.js" data-requiremodule="jqueryui" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/tutorial.js" data-requiremodule="tutorial" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/rainbow.js" data-requiremodule="rainbow" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/generic.js" data-requiremodule="generic" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/c.js" data-requiremodule="c" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script src="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/ZeroClipboard.js" data-requiremodule="ZeroClipboard.min" data-requirecontext="_" async="" charset="utf-8" type="text/javascript"></script><script>try {  for(var lastpass_iter=0; lastpass_iter < document.forms.length; lastpass_iter++){    var lastpass_f = document.forms[lastpass_iter];    if(typeof(lastpass_f.lpsubmitorig)=="undefined"){      if (typeof(lastpass_f.submit) == "function") {        lastpass_f.lpsubmitorig = lastpass_f.submit;        lastpass_f.submit = function(){          var form = this;          try {            if (document.documentElement && 'createEvent' in document)            {              var forms = document.getElementsByTagName('form');              for (var i=0 ; i<forms.length ; ++i)                if (forms[i]==form)                {                  var element = document.createElement('lpformsubmitdataelement');                  element.setAttribute('formnum',i);                  element.setAttribute('from','submithook');                  document.documentElement.appendChild(element);                  var evt = document.createEvent('Events');                  evt.initEvent('lpformsubmit',true,false);                  element.dispatchEvent(evt);                  break;                }            }          } catch (e) {}          try {            form.lpsubmitorig();          } catch (e) {}        }      }    }  }} catch (e) {}</script></head>
+
+  <body id="learn" class="layout-default no-type tutorials-view no-touch" ontouchstart="">
+    <div class="wrapper" itemscope="" itemtype="http://schema.org/WebSite">
+      <meta itemprop="url" content="https://www.sparkfun.com/">
+      <div class="wrapper-inner">
+
+    
+<div class="header">
+  <div class="container">
+
+<!-- Mobile Nav Button -->
+<div class="mobile-menu-container left">
+  <a id="nav_toggle" class="mobile-menu-button nav_toggle" href="#"><span>≡</span></a>
+      <a id="search_toggle" class="mobile-menu-button" href="#"><span class="glyphicon glyphicon-search"></span></a>
+  </div>
+
+<nav class="top-links">
+  &nbsp;
+</nav>
+
+<!-- Logo -->
+<div class="logo-container">
+  <a class="logo" href="https://www.sparkfun.com/">
+    <span class="sfe-icon-flame"></span>
+    <span class="sfe-icon-sparkfun" data-icon="🔥">
+      <span class="visuallyhidden">sparkfun.com</span>
+    </span>
+  </a>
+</div>
+
+<!-- Tabs -->
+<!-- also edit mobile tabs in .main-nav -->
+<nav class="tabs-container">
+  <ul>
+    <li class="shop "><a href="https://www.sparkfun.com/">Shop</a></li>
+    <li class="learn active"><a href="https://learn.sparkfun.com/">Learn</a></li>
+    <li class="avc "><a href="https://avc.sparkfun.com/"><span class="sfe-icon-avc"><span class="visuallyhidden">AVC</span></span></a></li>
+    <li class="forum "><a href="https://forum.sparkfun.com/">Forum</a></li>
+    <li class="data "><a href="https://data.sparkfun.com/">Data</a></li>
+  </ul>
+</nav>
+
+<!-- Cart & User -->
+<div class="user-container mobile-menu-container right">
+
+  <a id="account_toggle" class="mobile-menu-button" href="#"><span class="glyphicon glyphicon-user"></span></a>
+
+  
+      <div class="user">
+      <!-- login modal trigger -->
+      <a class="btn btn-default" href="https://www.sparkfun.com/account/login?redirect=%2Flearn%2Ftutorials%2Fraspberry-gpio%2Fpython-rpigpio-api" data-toggle="modal" data-target="#login_modal" data-remote="false">log in</a>
+      <a class="btn btn-default" href="https://www.sparkfun.com/account/make">register</a>    </div>
+  
+</div>
+
+<!-- Navigation / Search -->
+<div class="main-nav-container">
+
+  <nav class="main-nav">
+    <ul>
+      <li class="tab shop ">
+        <a href="https://www.sparkfun.com/">Shop</a>      </li>
+      <li class="tab learn active">
+        <a href="https://learn.sparkfun.com/">Learn</a>      </li>
+      
+<li class="start-a-project ">
+  <a href="https://learn.sparkfun.com/start_a_project">Start a Project</a></li>
+<li><a href="https://learn.sparkfun.com/blog">EDU Blog</a></li>
+<li><a href="https://learn.sparkfun.com/resources">Resources</a></li>
+<li class="active"><a href="https://learn.sparkfun.com/tutorials">Tutorials</a></li>
+<li><a href="https://learn.sparkfun.com/events">Classes</a></li>
+<li><a href="https://learn.sparkfun.com/calendar">Calendar</a></li>
+<li><a href="https://learn.sparkfun.com/workshops">Workshops</a></li>
+<li><a href="https://learn.sparkfun.com/contact">Contact</a></li>
+
+      <li class="desktop-toggle">
+        <a href="https://www.sparkfun.com/account/mobile_toggle?redirect=%2Flearn%2Ftutorials%2Fraspberry-gpio%2Fpython-rpigpio-api">Desktop Site</a>      </li>
+    </ul>
+  </nav>
+
+      <form id="search_form" class="search" action="https://www.sparkfun.com/search/results" method="get" itemprop="potentialAction" itemscope="" itemtype="http://schema.org/SearchAction">
+      <meta itemprop="target" content="https://www.sparkfun.com/search/results?term={term}">
+      <div class="ui-widget">
+        <span class="ui-helper-hidden-accessible" aria-live="polite" role="status"></span><input name="term" id="global-search" class="form-control ui-autocomplete-input" placeholder="search..." itemprop="query-input" autocomplete="off" type="text">
+      </div>
+    </form>
+  
+</div>
+
+  </div>
+</div>
+
+
+    
+    <div class="content">
+      <div class="container">
+
+        
+        
+<div class="main-title">
+  <ul class="breadcrumb">
+    <li><a href="https://learn.sparkfun.com/">Home</a></li>
+    <li><a href="https://learn.sparkfun.com/tutorials">Tutorials</a></li>
+    <li>Raspberry gPIo</li>
+      </ul>
+
+  <h1>
+    Raspberry gPIo  </h1>
+
+</div>
+
+
+<a id="nav_toggle_pages" class="nav_toggle" href="#"><span>≡</span> Pages</a>
+
+<div class="row">
+
+  <div class="col-sm-8 tutorial-page">
+
+    <div class="contributors">
+                      Contributors:
+                <a href="https://www.sparkfun.com/users/69916"><img src="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/f2ed505f510e392f58811e4aa03e6fe0.jpg"> Jimb0</a>, <a href="https://www.sparkfun.com/users/649604"><img src="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/468388471d460cfeca6be21e3ab0defa.jpg"> MTaylor</a>          </div>
+
+    <span class="fave_widget verbose">
+  <a href="#" class="fave_btn " title="Add to favorites" data-entity="learn_tutorials" data-entity-id="424">
+    <span class="fave_yes">
+      <span class="glyphicon glyphicon-heart"></span>
+      <span class="name">Favorited</span>
+    </span>
+    <span class="fave_no">
+      <span class="glyphicon glyphicon-heart-empty"></span>
+      <span class="name">Favorite</span>
+    </span>
+  </a>
+  <span class="fave_count">2</span>
+</span>    <div class="share-link-inline">
+
+  <a class="share-link-toggle" href="#">
+    <span class="share-title">
+      <span class="sfe-icon-share"></span>
+      Share    </span>
+  </a>
+
+  <div class="share-link-inner dialog">
+    Use this URL to share:<br>
+    <input class="form-control input-sm" value="http://sfe.io/t424" onclick="$(this).select();" type="text">
+
+    <div class="share-social">
+
+      <a rel="nofollow" onclick="return $(this).sfeutil('track_link',this,'Share','clicked','googleplus');" href="https://plus.google.com/share?url=http%3A%2F%2Fsfe.io%2Ft424" title="Share on Google+"><span class="sfe-icon-google-plus hidetext"><span>Share on Google+</span></span></a>
+
+      <a rel="nofollow" onclick="return $(this).sfeutil('track_link',this,'Share','clicked','tumblr');" href="https://www.tumblr.com/share/link?url=http%3A%2F%2Fsfe.io%2Ft424&amp;name=Raspberry+gPIo" title="Share on Tumblr"><span class="sfe-icon-tumblr hidetext"><span>Share on Tumblr</span></span></a>
+
+      <a rel="nofollow" onclick="return $(this).sfeutil('track_link',this,'Share','clicked','reddit');" href="https://www.reddit.com/submit?url=http%3A%2F%2Fsfe.io%2Ft424" title="Submit to reddit"><span class="sfe-icon-reddit hidetext"><span>Submit to reddi</span></span></a>
+
+    </div>
+
+    </div>
+  
+  <div class="share-social">
+
+    <a rel="nofollow" onclick="return $(this).sfeutil('track_link',this,'Share','clicked','twitter');" href="https://twitter.com/intent/tweet?text=Raspberry+gPIo&amp;url=http%3A%2F%2Fsfe.io%2Ft424&amp;via=sparkfun" title="Share on Twitter"><span class="sfe-icon-twitter hidetext"><span>Share on Twitter</span></span></a>
+
+    <a rel="nofollow" onclick="return $(this).sfeutil('track_link',this,'Share','clicked','facebook');" href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fsfe.io%2Ft424&amp;t=Raspberry+gPIo" title="Share on Facebook"><span class="sfe-icon-facebook-nobox hidetext"><span>Share on Facebook</span></span></a>
+
+          <a rel="nofollow" onclick="return $(this).sfeutil('track_link',this,'Share','clicked','pinterest');" href="https://www.pinterest.com/pin/create/button/?url=http%3A%2F%2Fsfe.io%2Ft424&amp;media=https%3A%2F%2Fcdn.sparkfun.com%2F%2Fr%2F500-1000%2Fassets%2Flearn_tutorials%2F4%2F2%2F4%2FPi_Wedge_Hookup_Guide-01.jpg&amp;description=Raspberry+gPIo" title="Pin It"><span class="sfe-icon-pinterest hidetext"><span>Pin It</span></span></a>
+    
+  </div>
+
+  
+</div>
+
+    <h2>Python (RPi.GPIO) API</h2>
+    <p>We’ll use the <a href="http://sourceforge.net/projects/raspberry-gpio-python/">RPi.GPIO module</a> as the driving force behind our Python examples. This set of Python files and source is <strong>included with Raspbian</strong>, so assuming you’re running that most popular Linux distribution, you don’t need to download anything to get started.</p>
+
+<p>On this page we’ll provide an overview of the basic function calls you can make using this module.</p>
+
+<h3>Setup Stuff</h3>
+
+<p>In order to us RPi.GPIO throughout the rest of your Python script, you need to put this statement at the <strong>top of your file</strong>:</p>
+
+<pre data-language="language:Python
+,Python
+"><div class="copy-code" data-code-id="code-0"><button class="btn btn-default btn-sm">Copy Code</button></div><code class="rainbow"><span class="keyword">import</span> RPi.GPIO <span class="keyword">as</span> GPIO
+</code></pre><div class="hide" id="code-0">import RPi.GPIO as GPIO
+</div>
+
+<p>That statement “includes” the RPi.GPIO module, and goes a step further by providing a local name – <code>GPIO</code> – which we’ll call to reference the module from here on.</p>
+
+<h4>Pin Numbering Declaration</h4>
+
+<p>After you’ve included the RPi.GPIO module, the next step is to determine which of the two <strong>pin-numbering schemes</strong> you want to use:</p>
+
+<ol>
+<li><code>GPIO.BOARD</code> – Board numbering scheme. The pin numbers follow the pin numbers on header P1.</li>
+<li><code>GPIO.BCM</code> – Broadcom chip-specific pin numbers. These 
+pin numbers follow the lower-level numbering system defined by the 
+Raspberry Pi’s Broadcom-chip brain.</li>
+</ol>
+
+
+<p>If you’re using the Pi Wedge, we recommend using the <code>GPIO.BCM</code> definition – those are the numbers silkscreened on the PCB. The <code>GPIO.BOARD</code> may be easier if you’re wiring directly to the header.</p>
+
+<p>To specify in your code which number-system is being used, use the <code>GPIO.setmode()</code> function. For example…</p>
+
+<pre data-language="language:Python
+,Python
+"><div class="copy-code" data-code-id="code-1"><button class="btn btn-default btn-sm">Copy Code</button></div><code class="rainbow">GPIO.<span class="function call">setmode</span>(GPIO.BCM)
+</code></pre><div class="hide" id="code-1">GPIO.setmode(GPIO.BCM)
+</div>
+
+<p>…will activate the Broadcom-chip specific pin numbers.</p>
+
+<p>Both the <code>import</code> and <code>setmode</code> lines of code are <strong>required</strong>, if you want to use Python.</p>
+
+<h4>Setting a Pin Mode</h4>
+
+<p>If you’ve used Arduino, you’re probably familiar with the fact that 
+you have to declare a “pin mode” before you can use it as either an 
+input or output. To set a pin mode, use the <code>setup([pin], [GPIO.IN, GPIO.OUT]</code> function. So, if you want to set pin 18 as an output, for example, write:</p>
+
+<pre data-language="language:Python
+,Python
+"><div class="copy-code" data-code-id="code-2"><button class="btn btn-default btn-sm">Copy Code</button></div><code class="rainbow">GPIO.<span class="function call">setup</span>(<span class="constant numeric">18</span>, GPIO.OUT)
+</code></pre><div class="hide" id="code-2">GPIO.setup(18, GPIO.OUT)
+</div>
+
+<p>Remember that the pin number will change if you’re using the board numbering system (instead of 18, it’d be 12).</p>
+
+<h3>Outputs</h3>
+
+<h4>Digital Output</h4>
+
+<p>To write a pin high or low, use the <code>GPIO.output([pin], [GPIO.LOW, GPIO.HIGH])</code> function. For example, if you want to set pin 18 high, write:</p>
+
+<pre data-language="language:Python
+,Python
+"><div class="copy-code" data-code-id="code-3"><button class="btn btn-default btn-sm">Copy Code</button></div><code class="rainbow">GPIO.<span class="function call">output</span>(<span class="constant numeric">18</span>, GPIO.HIGH)
+</code></pre><div class="hide" id="code-3">GPIO.output(18, GPIO.HIGH)
+</div>
+
+<p>Writing a pin to <code>GPIO.HIGH</code> will drive it to 3.3V, and <code>GPIO.LOW</code> will set it to 0V. For the lazy, alternative to <code>GPIO.HIGH</code> and <code>GPIO.LOW</code>, you can use either <code>1</code>, <code>True</code>, <code>0</code> or <code>False</code> to set a pin value.</p>
+
+<h4>PWM (“Analog”) Output</h4>
+
+<p>PWM on the Raspberry Pi is about as limited as can be – one, single pin is capable of it: 18 (i.e. board pin 12).</p>
+
+<p>To initialize PWM, use <code>GPIO.PWM([pin], [frequency])</code> function. To make the rest of your script-writing easier you can assign that instance to a variable. Then use <code>pwm.start([duty cycle])</code> function to set an initial value. For example…</p>
+
+<pre data-language="language:Python
+,Python
+"><div class="copy-code" data-code-id="code-4"><button class="btn btn-default btn-sm">Copy Code</button></div><code class="rainbow">pwm <span class="keyword operator">=</span> GPIO.<span class="function call">PWM</span>(<span class="constant numeric">18</span>, <span class="constant numeric">1000</span>)
+pwm.<span class="function call">start</span>(<span class="constant numeric">50</span>)
+</code></pre><div class="hide" id="code-4">pwm = GPIO.PWM(18, 1000)
+pwm.start(50)
+</div>
+
+<p>…will set our PWM pin up with a frequency of 1kHz, and set that output to a 50% duty cycle.</p>
+
+<p>To adjust the value of the PWM output, use the <code>pwm.ChangeDutyCycle([duty cycle])</code> function. <code>[duty cycle]</code> can be any value between 0 (i.e 0%/LOW) and 100 (ie.e 100%/HIGH). So to set a pin to 75% on, for example, you could write:</p>
+
+<pre data-language="language:Python
+,Python
+"><div class="copy-code" data-code-id="code-5"><button class="btn btn-default btn-sm">Copy Code</button></div><code class="rainbow">pwm.<span class="function call">ChangeDutyCycle</span>(<span class="constant numeric">75</span>)
+</code></pre><div class="hide" id="code-5">pwm.ChangeDutyCycle(75)
+</div>
+
+<p>To turn PWM on that pin off, use the <code>pwm.stop()</code> command.</p>
+
+<p>Simple enough! Just don’t forget to set the pin as an output before you use it for PWM.</p>
+
+<h3>Inputs</h3>
+
+<p>If a pin is configured as an input, you can use the <code>GPIO.input([pin])</code> function to read its value. The <code>input()</code> function will return either a <code>True</code> or <code>False</code> indicating whether the pin is HIGH or LOW. You can use an <code>if</code> statement to test this, for example…</p>
+
+<pre data-language="language:Python
+,Python
+"><div class="copy-code" data-code-id="code-6"><button class="btn btn-default btn-sm">Copy Code</button></div><code class="rainbow"><span class="keyword">if</span> GPIO.<span class="function call">input</span>(<span class="constant numeric">17</span>):
+    <span class="keyword">print</span>(<span class="string">"Pin 11 is HIGH"</span>)
+<span class="keyword">else</span>:
+    <span class="keyword">print</span>(<span class="string">"Pin 11 is LOW"</span>)
+</code></pre><div class="hide" id="code-6">if GPIO.input(17):
+    print("Pin 11 is HIGH")
+else:
+    print("Pin 11 is LOW")
+</div>
+
+<p>…will read pin 17 and print whether it’s being read as HIGH or LOW.</p>
+
+<h4>Pull-Up/Down Resistors</h4>
+
+<p>Remember back to the <code>GPIO.setup()</code> function where we 
+declared whether a pin was an input or output? There’s an optional third
+ parameter to that function, which you can use to set pull-up or 
+pull-down resistors. To use a pull-up resistor on a pin, add <code>pull_up_down=GPIO.PUD_UP</code> as a third parameter in <code>GPIO.setup</code>. Or, if you need a pull-down resistor, instead use <code>pull_up_down=GPIO.PUD_DOWN</code>.</p>
+
+<p>For example, to use a pull-up resistor on GPIO 17, write this into your setup:</p>
+
+<pre data-language="language:Python
+,Python
+"><div class="copy-code" data-code-id="code-7"><button class="btn btn-default btn-sm">Copy Code</button></div><code class="rainbow">GPIO.<span class="function call">setup</span>(<span class="constant numeric">17</span>, GPIO.IN, pull_up_down<span class="keyword operator">=</span>GPIO.PUD_UP)
+</code></pre><div class="hide" id="code-7">GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+</div>
+
+<p>If nothing is declared in that third value, both pull-resistors will be disabled.</p>
+
+<h3>Etc.</h3>
+
+<h4>Delays</h4>
+
+<p>If you need to slow your Python script down, you can add delays. To 
+incorporate delays into your script, you’ll need to include another 
+module: <code>time</code>. This line, at the top of your script, will do it for you:</p>
+
+<pre data-language="language:Python
+,Python
+"><div class="copy-code" data-code-id="code-8"><button class="btn btn-default btn-sm">Copy Code</button></div><code class="rainbow">include time
+</code></pre><div class="hide" id="code-8">include time
+</div>
+
+<p>Then, throughout the rest of your script, you can use <code>time.sleep([seconds])</code> to give your script a rest. You can use decimals to precisely set your delay. For example, to delay 250 milliseconds, write:</p>
+
+<pre data-language="language:Python
+,Python
+"><div class="copy-code" data-code-id="code-9"><button class="btn btn-default btn-sm">Copy Code</button></div><code class="rainbow">time.<span class="function call">sleep</span>(<span class="constant numeric">0.25</span>)
+</code></pre><div class="hide" id="code-9">time.sleep(0.25)
+</div>
+
+<p>The time module includes all sorts of useful functions, on top of <code>sleep</code>. Check out the reference <a href="https://docs.python.org/2/library/time.html">here</a>.</p>
+
+<h4>Garbage Collecting</h4>
+
+<p>Once your script has run its course, be kind to the next process that
+ might use your GPIOs by cleaning up after yourself. Use the <code>GPIO.cleanup()</code> command at the end of your script to release any resources your script may be using.</p>
+
+<p>Your Pi will survive if you forget to add this command, but it is good practice to include wherever you can.</p>
+
+<hr>
+
+<p>Now then. Lets incorporate everything we learned here into an example script to try everything out.</p>
+        <div class="share-link-inline">
+
+  <a class="share-link-toggle" href="#">
+    <span class="share-title">
+      <span class="sfe-icon-share"></span>
+      Share    </span>
+  </a>
+
+  <div class="share-link-inner dialog">
+    Use this URL to share:<br>
+    <input class="form-control input-sm" value="http://sfe.io/t424" onclick="$(this).select();" type="text">
+
+    <div class="share-social">
+
+      <a rel="nofollow" onclick="return $(this).sfeutil('track_link',this,'Share','clicked','googleplus');" href="https://plus.google.com/share?url=http%3A%2F%2Fsfe.io%2Ft424" title="Share on Google+"><span class="sfe-icon-google-plus hidetext"><span>Share on Google+</span></span></a>
+
+      <a rel="nofollow" onclick="return $(this).sfeutil('track_link',this,'Share','clicked','tumblr');" href="https://www.tumblr.com/share/link?url=http%3A%2F%2Fsfe.io%2Ft424&amp;name=Raspberry+gPIo" title="Share on Tumblr"><span class="sfe-icon-tumblr hidetext"><span>Share on Tumblr</span></span></a>
+
+      <a rel="nofollow" onclick="return $(this).sfeutil('track_link',this,'Share','clicked','reddit');" href="https://www.reddit.com/submit?url=http%3A%2F%2Fsfe.io%2Ft424" title="Submit to reddit"><span class="sfe-icon-reddit hidetext"><span>Submit to reddi</span></span></a>
+
+    </div>
+
+    </div>
+  
+  <div class="share-social">
+
+    <a rel="nofollow" onclick="return $(this).sfeutil('track_link',this,'Share','clicked','twitter');" href="https://twitter.com/intent/tweet?text=Raspberry+gPIo&amp;url=http%3A%2F%2Fsfe.io%2Ft424&amp;via=sparkfun" title="Share on Twitter"><span class="sfe-icon-twitter hidetext"><span>Share on Twitter</span></span></a>
+
+    <a rel="nofollow" onclick="return $(this).sfeutil('track_link',this,'Share','clicked','facebook');" href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fsfe.io%2Ft424&amp;t=Raspberry+gPIo" title="Share on Facebook"><span class="sfe-icon-facebook-nobox hidetext"><span>Share on Facebook</span></span></a>
+
+          <a rel="nofollow" onclick="return $(this).sfeutil('track_link',this,'Share','clicked','pinterest');" href="https://www.pinterest.com/pin/create/button/?url=http%3A%2F%2Fsfe.io%2Ft424&amp;media=https%3A%2F%2Fcdn.sparkfun.com%2F%2Fr%2F500-1000%2Fassets%2Flearn_tutorials%2F4%2F2%2F4%2FPi_Wedge_Hookup_Guide-01.jpg&amp;description=Raspberry+gPIo" title="Pin It"><span class="sfe-icon-pinterest hidetext"><span>Pin It</span></span></a>
+    
+  </div>
+
+  
+</div>
+
+    <hr>
+
+    <div class="page-nav clearfix">
+
+      <div class="pull-right">
+        <a href="https://learn.sparkfun.com/tutorials/raspberry-gpio/all" class="btn">
+          View as a single page
+        </a>
+
+                  <a href="https://learn.sparkfun.com/tutorials/raspberry-gpio/python-rpigpio-example" class="btn btn-primary">
+            Next Page →<br>
+            <small>Python (RPi.GPIO) Example</small>
+          </a>
+              </div>
+
+              <a href="https://learn.sparkfun.com/tutorials/raspberry-gpio/hardware-setup" class="btn">
+          ← Previous Page<br>
+          <small>Hardware Setup</small>
+        </a>
+      
+    </div>
+  </div>
+
+  <div class="col-sm-4" id="nav-pages">
+
+    <div id="tutorial-pages" class="list-group">
+      <a class="list-group-item"><b>Pages</b></a>
+              <a data-pageid="3349" class="list-group-item " href="https://learn.sparkfun.com/tutorials/raspberry-gpio/introduction">
+          Introduction        </a>
+              <a data-pageid="3351" class="list-group-item " href="https://learn.sparkfun.com/tutorials/raspberry-gpio/gpio-pinout">
+          GPIO Pinout        </a>
+              <a data-pageid="3350" class="list-group-item " href="https://learn.sparkfun.com/tutorials/raspberry-gpio/hardware-setup">
+          Hardware Setup        </a>
+              <a data-pageid="3352" class="list-group-item active" href="https://learn.sparkfun.com/tutorials/raspberry-gpio/python-rpigpio-api">
+          Python (RPi.GPIO) API        </a>
+              <a data-pageid="3353" class="list-group-item " href="https://learn.sparkfun.com/tutorials/raspberry-gpio/python-rpigpio-example">
+          Python (RPi.GPIO) Example        </a>
+              <a data-pageid="3356" class="list-group-item " href="https://learn.sparkfun.com/tutorials/raspberry-gpio/c-wiringpi-setup">
+          C (WiringPi) Setup        </a>
+              <a data-pageid="3348" class="list-group-item " href="https://learn.sparkfun.com/tutorials/raspberry-gpio/c-wiringpi-api">
+          C (WiringPi) API        </a>
+              <a data-pageid="3354" class="list-group-item " href="https://learn.sparkfun.com/tutorials/raspberry-gpio/c-wiringpi-example">
+          C (WiringPi) Example        </a>
+              <a data-pageid="3355" class="list-group-item " href="https://learn.sparkfun.com/tutorials/raspberry-gpio/using-an-ide">
+          Using an IDE!        </a>
+              <a data-pageid="3347" class="list-group-item " href="https://learn.sparkfun.com/tutorials/raspberry-gpio/resources--going-further">
+          Resources &amp; Going Further        </a>
+          </div>
+
+    <div class="list-group">
+      <a class="list-group-item" href="https://learn.sparkfun.com/tutorials/raspberry-gpio/discuss">
+        Comments
+        <span class="badge">1</span>
+      </a>
+      <a class="list-group-item" href="https://learn.sparkfun.com/tutorials/raspberry-gpio/all">
+        Single Page
+      </a>
+      <a class="list-group-item" hhref="#" onclick="window.print(); return false;">
+        Print
+      </a>
+    </div>
+
+<!--
+  -->
+
+    <ul class="list-group">
+      <li class="list-group-item"><b>Tags</b></li>
+      <li class="list-group-item"><ul class="tags-list">
+  <li>
+    <a class="tag" href="https://learn.sparkfun.com/tutorials/tags/concepts">Concepts</a>  </li>
+  <li>
+    <a class="tag" href="https://learn.sparkfun.com/tutorials/tags/programming">Programming</a>  </li>
+  <li>
+    <a class="tag" href="https://learn.sparkfun.com/tutorials/tags/raspberry-pi">Raspberry Pi</a>  </li>
+  <li>
+    <a class="tag" href="https://learn.sparkfun.com/tutorials/tags/single-board-computer">Single Board Computer</a>  </li>
+</ul>
+</li>
+    </ul>
+
+    <ul class="list-group">
+      <li class="list-group-item"><b>License</b></li>
+      <li class="list-group-item">
+        <span class="sfe-icon-cc">
+          <span class="visuallyhidden">Creative Commons</span>
+        </span>
+        <small>tutorials are <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" target="new">CC BY-NC-SA 3.0</a></small>
+      </li>
+    </ul>
+
+  </div>
+
+</div>
+
+<script type="text/javascript">
+  require(['tutorial'], function() {
+    $('#tutorial').tutorial();
+  });
+</script>
+
+      </div> <!-- /container -->
+    </div> <!-- /content -->
+
+    
+<footer>
+
+<div class="social">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="sharing-ingenuity">
+          <span class="sfe-icon-flame"></span>
+          <span class="text"><span class="text-top">Sharing<br></span>Ingenuity</span>
+        </div>
+        <ul class="spew">
+          <li><a href="http://www.github.com/sparkfun" target="_blank" class="sfe-icon-github"><span class="visuallyhidden">GitHub</span></a></li>
+          <li><a href="http://www.youtube.com/sparkfun" target="_blank" class="sfe-icon-youtube"><span class="visuallyhidden">YouTube</span></a></li>
+          <li><a href="http://www.vimeo.com/sparkfun" target="_blank" class="sfe-icon-vimeo"><span class="visuallyhidden">Vimeo</span></a></li>
+          <li><a href="http://www.facebook.com/SparkFun" target="_blank" class="sfe-icon-facebook"><span class="visuallyhidden">Facebook</span></a></li>
+          <li><a href="https://plus.google.com/106084846822083498483/" target="_blank" class="sfe-icon-google-plus"><span class="visuallyhidden">Google Plus</span></a></li>
+          <li><a href="http://www.flickr.com/photos/sparkfun/" target="_blank" class="sfe-icon-flickr"><span class="visuallyhidden">Flickr</span></a></li>
+          <li><a href="https://twitter.com/#%21/sparkfun" target="_blank" class="sfe-icon-twitter"><span class="visuallyhidden">Twitter</span></a></li>
+          <li><a href="https://www.sparkfun.com/feeds" class="sfe-icon-feed"><span class="visuallyhidden">RSS</span></a></li>
+        </ul>
+        <div class="newsletter">
+          <form action="https://learn.sparkfun.com/newsletter/subscribe_email" method="post" class="form-inline" id="js-newsletter_subscribe">
+            <div class="form-group">
+              <input class="form-control" name="newsletter_email" placeholder="Email Address" type="email">
+            </div>
+            <div class="form-group">
+              <input class="btn btn-default" value="Subscribe to Education Newsletter" type="submit">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div><!-- end .row -->
+  </div><!-- end .container -->
+</div><!-- end .social -->
+
+<div class="container">
+
+    <div class="row">
+
+    <div class="subfooter subfooter-about">
+      <p>
+        <b>SparkFun</b> is an online retail store that sells the bits and pieces to
+        make your electronics projects possible. Whether it's a robot that can
+        cook your breakfast or a GPS cat tracking device, our products and
+        resources are designed to make the world of electronics more accessible.
+      </p>
+      <p>
+        In addition to products, SparkFun also offers
+        classes and online tutorials to help educate
+        individuals in the wonderful world of embedded electronics.
+      </p>
+
+      <div class="row">
+
+        <div class="col-sm-6">
+          <ul>
+            <li><b>About Us</b>
+            </li><li><a href="https://www.sparkfun.com/static/about">About SparkFun</a></li>
+            <li><a href="https://learn.sparkfun.com/about">SparkFun Education</a></li>
+            <li><a title="RSS Feeds" href="https://www.sparkfun.com/feeds">Feeds <span class="sfe-icon-feed"></span></a></li>
+            <li><a href="https://www.sparkfun.com/jobs">Jobs</a></li>
+            <li><a href="https://www.sparkfun.com/static/contact">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="col-sm-6">
+          <ul>
+            <li><b>Help</b></li>
+            <li><a href="https://www.sparkfun.com/support">Customer Service</a></li>
+            <li><a href="https://www.sparkfun.com/support#ShippingPolicy">Shipping</a></li>
+            <li><a href="https://www.sparkfun.com/returns">Return Policy</a></li>
+            <li><a href="https://www.sparkfun.com/static/faq">FAQ</a></li>
+                      </ul>
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="col-sm-6">
+          <ul>
+            <li><b>Programs</b></li>
+            <li><a href="https://learn.sparkfun.com/educator_discount">Educator Discount</a></li>
+            <li><a href="https://www.sparkfun.com/sponsor">Partner with SparkFun</a></li>
+            <li><a href="https://www.sparkfun.com/project_calls">Tell Us About Your Project</a></li>
+            <li><a href="https://learn.sparkfun.com/tutorials/how-to-sell-your-widget-on-sparkfun">Sell Your Widget on SparkFun</a></li>
+            <li><a href="https://www.sparkfun.com/distributors/apply">Become a SparkFun Distributor</a></li>
+          </ul>
+        </div>
+
+        <div class="col-sm-6">
+          <ul>
+            <li><b>Community</b></li>
+            <li><a href="https://forum.sparkfun.com/">Forum</a></li>
+            <li><a href="https://www.sparkfun.com/news/263">SparkFun IRC Channel</a></li>
+            <li><a href="https://www.sparkfun.com/quiz">Take the SparkFun Quiz</a></li>
+            <li><a href="https://www.kickstarter.com/pages/sparkfun">SparkFun Kickstarter Projects</a></li>
+            <li><a href="https://www.sparkfun.com/distributors">Distributors</a></li>
+          </ul>
+        </div>
+
+      </div><!-- end .row -->
+
+    </div>
+
+    <div id="feedback" class="subfooter subfooter-woym">
+      <form id="woym_form" class="feedback" action="https://learn.sparkfun.com/feedback/mind.json" onsubmit="$(this).sfeutil('mind_feedback'); return false;" method="POST">
+        <div class="error" id="error_feedback" style="display: none"></div>
+        <input name="sparkaptcha" id="sparkaptcha" value="0" type="hidden">
+
+        <div class="form-group">
+          <label for="feedback_textarea" class="control-label">What's on your mind?</label>
+          <div class="controls">
+            <textarea id="feedback_textarea" class="form-control" name="feedback_text" required=""></textarea>
+            <div class="error" id="error_feedback_text" style="display: none"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="feedback_dest" class="control-label">For which department?</label>
+          <select name="dest" class="form-control" id="feedback_dest">
+            <option selected="selected" value="general">General</option>
+            <option value="cust">Customer Service</option>
+            <option value="tech">Tech Support</option>
+                          <option value="edu">Education Department</option>
+                      </select>
+        </div>
+
+        <div class="form-group">
+          <label for="feedback_email" class="control-label">
+            Please include your email address if you'd like us to respond to a specific question.
+          </label>
+
+          <div class="input-group">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+            <input class="form-control" id="feedback_email" name="email" placeholder="email address" type="text">
+          </div>
+          <div class="error" id="error_feedback_email" style="display: none"></div>
+
+        </div>
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+  </div><!-- end .row -->
+  
+  <ul class="copyleft">
+    <li>SparkFun Electronics <a href="https://www.sparkfun.com/news/300">®</a></li>
+    <li><a href="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=6333+Dry+Creek+Parkway,+Niwot,+CO+80503">Niwot, Colorado</a></li>
+    <li><a href="https://www.sparkfun.com/support">Customer Service</a></li>
+    <li><a href="https://www.sparkfun.com/sitemap">Site Map</a></li>
+    <li><a href="https://www.sparkfun.com/terms">Terms of Service</a></li>
+    <li><a href="https://www.sparkfun.com/privacy">Privacy Policy</a></li>
+    <li class="desktop-toggle">
+              <a href="https://www.sparkfun.com/account/mobile_toggle?redirect=%2Flearn%2Ftutorials%2Fraspberry-gpio%2Fpython-rpigpio-api">Desktop Site</a>          </li>
+  </ul>
+
+</div><!-- end .container -->
+
+</footer>
+
+    <div class="nav-account">
+  <ul class="nav nav-tabs">
+    <li class="visible-xs">
+      <a class="nav-toggle-account back" href="#">Your Account</a>
+    </li>
+          <li class="">
+        <a href="https://www.sparkfun.com/account/login?redirect=%2Flearn%2Ftutorials%2Fraspberry-gpio%2Fpython-rpigpio-api" data-toggle="modal" data-target="#login_modal" data-remote="false">Log In</a>
+      </li>
+          <li class="">
+        <a href="https://www.sparkfun.com/account/make">Register</a>
+      </li>
+      </ul>
+</div>
+
+      </div><!-- end .wrapper-inner -->
+    </div><!-- end .wrapper -->
+
+    <!-- Login Modal -->
+<div class="modal fade" id="login_modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Log In</h4>
+        <p class="modal-header-msg"></p>
+      </div>
+      <div class="modal-body">
+        <form role="form" action="https://www.sparkfun.com/account/login" method="post">
+          <input name="redirect" value="/learn/tutorials/raspberry-gpio/python-rpigpio-api" type="hidden">
+          <div class="form-group">
+            <label for="login-username">Email</label>
+            <input style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAYAAABSO15qAAAAAXNSR0IArs4c6QAAALZJREFUOBFjYKAANDQ0rGWiQD9IqzgL0BQ3IKMXiB8AcSKQ/waIrYDsKUD8Fir2pKmpSf/fv3+zgPxfzMzMSbW1tbeBbAaQC+b+//9fB4h9gOwikCAQTAPyDYHYBciuBQkANfcB+WZAbPP37992kBgIUOoFBiZGRsYkIL4ExJvZ2NhAXmFgYmLKBPLPAfFuFhaWJpAYEBQC+SeA+BDQC5UQIQpJYFgdodQLLyh0w6j20RCgUggAAEREPpKMfaEsAAAAAElFTkSuQmCC&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;" tabindex="1" name="user" id="login-username" class="form-control" type="email">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAYAAABSO15qAAAAAXNSR0IArs4c6QAAALZJREFUOBFjYKAANDQ0rGWiQD9IqzgL0BQ3IKMXiB8AcSKQ/waIrYDsKUD8Fir2pKmpSf/fv3+zgPxfzMzMSbW1tbeBbAaQC+b+//9fB4h9gOwikCAQTAPyDYHYBciuBQkANfcB+WZAbPP37992kBgIUOoFBiZGRsYkIL4ExJvZ2NhAXmFgYmLKBPLPAfFuFhaWJpAYEBQC+SeA+BDQC5UQIQpJYFgdodQLLyh0w6j20RCgUggAAEREPpKMfaEsAAAAAElFTkSuQmCC&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;" tabindex="2" name="passwd" id="login-password" class="form-control" type="password">
+          </div>
+          <div class="form-group">
+            <input value="Log In" tabindex="3" class="btn btn-action" type="submit">
+          </div>
+        </form>
+        <p>
+          <a href="https://www.sparkfun.com/account/forgot_password">Forgot your password?</a>          <br>
+          No account? <a id="btn_register_account" href="https://www.sparkfun.com/account/make">Register one!</a>        </p>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+
+<ul style="display: none;" tabindex="0" id="ui-id-1" class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content ui-corner-all"></ul><div style="position: absolute; left: 0px; top: -9999px; width: 15px; height: 15px; z-index: 999999999;" class="global-zeroclipboard-container" id="global-zeroclipboard-html-bridge">      <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" id="global-zeroclipboard-flash-bridge" height="100%" width="100%">         <param name="movie" value="/js/ZeroClipboard.swf?noCache=1459025584969">         <param name="allowScriptAccess" value="sameDomain">         <param name="scale" value="exactfit">         <param name="loop" value="false">         <param name="menu" value="false">         <param name="quality" value="best">         <param name="bgcolor" value="#ffffff">         <param name="wmode" value="transparent">         <param name="flashvars" value="trustedOrigins=learn.sparkfun.com%2C%2F%2Flearn.sparkfun.com%2Chttps%3A%2F%2Flearn.sparkfun.com&amp;jsModuleId=ZeroClipboard.min">         <embed src="Raspberry%20gPIo%20-%20learn.sparkfun.com_files/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="global-zeroclipboard-flash-bridge" allowscriptaccess="sameDomain" allowfullscreen="false" type="application/x-shockwave-flash" wmode="transparent" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="trustedOrigins=learn.sparkfun.com%2C%2F%2Flearn.sparkfun.com%2Chttps%3A%2F%2Flearn.sparkfun.com&amp;jsModuleId=ZeroClipboard.min" scale="exactfit" height="100%" width="100%">                </object></div></body></html>

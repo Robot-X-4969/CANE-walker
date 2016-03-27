@@ -1,0 +1,272 @@
+/*
+* Name: Blog Manager
+* Version: 1.2.4
+* Author: Echothemes
+* Author URL: http://www.echothemes.com
+* Copyright (c) 2011 - 2012  Echothemes. All right Reserved
+*/
+
+/* General */
+.blogModule {
+	margin-bottom:20px;
+}
+
+.blogModule .box-heading {
+	color:#000;
+	font-size:15px;
+	font-weight:normal;
+	line-height:18px;
+}
+
+.blogModule ul {
+	line-height:18px;
+	list-style:none;
+	padding:0;
+	margin:0;
+}
+
+.blogModule li {
+	overflow:hidden;
+	margin-bottom:5px;
+}
+
+.blogModule li:last-child {
+	margin-bottom:0;
+}
+
+.blogModule li a {
+	text-decoration:none;
+}
+
+.blogModule li a:hover {
+	text-decoration:underline;
+}
+
+.blogModule .image img {
+	float:left;
+	padding:0;
+	border:none;
+	background:#FFF;
+	margin-right:10px;
+}
+
+.blogModule .title {
+	font-size:14px;
+	display:block;
+	margin-bottom:5px;
+}
+
+.blogModule .image + .title {
+	margin-bottom:0;
+}
+
+.blogModule .info {
+	font-size:10px;
+	display:inline-block;
+	background:#5D5656;
+	padding:0 10px;
+	color:#FFF;
+	font-style:italic;
+	margin:0 0 5px 0;
+}
+
+.blogModule p {
+	margin:0;
+}
+
+/* Layout */
+.row-2, .row-3, .row-4 {
+	float:left;
+	padding-left:2%;
+}
+
+.row-first {
+	clear:left;
+	padding-left:0;
+}
+
+.row-2 {
+	width:49%;
+}
+
+.row-3 {
+	width:32%;
+}
+
+.row-4 {
+	width:23.5%;
+}
+
+/* Styling */
+.boxPlain {
+}
+
+/* overwrite default .box style */
+.boxPlain .box-heading {
+	padding:20px;
+	border:none;
+	border-bottom:1px solid #FFF;
+	background:#F5F4F1;
+	-webkit-border-radius:0;
+	-moz-border-radius:0;
+	-khtml-border-radius:0;
+	border-radius:0;
+}
+
+.boxPlain .box-content {
+	padding:10px;
+	border-left:1px solid #EAEAEA;
+	border-right:1px solid #EAEAEA;
+	border-bottom:1px solid #EAEAEA;
+}
+
+.artPlain {
+}
+
+.artPlain ul {
+}
+
+.artPlain li {
+	padding-left:12px;
+	margin:0;
+	background:url(../images/arrow.gif) no-repeat 0 4px;
+}
+
+.artPlain .title {
+	font-size:13px;
+}
+
+.artPlain .image, .artPlain .info {
+	display:none;
+	visibility:hidden;
+}
+
+/* show article module horizontally */
+.artHorz-2 ul, .artHorz-3 ul, .artHorz-4 ul, .artHorz-5 ul {
+	overflow:hidden;
+}
+
+.artHorz-2 li, .artHorz-3 li, .artHorz-4 li, .artHorz-5 li {
+	float:left;
+}
+
+.artHorz-2 li {
+	margin:5px 1% 10px;
+	width:47.9%
+}
+
+.artHorz-3 li {
+	margin:5px 1% 10px;
+	width:30.9%
+}
+
+.artHorz-4 li {
+	margin:5px 1%;
+	width:22.9%
+}
+
+.artHorz-5 li {
+	margin:5px 0.5%;
+	width:18.9%
+}
+
+/* Spesific Modules */
+.blogCategories {
+}
+
+.blogCategories ul {
+	line-height:20px;
+}
+
+.blogCategories ul ul {
+	margin:4px 0;
+}
+
+.blogCategories li {
+	padding-left:15px;
+	background:url(../images/arrow.gif) no-repeat 0 5px;
+}
+
+.blogCategories li a {
+	font-size:13px;
+	line-height:16px;
+}
+
+.blogCategories li .blogActive {
+	font-weight:bold;
+}
+
+.recentArticles {
+}
+
+.recentArticles li {
+	margin:0 0 20px 0;
+	padding:20px 0 0 0;
+	border-top:1px solid #EAEAEA;
+}
+
+.recentArticles li:first-child {
+	padding:0;
+	border-top:none;
+}
+
+.recentArticles li a.image + div {
+	margin-left:90px;
+}
+
+.popularArticles {
+}
+
+.recentComments {
+}
+
+.blogModule .recentComments .image {
+	float:left;
+	padding:3px;
+	border:1px solid #DDD;
+	background:#EEE;
+	margin-right:10px;
+}
+
+.blogModule .recentComments, .blogModule .recentComments .title {
+	font-size:12px;
+}
+
+.blogTags {
+}
+
+.blogArchives {
+}
+
+#blogArchive ul {
+	display:none;
+}
+
+.blogArchives ul {
+	line-height:20px;
+}
+
+.blogArchives ul ul {
+	margin:4px 0;
+}
+
+.blogArchives li {
+	padding-left:12px;
+	background:url(../images/arrow.gif) no-repeat 0 5px;
+}
+
+.blogArchives li a {
+	font-size:13px;
+}
+
+.blogArchives li li a {
+	font-size:12px;
+}
+
+.blogArchives li li li a {
+	font-size:11px;
+}
+
+.blogArchives li .blogActive {
+	font-weight:bold;
+}

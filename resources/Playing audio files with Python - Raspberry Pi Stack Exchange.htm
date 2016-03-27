@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html itemscope="" itemtype="http://schema.org/QAPage"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<title>Playing audio files with Python - Raspberry Pi Stack Exchange</title>
+    <link rel="shortcut icon" href="http://cdn.sstatic.net/raspberrypi/img/favicon.ico?v=eb3b0387c906">
+    <link rel="apple-touch-icon image_src" href="http://cdn.sstatic.net/raspberrypi/img/apple-touch-icon.png?v=fc767cb2c0db">
+    <link rel="search" type="application/opensearchdescription+xml" title="Raspberry Pi Stack Exchange" href="http://raspberrypi.stackexchange.com/opensearch.xml">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@StackRaspi">
+    <meta name="twitter:domain" content="raspberrypi.stackexchange.com">
+    <meta property="og:type" content="website">    
+    <meta property="og:image" itemprop="image primaryImageOfPage" content="http://cdn.sstatic.net/raspberrypi/img/apple-touch-icon@2.png?v=48fd4440f0f8&amp;a">
+    <meta name="twitter:title" property="og:title" itemprop="title name" content="Playing audio files with Python">
+    <meta name="twitter:description" property="og:description" itemprop="description" content="I am looking for a well maintained Python library with allows me to play audio files on my Raspberry Pi using the standard audio output.
+
+So far I've tried several, but none of them seem to work. ">
+    <meta property="og:url" content="http://raspberrypi.stackexchange.com/questions/7088/playing-audio-files-with-python">
+    <link rel="canonical" href="http://raspberrypi.stackexchange.com/questions/7088/playing-audio-files-with-python">
+
+    
+    
+    <script src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/quant.js" async=""></script><script src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/beacon.js" async=""></script><script src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/analytics.js" async=""></script><script src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/jquery.js"></script>
+    <script src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/stub.js"></script>
+    <link rel="stylesheet" type="text/css" href="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/all.css">
+
+            <link rel="alternate" type="application/atom+xml" title="Feed for question 'Playing audio files with Python'" href="http://raspberrypi.stackexchange.com/feeds/question/7088">
+            <meta name="twitter:app:country" content="US">
+            <meta name="twitter:app:name:iphone" content="Stack Exchange iOS">
+            <meta name="twitter:app:id:iphone" content="871299723">
+            <meta name="twitter:app:url:iphone" content="se-zaphod://raspberrypi.stackexchange.com/questions/7088/playing-audio-files-with-python">
+            <meta name="twitter:app:name:ipad" content="Stack Exchange iOS">
+            <meta name="twitter:app:id:ipad" content="871299723">
+            <meta name="twitter:app:url:ipad" content="se-zaphod://raspberrypi.stackexchange.com/questions/7088/playing-audio-files-with-python">
+            <meta name="twitter:app:name:googleplay" content="Stack Exchange Android">
+            <meta name="twitter:app:url:googleplay" content="http://raspberrypi.stackexchange.com/questions/7088/playing-audio-files-with-python">
+            <meta name="twitter:app:id:googleplay" content="com.stackexchange.marvin">
+        <script>
+        
+            StackExchange.ready(function () {
+
+                StackExchange.using("postValidation", function () {
+                    StackExchange.postValidation.initOnBlurAndSubmit($('#post-form'), 2, 'answer');
+                });
+
+                
+                StackExchange.question.init({showAnswerHelp:true,totalCommentCount:1,shownCommentCount:1,highlightColor:'#F4A83D',backgroundColor:'#FFF',questionId:7088});
+
+                styleCode();
+
+                    StackExchange.realtime.subscribeToQuestion('447', '7088');
+                                                                    StackExchange.using("gps", function () { StackExchange.gps.trackOutboundClicks('#content', '.post-text'); });
+
+            });
+        </script>
+
+
+    <script>
+        StackExchange.ready(function () {
+            StackExchange.realtime.init('wss://qa.sockets.stackexchange.com,ws://qa.sockets.stackexchange.com');
+            StackExchange.realtime.subscribeToReputationNotifications('447');
+                StackExchange.realtime.subscribeToTopBarNotifications('447');
+        });
+    </script>
+    <script>
+        StackExchange.init({"locale":"en","stackAuthUrl":"https://stackauth.com","serverTime":1459025751,"networkMetaHostname":"meta.stackexchange.com","routeName":"Questions/Show","styleCode":true,"enableUserHovercards":true,"snippets":{"enabled":false,"domain":"stacksnippets.net"},"site":{"name":"Raspberry Pi Stack Exchange","description":"Q&A for users and developers of hardware and software for Raspberry Pi","isNoticesTabEnabled":true,"recaptchaPublicKey":"6LdsB7sSAAAAAAzjgEF_Hd8vXv-C42sa_KyofaGR","recaptchaAudioLang":"en","enableNewTagCreationWarning":false,"insertSpaceAfterNameTabCompletion":false,"id":447,"enableSocialMediaInSharePopup":true},"user":{"fkey":"7e4937b44c76c9bdd5e70c7aa7e1dffa","rep":0,"isAnonymous":true,"isAnonymousNetworkWide":true},"realtime":{"newest":true,"active":true,"tagged":true}});
+        StackExchange.using.setCacheBreakers({"js/prettify-full.en.js":"b65a552240e0","js/moderator.en.js":"3cbf6a60f9c7","js/full-anon.en.js":"fb1284c686e5","js/full.en.js":"a3215299fac4","js/wmd.en.js":"a07d24e61f8b","js/third-party/jquery.autocomplete.min.js":"e5f01e97f7c3","js/third-party/jquery.autocomplete.min.en.js":"","js/mobile.en.js":"52aabd47bbed","js/help.en.js":"54b998574be9","js/tageditor.en.js":"9c6df10dabc4","js/tageditornew.en.js":"d27d32e92799","js/inline-tag-editing.en.js":"de80429b1816","js/revisions.en.js":"db5a160e1690","js/review.en.js":"8fbeb442b78f","js/tagsuggestions.en.js":"bc2c996faeda","js/post-validation.en.js":"bae8647949d4","js/explore-qlist.en.js":"e71f14781288","js/events.en.js":"cbab82429e21","js/keyboard-shortcuts.en.js":"14bba3b6363f","js/external-editor.en.js":"cf58cc6630ef","js/external-editor.en.js":"cf58cc6630ef"});
+        StackExchange.using("gps", function() {
+             StackExchange.gps.init(true);
+        });
+    </script>
+    
+        <script>
+            StackExchange.ready(function () {
+                $('#nav-tour').click(function () {
+                    StackExchange.using("gps", function() {
+                        StackExchange.gps.track("aboutpage.click", { aboutclick_location: "headermain" }, true);
+                    });
+                });
+            });
+        </script>
+<script src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/full-anon.js" async=""></script><script src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/post-validation.js" async=""></script><script src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/prettify-full.js" async=""></script><script src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/external-editor.js" async=""></script><script>try {  for(var lastpass_iter=0; lastpass_iter < document.forms.length; lastpass_iter++){    var lastpass_f = document.forms[lastpass_iter];    if(typeof(lastpass_f.lpsubmitorig)=="undefined"){      if (typeof(lastpass_f.submit) == "function") {        lastpass_f.lpsubmitorig = lastpass_f.submit;        lastpass_f.submit = function(){          var form = this;          try {            if (document.documentElement && 'createEvent' in document)            {              var forms = document.getElementsByTagName('form');              for (var i=0 ; i<forms.length ; ++i)                if (forms[i]==form)                {                  var element = document.createElement('lpformsubmitdataelement');                  element.setAttribute('formnum',i);                  element.setAttribute('from','submithook');                  document.documentElement.appendChild(element);                  var evt = document.createEvent('Events');                  evt.initEvent('lpformsubmit',true,false);                  element.dispatchEvent(evt);                  break;                }            }          } catch (e) {}          try {            form.lpsubmitorig();          } catch (e) {}        }      }    }  }} catch (e) {}</script></head>
+<body class="question-page new-topbar">
+    <noscript><div id="noscript-padding"></div></noscript>
+    
+
+
+
+
+    <div id="notify-container"></div>
+    <div id="overlay-header"></div>
+    <div id="custom-header"></div>
+
+
+
+
+
+<div class="topbar">
+    <div class="topbar-wrapper">
+
+        <div class="js-topbar-dialog-corral">
+
+
+<div class="topbar-dialog siteSwitcher-dialog dno">
+    <div class="header">
+        <h3><a href="http://raspberrypi.stackexchange.com/">current community</a></h3>
+    </div>
+    <div class="modal-content current-site-container">
+        <ul class="current-site">
+                <li>
+                        <div class="related-links">
+                    <a href="http://chat.stackexchange.com/" class="js-gps-track" data-gps-track="site_switcher.click({ item_type:6 })">chat</a>
+            </div>
+
+
+
+
+    <a href="http://raspberrypi.stackexchange.com/" class="current-site-link site-link js-gps-track" data-id="447" data-gps-track="
+        site_switcher.click({ item_type:3 })">
+        <div class="site-icon favicon favicon-raspberrypi" title="Raspberry Pi"></div>
+        Raspberry Pi
+    </a>
+
+                </li>
+                <li class="related-site">
+                        <div class="L-shaped-icon-container">
+        <span class="L-shaped-icon"></span>
+    </div>
+
+                    
+
+
+
+    <a href="http://meta.raspberrypi.stackexchange.com/" class="site-link js-gps-track" data-id="449" data-gps-track="
+            site.switch({ target_site:449, item_type:3 }),
+        site_switcher.click({ item_type:4 })">
+        <div class="site-icon favicon favicon-raspberrypimeta" title="Raspberry Pi Meta"></div>
+        Raspberry Pi Meta
+    </a>
+
+                </li>
+                    </ul>
+    </div>
+    
+    <div class="header" id="your-communities-header">
+        <h3>
+your communities        </h3>
+            
+    </div>
+    <div class="modal-content" id="your-communities-section">
+            
+            <div class="call-to-login">
+<a href="https://raspberrypi.stackexchange.com/users/signup?ssrc=site_switcher&amp;returnurl=http%3a%2f%2fraspberrypi.stackexchange.com%2fquestions%2f7088%2fplaying-audio-files-with-python" class="login-link js-gps-track" data-gps-track="site_switcher.click({ item_type:10 })">Sign up</a> or <a href="https://raspberrypi.stackexchange.com/users/login?ssrc=site_switcher&amp;returnurl=http%3a%2f%2fraspberrypi.stackexchange.com%2fquestions%2f7088%2fplaying-audio-files-with-python" class="login-link js-gps-track" data-gps-track="site_switcher.click({ item_type:11 })">log in</a> to customize your list.
+            </div>
+    </div>
+    
+    <div class="header">
+        <h3><a href="http://stackexchange.com/sites">more stack exchange communities</a></h3>
+        <a href="http://blog.stackoverflow.com/" class="fr">company blog</a>
+    </div>
+    <div class="modal-content">
+            <div class="child-content"></div>
+    </div>
+</div>
+        </div>
+
+        <div class="network-items">
+
+            <a href="http://stackexchange.com/" class="topbar-icon icon-site-switcher yes-hover js-site-switcher-button js-gps-track" data-gps-track="site_switcher.show" title="A list of all 154 Stack Exchange sites">
+                <span class="hidden-text">Stack Exchange</span>
+            </a>
+
+    <a href="#" class="topbar-icon icon-inbox yes-hover js-inbox-button" title="Recent inbox messages">
+        <span class="hidden-text">Inbox</span>
+        <span class="unread-count" style="display:none"></span>
+    </a>
+    <a href="#" class="topbar-icon icon-achievements yes-hover js-achievements-button" data-unread-class="" title="Recent achievements: reputation, badges, and privileges earned">
+        <span class="hidden-text">Reputation and Badges</span>
+        <span class="unread-count" style="display:none">
+            
+        </span>
+    </a>
+        </div>
+
+        <div class="topbar-links">
+
+                <div class="links-container">
+                <span class="topbar-menu-links">
+                                    <a href="https://raspberrypi.stackexchange.com/users/signup?ssrc=head&amp;returnurl=http%3a%2f%2fraspberrypi.stackexchange.com%2fquestions%2f7088%2fplaying-audio-files-with-python" class="login-link">sign up</a>
+                                <a href="https://raspberrypi.stackexchange.com/users/login?ssrc=head&amp;returnurl=http%3a%2f%2fraspberrypi.stackexchange.com%2fquestions%2f7088%2fplaying-audio-files-with-python" class="login-link">log in</a>
+
+                        <a href="http://raspberrypi.stackexchange.com/tour">tour</a>
+                            <a href="#" class="icon-help js-help-button" title="Help Center and other resources">
+        help
+        <span class="triangle"></span>
+    </a>
+    <div class="topbar-dialog help-dialog js-help-dialog dno">
+        <div class="modal-content">
+            <ul>
+                                    <li>
+                        <a href="http://raspberrypi.stackexchange.com/tour" class="js-gps-track" data-gps-track="help_popup.click({ item_type:1 })">
+                            Tour
+                            <span class="item-summary">
+                                Start here for a quick overview of the site
+                            </span>
+                        </a>
+                    </li>
+                <li>
+                    <a href="http://raspberrypi.stackexchange.com/help" class="js-gps-track" data-gps-track="help_popup.click({ item_type:4 })">
+                        Help Center
+                        <span class="item-summary">
+                            Detailed answers to any questions you might have
+                        </span>
+                    </a>
+                </li>
+                    <li>
+                        <a href="http://meta.raspberrypi.stackexchange.com/" class="js-gps-track" data-gps-track="help_popup.click({ item_type:2 })">
+                            Meta
+                            <span class="item-summary">
+                                Discuss the workings and policies of this site
+                            </span>
+                        </a>
+                    </li>
+                <li>
+                    <a href="http://stackoverflow.com/company/about" class="js-gps-track" data-gps-track="help_popup.click({ item_type:6 })">
+                        About Us
+                        <span class="item-summary">
+                            Learn more about Stack Overflow the company
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://business.stackoverflow.com/?ref=topbar_help" class="js-gps-track" data-gps-track="help_popup.click({ item_type:7 })">
+                        Business
+                        <span class="item-summary">
+                            Learn more about hiring developers or posting ads with us
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+                    </span>
+                </div>
+
+            <div class="search-container">
+                <form id="search" action="/search" method="get" autocomplete="off">
+                    <input name="q" placeholder="Search Q&amp;A" tabindex="1" autocomplete="off" maxlength="240" type="text">
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+    <script>
+        StackExchange.ready(function() { StackExchange.topbar.init(); });
+    </script>
+
+    <div class="container">
+        <div id="header">
+            <br class="cbt">
+            <div id="hlogo">
+                <a href="http://raspberrypi.stackexchange.com/">
+                    Raspberry Pi
+                </a>
+            </div>
+            <div id="hmenus">
+                <div class="nav mainnavs">
+                    <ul>
+                        <li class="youarehere"><a id="nav-questions" href="http://raspberrypi.stackexchange.com/questions">Questions</a></li>
+                        <li><a id="nav-tags" href="http://raspberrypi.stackexchange.com/tags">Tags</a></li>
+                        <li><a id="nav-users" href="http://raspberrypi.stackexchange.com/users">Users</a></li>
+                        <li><a id="nav-badges" href="http://raspberrypi.stackexchange.com/help/badges">Badges</a></li>
+                                                <li><a id="nav-unanswered" href="http://raspberrypi.stackexchange.com/unanswered">Unanswered</a></li>
+                    </ul>
+                </div>
+                <div class="nav askquestion">
+                    <ul>
+                        <li>
+                            <a id="nav-askquestion" href="http://raspberrypi.stackexchange.com/questions/ask">Ask Question</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+
+
+
+        <div id="content">
+            
+
+<div itemscope="" itemtype="http://schema.org/Question">
+    <link itemprop="image" href="http://cdn.sstatic.net/raspberrypi/img/apple-touch-icon.png?v=fc767cb2c0db">
+
+<div id="herobox">
+    <div id="hero-content">
+            <div id="close"><a title="click to minimize">_</a></div>
+        <div id="blurb">
+            Raspberry Pi Stack Exchange is a question and answer site 
+for users and developers of hardware and software for Raspberry Pi. It's
+ 100% free, no registration required.
+            <br>
+            <br>
+            <a href="http://raspberrypi.stackexchange.com/users/signup?ssrc=hero&amp;returnurl=http%3a%2f%2fraspberrypi.stackexchange.com%2fquestions%2f7088%2fplaying-audio-files-with-python" id="tell-me-more" class="button">Sign up</a>
+        </div>
+        <div id="desc">
+            <b>Here's how it works:</b>
+            <ol id="hiw">
+                <li id="q">Anybody can ask a question
+                </li>
+                <li id="an">Anybody can answer
+                </li>
+                <li id="b">The best answers are voted up and rise to the top
+                </li>
+            </ol>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+    <script>
+        StackExchange.ready(function () {
+
+            var location = 0;
+            if ($("body").hasClass("questions-page")) {
+                location = 1;;
+            } else if ($("body").hasClass("question-page")) {
+                location = 1;;
+            } else if ($("body").hasClass("faq-page")) {
+                location = 5;;
+            } else if ($("body").hasClass("home-page")) {
+                location = 3;;
+            }
+
+            $('#tell-me-more').click(function () {
+                StackExchange.using("gps", function () {
+                    StackExchange.gps.track("hero.action", { hero_action_type: 'cta', location: location }, true);
+                });
+            });
+            $('#herobox #close').click(function () {
+                StackExchange.using("gps", function () {
+                    StackExchange.gps.track("hero.action", { hero_action_type: "minimize", location: location }, true);
+                });
+                $.cookie("hero", "mini", { path: "/", expires: 365 });
+                $.ajax({
+                    url: "/hero-mini",
+                    success: function (data) {
+                        $("#herobox").fadeOut("fast", function () {
+                            $("#herobox").replaceWith(data);
+                            $("#herobox-mini").fadeIn("fast");
+                        });
+                    }
+                });
+                return false;
+            });
+        });
+
+    </script>
+</div>
+			<div id="question-header">
+                <h1 itemprop="name"><a href="http://raspberrypi.stackexchange.com/questions/7088/playing-audio-files-with-python" class="question-hyperlink">Playing audio files with Python</a></h1>
+		</div>
+			<div id="mainbar">
+
+			
+
+<div class="question" data-questionid="7088" id="question">
+
+        <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input name="_id_" value="7088" type="hidden">
+        <a class="vote-up-off" title="This question shows research effort; it is useful and clear">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">16</span>
+        <a class="vote-down-off" title="This question does not show any research effort; it is unclear or not useful">down vote</a>
+
+        <a class="star-off" href="#" title="This is a favorite question (click again to undo)">favorite</a>
+        <div class="favoritecount"><b>9</b></div>
+
+
+</div>
+
+            </td>
+            
+<td class="postcell">
+<div>
+    <div class="post-text" itemprop="text">
+
+<p>I am looking for a well maintained Python library with allows me to 
+play audio files on my Raspberry Pi using the standard audio output.</p>
+
+<p>So far I've tried several, but none of them seem to work. Although 
+pyglet works on my regular computer fine, it causes an error on the 
+Raspberry Pi. Is there a Python library which has been proven as easy to
+ use?</p>
+    </div>
+    <div class="post-taglist">
+        <a href="http://raspberrypi.stackexchange.com/questions/tagged/python" class="post-tag js-gps-track" title="" rel="tag">python</a> <a href="http://raspberrypi.stackexchange.com/questions/tagged/audio" class="post-tag js-gps-track" title="" rel="tag">audio</a> 
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://raspberrypi.stackexchange.com/q/7088" title="short permalink to this question" class="short-link" id="link-post-7088">share</a><span class="lsep">|</span><a href="http://raspberrypi.stackexchange.com/posts/7088/edit" class="suggest-edit-post" title="">improve this question</a></div>        
+    </td>
+    <td class="post-signature" align="right">
+<div class="user-info user-hover">
+    <div class="user-action-time">
+        <a href="http://raspberrypi.stackexchange.com/posts/7088/revisions" title="show all edits to this post">edited <span title="2015-06-06 22:02:26Z" class="relativetime">Jun 6 '15 at 22:02</span></a>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://raspberrypi.stackexchange.com/users/430/peter-mortensen"><div class="gravatar-wrapper-32"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/78a0a4bb106d07b6c6f33a51988155e3.png" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://raspberrypi.stackexchange.com/users/430/peter-mortensen">Peter Mortensen</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">1,411</span><span title="8 silver badges"><span class="badge2"></span><span class="badgecount">8</span></span><span title="16 bronze badges"><span class="badge3"></span><span class="badgecount">16</span></span>
+        </div>
+    </div>
+</div>    </td>
+    <td class="post-signature owner">
+        <div class="user-info ">
+    <div class="user-action-time">
+        asked <span title="2013-04-18 12:04:51Z" class="relativetime">Apr 18 '13 at 12:04</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://raspberrypi.stackexchange.com/users/617/stein"><div class="gravatar-wrapper-32"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/69d58eb588b8c86d9d7f3df2da72d2a0.png" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://raspberrypi.stackexchange.com/users/617/stein">Stein</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">578</span><span title="2 gold badges"><span class="badge1"></span><span class="badgecount">2</span></span><span title="5 silver badges"><span class="badge2"></span><span class="badgecount">5</span></span><span title="11 bronze badges"><span class="badge3"></span><span class="badgecount">11</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</div>
+</td>
+        </tr>
+                
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-7088" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0" data-canpost="false" data-cansee="true" data-comments-unavailable="false" data-addlink-disabled="true">
+
+
+
+    <tr id="comment-28632" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Proven as easy to use is kind of relative, but I posted an alternative to pygame to  similar question on StackOverflow <a href="http://stackoverflow.com/a/25899180/2801707">over here</a>.  Basically that alternative is vlc.py (the libVLC Python module, which is very well maintained).</span>
+                    –&nbsp;<a href="http://raspberrypi.stackexchange.com/users/20377/ben" title="101 reputation" class="comment-user">Ben</a>
+                <span class="comment-date" dir="ltr"><a class="comment-link" href="#comment28632_7088"><span title="2014-09-17 20:02:06Z" class="relativetime-clean">Sep 17 '14 at 20:02</span></a></span>
+                    <span class="edited-yes" title="this comment was edited 1 time"></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-7088" data-rep="50" data-anon="true">
+
+                <a class="js-add-link comments-link disabled-link " title="Use comments to ask for more information or suggest improvements. Avoid answering questions in comments.">add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href="#" onclick=""></a>
+        </div>         
+    </td>
+</tr>        </tbody></table>
+</div>
+
+			<div id="answers">
+
+				<a name="tab-top"></a>
+				<div id="answers-header">
+					<div class="subheader answers-subheader">
+						<h2>
+								7 Answers
+                                <span style="display:none;" itemprop="answerCount">7</span>
+						</h2>
+						<div>
+							<div id="tabs">
+        <a href="http://raspberrypi.stackexchange.com/questions/7088/playing-audio-files-with-python?answertab=active#tab-top" data-nav-xhref="" title="Answers with the latest activity first" data-value="active">
+            active</a>
+        <a href="http://raspberrypi.stackexchange.com/questions/7088/playing-audio-files-with-python?answertab=oldest#tab-top" data-nav-xhref="" title="Answers in the order they were provided" data-value="oldest">
+            oldest</a>
+        <a class="youarehere" href="http://raspberrypi.stackexchange.com/questions/7088/playing-audio-files-with-python?answertab=votes#tab-top" data-nav-xhref="" title="Answers with the highest score first" data-value="votes">
+            votes</a>
+</div>
+						</div>
+					</div>    
+				</div>    
+
+
+
+
+  
+<a name="7089"></a>
+<div id="answer-7089" class="answer accepted-answer" data-answerid="7089" itemscope="" itemtype="http://schema.org/Answer" itemprop="acceptedAnswer">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input name="_id_" value="7089" type="hidden">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">18</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+        <span class="vote-accepted-on load-accepted-answer-date" title="loading when this answer was accepted...">accepted</span>
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>I recommend the widely popular <a href="http://www.pygame.org/news.html">Pygame.</a> I may be wrong, but I believe that it is pre-installed on the Pi. You can use the <a href="http://www.pygame.org/docs/ref/music.html">Pygame Mixer Music Module</a> to play audio files. I have included some example code below.</p>
+
+<p>Assuming that we have an audio file called <code>myFile.wav</code>.</p>
+
+<pre style="" class="lang-py prettyprint prettyprinted"><code><span class="kwd">import</span><span class="pln"> pygame
+pygame</span><span class="pun">.</span><span class="pln">mixer</span><span class="pun">.</span><span class="pln">init</span><span class="pun">()</span><span class="pln">
+pygame</span><span class="pun">.</span><span class="pln">mixer</span><span class="pun">.</span><span class="pln">music</span><span class="pun">.</span><span class="pln">load</span><span class="pun">(</span><span class="str">"myFile.wav"</span><span class="pun">)</span><span class="pln">
+pygame</span><span class="pun">.</span><span class="pln">mixer</span><span class="pun">.</span><span class="pln">music</span><span class="pun">.</span><span class="pln">play</span><span class="pun">()</span><span class="pln">
+</span><span class="kwd">while</span><span class="pln"> pygame</span><span class="pun">.</span><span class="pln">mixer</span><span class="pun">.</span><span class="pln">music</span><span class="pun">.</span><span class="pln">get_busy</span><span class="pun">()</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span class="kwd">True</span><span class="pun">:</span><span class="pln">
+    </span><span class="kwd">continue</span></code></pre>
+
+<p><strong>NOTE:</strong> If this fails, please go to the terminal and update your system with</p>
+
+<pre style="" class="lang-py prettyprint prettyprinted"><code><span class="pln">apt</span><span class="pun">-</span><span class="pln">get update
+apt</span><span class="pun">-</span><span class="pln">get upgrade</span></code></pre>
+
+<p>and try again.</p>
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://raspberrypi.stackexchange.com/a/7089" title="short permalink to this answer" class="short-link" id="link-post-7089">share</a><span class="lsep">|</span><a href="http://raspberrypi.stackexchange.com/posts/7089/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+    <td class="post-signature" align="right">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="http://raspberrypi.stackexchange.com/posts/7089/revisions" title="show all edits to this post">edited <span title="2014-02-23 03:36:52Z" class="relativetime">Feb 23 '14 at 3:36</span></a>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://raspberrypi.stackexchange.com/users/13007/tomas-stibrany"><div class="gravatar-wrapper-32"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/6ca7693836e9186c5ffcb2a76a074ad9.png" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://raspberrypi.stackexchange.com/users/13007/tomas-stibrany">Tomas Stibrany</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">3</span><span title="3 bronze badges"><span class="badge3"></span><span class="badgecount">3</span></span>
+        </div>
+    </div>
+</div>    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2013-04-18 12:37:27Z" class="relativetime">Apr 18 '13 at 12:37</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://raspberrypi.stackexchange.com/users/6609/xxmbabanexx"><div class="gravatar-wrapper-32"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/klu46.jpg" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://raspberrypi.stackexchange.com/users/6609/xxmbabanexx">xxmbabanexx</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">1,860</span><span title="4 gold badges"><span class="badge1"></span><span class="badgecount">4</span></span><span title="21 silver badges"><span class="badge2"></span><span class="badgecount">21</span></span><span title="48 bronze badges"><span class="badge3"></span><span class="badgecount">48</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-7089" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0" data-canpost="false" data-cansee="true" data-comments-unavailable="false" data-addlink-disabled="true">
+
+
+
+    <tr id="comment-17630" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of 'useful comment' votes received" class="cool">1</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">If you have more than one 
+sound to play (which is likely) then it's better to create a 
+pygame.mixer.Sound object for each one, then you can keep the 
+definitions of the sound filenames in one place.</span>
+                    –&nbsp;<a href="http://raspberrypi.stackexchange.com/users/11756/francis" title="640 reputation" class="comment-user">francis</a>
+                <span class="comment-date" dir="ltr"><a class="comment-link" href="#comment17630_7089"><span title="2014-01-21 09:42:46Z" class="relativetime-clean">Jan 21 '14 at 9:42</span></a></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-7089" data-rep="50" data-anon="true">
+
+                <a class="js-add-link comments-link disabled-link " title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href="#" onclick=""></a>
+        </div>         
+    </td>
+</tr>    </tbody></table>
+</div>
+
+  
+<a name="7091"></a>
+<div id="answer-7091" class="answer" data-answerid="7091" itemscope="" itemtype="http://schema.org/Answer">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input name="_id_" value="7091" type="hidden">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">4</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>Another option is to use <code>mpg321</code> and invoke it from the command line.</p>
+
+<pre style="" class="lang-py prettyprint prettyprinted"><code><span class="pln">apt</span><span class="pun">-</span><span class="pln">get install mpg321</span></code></pre>
+
+<p>Then in Python:</p>
+
+<pre style="" class="lang-py prettyprint prettyprinted"><code><span class="kwd">import</span><span class="pln"> os
+
+os</span><span class="pun">.</span><span class="pln">system</span><span class="pun">(</span><span class="str">'mpg321 foo.mp3 &amp;'</span><span class="pun">)</span></code></pre>
+
+<p>Pygame is almost certainly more robust, but it depends, I suppose, on what your needs are.</p>
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://raspberrypi.stackexchange.com/a/7091" title="short permalink to this answer" class="short-link" id="link-post-7091">share</a><span class="lsep">|</span><a href="http://raspberrypi.stackexchange.com/posts/7091/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+    <td class="post-signature" align="right">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="http://raspberrypi.stackexchange.com/posts/7091/revisions" title="show all edits to this post">edited <span title="2015-07-13 20:20:44Z" class="relativetime">Jul 13 '15 at 20:20</span></a>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://raspberrypi.stackexchange.com/users/9050/bex"><div class="gravatar-wrapper-32"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/qwvMB.png" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://raspberrypi.stackexchange.com/users/9050/bex">Bex</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">1,618</span><span title="8 silver badges"><span class="badge2"></span><span class="badgecount">8</span></span><span title="24 bronze badges"><span class="badge3"></span><span class="badgecount">24</span></span>
+        </div>
+    </div>
+</div>    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2013-04-18 15:06:11Z" class="relativetime">Apr 18 '13 at 15:06</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://raspberrypi.stackexchange.com/users/6999/brandorf"><div class="gravatar-wrapper-32"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/df8f624643958cace2b35141bf668f3b.jpg" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://raspberrypi.stackexchange.com/users/6999/brandorf">Brandorf</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">141</span><span title="2 bronze badges"><span class="badge3"></span><span class="badgecount">2</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-7091" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0" data-canpost="false" data-cansee="true" data-comments-unavailable="false" data-addlink-disabled="true">
+
+
+
+    <tr id="comment-10587" class="comment ">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of 'useful comment' votes received" class="cool">1</span>
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">I thought about this myself, but I thought it wasn't very elegant, because it make pausing, volume control etc. a lot harder.</span>
+                    –&nbsp;<a href="http://raspberrypi.stackexchange.com/users/617/stein" title="578 reputation" class="comment-user owner">Stein</a>
+                <span class="comment-date" dir="ltr"><a class="comment-link" href="#comment10587_7091"><span title="2013-04-18 15:10:23Z" class="relativetime-clean">Apr 18 '13 at 15:10</span></a></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-27132" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">This is awfully slow.</span>
+                    –&nbsp;<a href="http://raspberrypi.stackexchange.com/users/19281/alex" title="101 reputation" class="comment-user">Alex</a>
+                <span class="comment-date" dir="ltr"><a class="comment-link" href="#comment27132_7091"><span title="2014-07-26 09:58:54Z" class="relativetime-clean">Jul 26 '14 at 9:58</span></a></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-7091" data-rep="50" data-anon="true">
+
+                <a class="js-add-link comments-link disabled-link " title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href="#" onclick=""></a>
+        </div>         
+    </td>
+</tr>    </tbody></table>
+</div>
+
+  
+<a name="7093"></a>
+<div id="answer-7093" class="answer" data-answerid="7093" itemscope="" itemtype="http://schema.org/Answer">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input name="_id_" value="7093" type="hidden">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">3</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>I needed a script to play a song from thirty seconds in in the 
+background whilst responding to other user input. I then wanted it to 
+end the song on some event.</p>
+
+<p>I don't suppose it's particularly elegant, but I opened a pipe to a background MPlayer process.</p>
+
+<pre style="" class="lang-py prettyprint prettyprinted"><code><span class="kwd">import</span><span class="pln"> subprocess
+player </span><span class="pun">=</span><span class="pln"> subprocess</span><span class="pun">.</span><span class="typ">Popen</span><span class="pun">([</span><span class="str">"mplayer"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"song.mp3"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"-ss"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"30"</span><span class="pun">],</span><span class="pln"> stdin</span><span class="pun">=</span><span class="pln">subprocess</span><span class="pun">.</span><span class="pln">PIPE</span><span class="pun">,</span><span class="pln"> stdout</span><span class="pun">=</span><span class="pln">subprocess</span><span class="pun">.</span><span class="pln">PIPE</span><span class="pun">,</span><span class="pln"> stderr</span><span class="pun">=</span><span class="pln">subprocess</span><span class="pun">.</span><span class="pln">PIPE</span><span class="pun">)</span></code></pre>
+
+<p>Then, when I wanted to terminate the MPlayer process, I simply wrote "q" for quit to the pipe.</p>
+
+<pre style="" class="lang-py prettyprint prettyprinted"><code><span class="pln">player</span><span class="pun">.</span><span class="pln">stdin</span><span class="pun">.</span><span class="pln">write</span><span class="pun">(</span><span class="str">"q"</span><span class="pun">)</span></code></pre>
+
+<p>Look at MPlayer documentation for all sorts of commands you can pass in this way to control playback.</p>
+
+<p>Hopefully that's somewhat helpful!</p>
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://raspberrypi.stackexchange.com/a/7093" title="short permalink to this answer" class="short-link" id="link-post-7093">share</a><span class="lsep">|</span><a href="http://raspberrypi.stackexchange.com/posts/7093/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2013-04-18 15:29:50Z" class="relativetime">Apr 18 '13 at 15:29</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://raspberrypi.stackexchange.com/users/7000/user1616681"><div class="gravatar-wrapper-32"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/5228ac76c27e7a4236ace22812e83d83.png" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://raspberrypi.stackexchange.com/users/7000/user1616681">user1616681</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">31</span><span title="1 bronze badge"><span class="badge3"></span><span class="badgecount">1</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-7093" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0" data-canpost="false" data-cansee="true" data-comments-unavailable="false" data-addlink-disabled="true">
+
+
+
+    <tr id="comment-11868" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">This is really neat actually. <a href="http://learn.adafruit.com/playing-sounds-and-using-buttons-with-raspberry-pi/overview" rel="nofollow">This adafruit tutorial</a> talks about playing sound but not stopping it.</span>
+                    –&nbsp;<a href="http://raspberrypi.stackexchange.com/users/6596/gideon" title="151 reputation" class="comment-user">gideon</a>
+                <span class="comment-date" dir="ltr"><a class="comment-link" href="#comment11868_7093"><span title="2013-06-25 08:09:40Z" class="relativetime-clean">Jun 25 '13 at 8:09</span></a></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-7093" data-rep="50" data-anon="true">
+
+                <a class="js-add-link comments-link disabled-link " title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href="#" onclick=""></a>
+        </div>         
+    </td>
+</tr>    </tbody></table>
+</div>
+
+  
+<a name="13130"></a>
+<div id="answer-13130" class="answer" data-answerid="13130" itemscope="" itemtype="http://schema.org/Answer">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input name="_id_" value="13130" type="hidden">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">3</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>I would recommend <a href="http://pyglet.org/" rel="nofollow">pyglet</a> rather than <a href="http://pygame.org/" rel="nofollow">pygame</a>
+ if you don't need graphics. In my view it is simpler, more elegant, and
+ better maintained. Then again, I expect it might be a matter of taste.</p>
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://raspberrypi.stackexchange.com/a/13130" title="short permalink to this answer" class="short-link" id="link-post-13130">share</a><span class="lsep">|</span><a href="http://raspberrypi.stackexchange.com/posts/13130/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2014-01-21 07:06:42Z" class="relativetime">Jan 21 '14 at 7:06</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://raspberrypi.stackexchange.com/users/9050/bex"><div class="gravatar-wrapper-32"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/qwvMB.png" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://raspberrypi.stackexchange.com/users/9050/bex">Bex</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">1,618</span><span title="8 silver badges"><span class="badge2"></span><span class="badgecount">8</span></span><span title="24 bronze badges"><span class="badge3"></span><span class="badgecount">24</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-13130" class="comments  dno">
+		    <table>
+                <tbody data-remaining-comments-count="0" data-canpost="false" data-cansee="true" data-comments-unavailable="false" data-addlink-disabled="true">
+
+                        <tr><td></td><td></td></tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-13130" data-rep="50" data-anon="true">
+
+                <a class="js-add-link comments-link disabled-link " title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href="#" onclick=""></a>
+        </div>         
+    </td>
+</tr>    </tbody></table>
+</div>
+
+  
+<a name="40551"></a>
+<div id="answer-40551" class="answer" data-answerid="40551" itemscope="" itemtype="http://schema.org/Answer">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input name="_id_" value="40551" type="hidden">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">0</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>I'm running OSMC (Debian) and I got sound to play through my TV speakers, which is connected by HDMI. <a href="https://youtu.be/p2ljmTE67gs" rel="nofollow">https://youtu.be/p2ljmTE67gs</a></p>
+
+<p>My method was based on the above solution posted by @xxmbabanexx
+as well as <a href="https://discourse.osmc.tv/t/alsa-doesnt-work-after-last-update/10600" rel="nofollow">here</a>.
+Basically, I had to add <code>dtparam=audio=on</code> to <code>/boot/config.txt</code></p>
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://raspberrypi.stackexchange.com/a/40551" title="short permalink to this answer" class="short-link" id="link-post-40551">share</a><span class="lsep">|</span><a href="http://raspberrypi.stackexchange.com/posts/40551/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2016-01-04 17:29:10Z" class="relativetime">Jan 4 at 17:29</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://raspberrypi.stackexchange.com/users/34121/jjinking"><div class="gravatar-wrapper-32"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/dc74c778740e37ca0a7ac79ccea98f56.jpg" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://raspberrypi.stackexchange.com/users/34121/jjinking">jjinking</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">111</span><span title="1 bronze badge"><span class="badge3"></span><span class="badgecount">1</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-40551" class="comments ">
+		    <table>
+                <tbody data-remaining-comments-count="0" data-canpost="false" data-cansee="true" data-comments-unavailable="false" data-addlink-disabled="true">
+
+
+
+    <tr id="comment-57459" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">I think the TS meant the 3.5 mm jack when referring to the "standard audio output". Does this work for the 3.5 jack as well?</span>
+                    –&nbsp;<a href="http://raspberrypi.stackexchange.com/users/9050/bex" title="1618 reputation" class="comment-user">Bex</a>
+                <span class="comment-date" dir="ltr"><a class="comment-link" href="#comment57459_40551"><span title="2016-01-04 18:28:13Z" class="relativetime-clean">Jan 4 at 18:28</span></a></span>
+                                                                            </div>
+                    </td>
+    </tr>
+    <tr id="comment-57496" class="comment ">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+        <td class="comment-text">
+            <div style="display: block;" class="comment-body">
+                <span class="comment-copy">Oh I see. Hmm it probably won't, though I haven't tried it.</span>
+                    –&nbsp;<a href="http://raspberrypi.stackexchange.com/users/34121/jjinking" title="111 reputation" class="comment-user">jjinking</a>
+                <span class="comment-date" dir="ltr"><a class="comment-link" href="#comment57496_40551"><span title="2016-01-05 01:31:20Z" class="relativetime-clean">Jan 5 at 1:31</span></a></span>
+                                                                            </div>
+                    </td>
+    </tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-40551" data-rep="50" data-anon="true">
+
+                <a class="js-add-link comments-link disabled-link " title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href="#" onclick=""></a>
+        </div>         
+    </td>
+</tr>    </tbody></table>
+</div>
+
+  
+<a name="13973"></a>
+<div id="answer-13973" class="answer" data-answerid="13973" itemscope="" itemtype="http://schema.org/Answer">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input name="_id_" value="13973" type="hidden">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">-1</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>Pygame gives you a nice and easy way to load and play sounds, on a range of channels.</p>
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://raspberrypi.stackexchange.com/a/13973" title="short permalink to this answer" class="short-link" id="link-post-13973">share</a><span class="lsep">|</span><a href="http://raspberrypi.stackexchange.com/posts/13973/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2014-02-25 13:24:16Z" class="relativetime">Feb 25 '14 at 13:24</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://raspberrypi.stackexchange.com/users/13083/mrpi64"><div class="gravatar-wrapper-32"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/e304c5f6443c13f7bdeed540e3a4e46e.jpg" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://raspberrypi.stackexchange.com/users/13083/mrpi64">mrpi64</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">1</span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-13973" class="comments  dno">
+		    <table>
+                <tbody data-remaining-comments-count="0" data-canpost="false" data-cansee="true" data-comments-unavailable="false" data-addlink-disabled="true">
+
+                        <tr><td></td><td></td></tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-13973" data-rep="50" data-anon="true">
+
+                <a class="js-add-link comments-link disabled-link " title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href="#" onclick=""></a>
+        </div>         
+    </td>
+</tr>    </tbody></table>
+</div>
+
+  
+<a name="33054"></a>
+<div id="answer-33054" class="answer" data-answerid="33054" itemscope="" itemtype="http://schema.org/Answer">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                
+
+<div class="vote">
+        <input name="_id_" value="33054" type="hidden">
+        <a class="vote-up-off" title="This answer is useful">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">-1</span>
+        <a class="vote-down-off" title="This answer is not useful">down vote</a>
+
+
+
+
+</div>
+
+            </td>
+            
+
+
+<td class="answercell">
+    <div class="post-text" itemprop="text">
+<p>You may use a number of external players through pipes.
+However, you will nearly always experience a loss of speed.
+There is also a problem with playback control.</p>
+
+<p>I recommend you pyaudio, it works fine.</p>
+
+<p>If you want to play compressed files as well, I'll be so free to point you to my module decoder.py. You can find it on PyPI.</p>
+
+<p>It also uses subprocess, but calls decoders instead of players.
+They do not use a lot of CPU, and some of them know how to use hardware 
+acceleration. You can then use pyaudio or something to output the raw 
+audio data. If you want, you can even use pygame by utilizing 
+pygame.sndarray. In that way you can play more formats  than pygame 
+supports.</p>
+
+<p>I tried decoder.py in PyQT GUI environment, with pyaudio and also 
+using aplay as an external player. That was on Raspberry Pi B. </p>
+
+<p>Results were pretty satisfying in both cases. </p>
+
+<p>The simplicity can be questioned.</p>
+
+<p>decoder.py itself is very simple, but you have to combine it with other libs and that increases code lines.</p>
+
+<p>There is  an example on how to play files included with decoder.py.</p>
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://raspberrypi.stackexchange.com/a/33054" title="short permalink to this answer" class="short-link" id="link-post-33054">share</a><span class="lsep">|</span><a href="http://raspberrypi.stackexchange.com/posts/33054/edit" class="suggest-edit-post" title="">improve this answer</a></div>                    </td>
+    <td class="post-signature" align="right">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="http://raspberrypi.stackexchange.com/posts/33054/revisions" title="show all edits to this post">edited <span title="2015-07-01 17:12:40Z" class="relativetime">Jul 1 '15 at 17:12</span></a>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://raspberrypi.stackexchange.com/users/8496/jacobm001"><div class="gravatar-wrapper-32"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/818d73588151e0f0adcc4f2d1c6a268b.png" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://raspberrypi.stackexchange.com/users/8496/jacobm001">Jacobm001</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">5,313</span><span title="3 gold badges"><span class="badge1"></span><span class="badgecount">3</span></span><span title="15 silver badges"><span class="badge2"></span><span class="badgecount">15</span></span><span title="36 bronze badges"><span class="badge3"></span><span class="badgecount">36</span></span>
+        </div>
+    </div>
+</div>    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2015-07-01 01:50:08Z" class="relativetime">Jul 1 '15 at 1:50</span>
+    </div>
+    <div class="user-gravatar32">
+        <a href="http://raspberrypi.stackexchange.com/users/32389/dalen"><div class="gravatar-wrapper-32"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/a645fe19c42263286b982aaa633b96a9.png" alt="" height="32" width="32"></div></a>
+    </div>
+    <div class="user-details">
+        <a href="http://raspberrypi.stackexchange.com/users/32389/dalen">Dalen</a>
+        <div class="-flair">
+            <span class="reputation-score" title="reputation score " dir="ltr">101</span><span title="1 bronze badge"><span class="badge3"></span><span class="badgecount">1</span></span>
+        </div>
+    </div>
+</div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>
+        </tr>
+        
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-33054" class="comments  dno">
+		    <table>
+                <tbody data-remaining-comments-count="0" data-canpost="false" data-cansee="true" data-comments-unavailable="false" data-addlink-disabled="true">
+
+                        <tr><td></td><td></td></tr>
+                </tbody>
+		    </table>
+	    </div>
+
+        <div id="comments-link-33054" data-rep="50" data-anon="true">
+
+                <a class="js-add-link comments-link disabled-link " title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">add a comment</a><span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+            <a class="js-show-link comments-link dno" title="expand to show all comments on this post" href="#" onclick=""></a>
+        </div>         
+    </td>
+</tr>    </tbody></table>
+</div>
+									<a name="new-answer"></a>
+						<form id="post-form" action="/questions/7088/answer/submit" method="post" class="post-form">
+						    <input id="post-id" value="7088" type="hidden">
+                            <input id="qualityBanWarningShown" name="qualityBanWarningShown" value="false" type="hidden">
+                            <input name="referrer" value="https://www.google.com" type="hidden">
+							<h2 class="space">Your Answer</h2>
+
+
+        
+
+<script>
+    StackExchange.ready(function() {
+        initTagRenderer("".split(" "), "".split(" "));
+       
+        StackExchange.using("externalEditor", function() {
+                // Have to fire editor after snippets, if snippets enabled
+                if (StackExchange.options.snippets.enabled) {
+                    StackExchange.using("snippets", function() {
+                        createEditor();
+                    });
+                }
+                else {
+                    createEditor();
+                }
+            });
+
+            function createEditor() {
+                prepareEditor({
+                    heartbeatType: 'answer',
+                convertImagesToLinks: false,
+                reputationToPostImages: null,
+                bindNavPrevention: true,
+                postfix: "",
+                    onDemand: true,
+                    discardSelector: ".discard-answer"
+                    ,immediatelyShowMarkdownHelp:true
+                    });
+                
+
+        }
+    });  
+</script>
+
+
+<div id="post-editor" class="post-editor js-post-editor">
+
+    <div style="position: relative;">     
+        <div class="wmd-container">
+            <div id="wmd-button-bar" class="wmd-button-bar"><ul id="wmd-button-row" class="wmd-button-row"><li style="left: 0px;" class="wmd-button" id="wmd-bold-button"><span style="background-position: 0px -20px;"></span></li><li style="left: 25px;" class="wmd-button" id="wmd-italic-button"><span style="background-position: -20px -20px;"></span></li><li style="left: 50px;" class="wmd-spacer" id="wmd-spacer1"><span style="background-position: -40px -20px;"></span></li><li style="left: 75px;" class="wmd-button" id="wmd-link-button"><span style="background-position: -40px -20px;"></span></li><li style="left: 100px;" class="wmd-button" id="wmd-quote-button"><span style="background-position: -60px -20px;"></span></li><li style="left: 125px;" class="wmd-button" id="wmd-code-button"><span style="background-position: -80px -20px;"></span></li><li style="left: 150px;" class="wmd-button" id="wmd-image-button"><span style="background-position: -100px -20px;"></span></li><li style="left: 175px;" class="wmd-spacer" id="wmd-spacer2"><span style="background-position: -120px -20px;"></span></li><li style="left: 200px;" class="wmd-button" id="wmd-olist-button"><span style="background-position: -120px -20px;"></span></li><li style="left: 225px;" class="wmd-button" id="wmd-ulist-button"><span style="background-position: -140px -20px;"></span></li><li style="left: 250px;" class="wmd-button" id="wmd-heading-button"><span style="background-position: -160px -20px;"></span></li><li style="left: 275px;" class="wmd-button" id="wmd-hr-button"><span style="background-position: -180px -20px;"></span></li><li style="left: 300px;" class="wmd-spacer" id="wmd-spacer3"><span style="background-position: -200px -20px;"></span></li><li style="left: 325px;" class="wmd-button" id="wmd-undo-button"><span style="background-position: -200px -20px;"></span></li><li style="left: 350px;" class="wmd-button" id="wmd-redo-button"><span style="background-position: -220px -20px;"></span></li></ul></div>
+            <textarea id="wmd-input" class="wmd-input" name="post-text" cols="92" rows="15" tabindex="101" data-min-length=""></textarea>
+        </div>
+    </div>
+
+    <div class="fl" style="margin-top: 8px; height:24px;">&nbsp;</div>
+    <div id="draft-saved" class="draft-saved community-option fl" style="margin-top: 8px; height:24px; display:none;">draft saved</div>
+
+    <div id="draft-discarded" class="draft-discarded community-option fl" style="margin-top: 8px; height:24px; display:none;">draft discarded</div>
+
+
+
+    <div id="wmd-preview" class="wmd-preview"></div>
+    <div></div>
+    <div class="edit-block">
+        <input id="fkey" name="fkey" value="7e4937b44c76c9bdd5e70c7aa7e1dffa" type="hidden">
+        <input id="author" name="author" type="text">
+    </div>
+
+
+
+</div>
+							<div style="position: relative;">
+								
+								            <div class="form-item new-post-login">
+        
+                <div class="new-login-form">
+                    <div class="new-login-left">
+                        <h3>Sign up or <a id="login-link" href="http://raspberrypi.stackexchange.com/users/login?ssrc=question_page&amp;returnurl=http%3a%2f%2fraspberrypi.stackexchange.com%2fquestions%2f7088%2fplaying-audio-files-with-python%23new-answer">log in</a></h3>
+                        <script>
+                            StackExchange.ready(function () {
+                                StackExchange.helpers.onClickDraftSave('#login-link');
+                            });
+                        </script>
+                        <div class="preferred-login google-login">
+                            <p><span class="icon"></span><span>Sign up using Google</span></p>
+                        </div>
+                        <div class="preferred-login facebook-login">
+                            <p><span class="icon"></span><span>Sign up using Facebook</span></p>
+                        </div>
+                        <div class="preferred-login stackexchange-login">
+                            <p><span class="icon"></span><span>Sign up using Email and Password</span></p>
+                        </div>
+                    </div>
+                    <input name="manual-openid" class="manual-openid" type="hidden">
+                    <input name="use-facebook" class="use-facebook" value="false" type="hidden">
+                    <input name="use-google" class="use-google" value="false" type="hidden">
+                    <input class="submit-openid" value="Submit" style="display:none" type="button">
+                    <div class="new-login-right">
+                                <h3>Post as a guest</h3>
+    <div class="form-item">
+        <table>
+        <tbody><tr>
+                    <td class="vm">
+                <div>
+                    <label for="display-name">Name</label>
+                    <input id="display-name" name="display-name" size="30" maxlength="30" tabindex="105" type="text">
+                </div>
+                <div>
+                    <label for="m-address">Email</label>
+                    <input id="m-address" name="m-address" size="30" maxlength="100" tabindex="106" placeholder="required, but never shown" type="email">
+                </div>
+            </td>
+        </tr>
+        </tbody></table>
+    </div>
+
+                    </div>
+                </div>
+            </div>
+            <script>
+                StackExchange.ready(
+                    function () {
+                        StackExchange.openid.initPostLogin('.new-post-login', 'http%3a%2f%2fraspberrypi.stackexchange.com%2fquestions%2f7088%2fplaying-audio-files-with-python%23new-answer', 'question_page');
+                    }
+                );
+            </script>
+            <noscript>
+                        <h3>Post as a guest</h3>
+    <div class="form-item">
+        <table>
+        <tr>
+                    <td class="vm">
+                <div>
+                    <label for="display-name">Name</label>
+                    <input id="display-name" name="display-name" type="text" size="30" maxlength="30" value="" tabindex="105">
+                </div>
+                <div>
+                    <label for="m-address">Email</label>
+                    <input id="m-address" name="m-address" type="email" size="30" maxlength="100" value="" tabindex="106" placeholder="required, but never shown" />
+                </div>
+            </td>
+        </tr>
+        </table>
+    </div>
+
+            </noscript>
+
+							</div>
+           
+															<div class="form-submit cbt">
+									<input id="submit-button" value="Post Your Answer" tabindex="110" type="submit">
+									<a href="#" class="discard-answer dno">discard</a>
+
+<p class="privacy-policy-agreement">
+By posting your answer, you agree to the <a href="http://stackexchange.com/legal/privacy-policy" target="_blank">privacy policy</a> and <a href="http://stackexchange.com/legal/terms-of-service" target="_blank">terms of service</a>.</p>
+<input name="legalLinksShown" value="1" type="hidden">								</div>
+						</form>
+
+
+
+						<h2 class="bottom-notice" data-loc="1">
+Not the answer you're looking for?							Browse other questions tagged <a href="http://raspberrypi.stackexchange.com/questions/tagged/python" class="post-tag" title="show questions tagged 'python'" rel="tag">python</a> <a href="http://raspberrypi.stackexchange.com/questions/tagged/audio" class="post-tag" title="show questions tagged 'audio'" rel="tag">audio</a>  or <a href="http://raspberrypi.stackexchange.com/questions/ask">ask your own question</a>.						</h2>
+			</div>
+		</div>
+				<div id="sidebar" class="show-votes">
+						    <div class="module question-stats">
+			        <table id="qinfo">
+			            <tbody><tr>
+			                <td>
+			                    <p class="label-key">asked</p>
+			                </td>
+			                <td style="padding-left: 10px">
+			                    <p class="label-key" title="2013-04-18 12:04:51Z"><b>2 years ago</b></p>
+			                </td>
+			            </tr>
+			            <tr>
+			                <td>
+			                    <p class="label-key">viewed</p>
+			                </td>
+
+			                <td style="padding-left: 10px">
+			                    <p class="label-key">
+			                        <b>60515 times</b>
+			                    </p>
+			                </td>
+			            </tr>
+			                <tr>
+			                    <td>
+			                        <p class="label-key">active</p>
+			                    </td>
+			                    <td style="padding-left: 10px">
+			                        <p class="label-key"><b><a href="http://raspberrypi.stackexchange.com/questions/7088/playing-audio-files-with-python?lastactivity" class="lastactivity-link" title="2016-01-04 17:29:10Z">2 months ago</a></b></p>
+			                    </td>
+			                </tr>
+			        </tbody></table>
+			    </div>
+						
+			<div style="margin-bottom: 10px;">
+        
+
+<style type="text/css">
+#newsletter-ad {
+    width: 270px;
+    height: 250px;
+    overflow: hidden;
+    background: url('//cdn.sstatic.net/raspberrypi/img/newsletter-ad.png?v=3');
+    padding: 0 15px 0 15px;
+}
+#newsletter-ad-header {
+    margin-top: 60px;
+}
+#newsletter-ad ul {
+    margin: 1em 0 1em 1.5em;
+}
+#newsletter-ad ul li {
+    margin-bottom: 5px;
+}
+#newsletter-signup-container {
+    text-align: center;
+}
+#newsletter-preview-container {
+    margin-top: 10px;
+    text-align: center;
+}
+#newsletter-email-input {
+    width: 200px;
+}
+</style>
+
+<script>
+    StackExchange.ready(function () {
+        StackExchange.newsletterAd.init();
+    });
+</script>
+
+<div id="newsletter-ad">
+        <p id="newsletter-ad-header">Get the <b>weekly newsletter!</b> In it, you'll get:</p>
+        <ul>
+            <li>The week's top questions and answers</li>
+            <li>Important community announcements</li>
+            <li>Questions that need answers</li>
+        </ul>
+    <div id="newsletter-signup-container"><input id="newsletter-signup" value="Sign up for the newsletter" type="button"></div>
+    <p id="newsletter-preview-container">see an <a href="http://stackexchange.com/newsletters/newsletter?site=raspberrypi.stackexchange.com" id="newsletter-preview">example newsletter</a></p>
+    <div class="dno">
+        
+<p class="privacy-policy-agreement">
+By subscribing, you agree to the <a href="http://stackexchange.com/legal/privacy-policy" target="_blank">privacy policy</a> and <a href="http://stackexchange.com/legal/terms-of-service" target="_blank">terms of service</a>.</p>
+<input name="legalLinksShown" value="1" type="hidden">
+    </div>
+</div>
+
+    </div><style type="text/css">
+    .ads { margin-left: 60px; }
+    .ad-container { width: 300px; height: 250px; margin-right: 20px; margin-bottom: 20px; }
+    .ad-container .ad { height: 250px; }
+    .ad-container .footer-container { overflow: hidden; height: 30px; position: relative; top: -30px; }
+    .ad-container .footer-container .footer { font-family: Arial,Helvetic,Sans-Serif; font-size: 12px; text-align: center; padding-top: 9px; background-color: #000; color: #EFF; opacity: 0.9; filter: alpha(opacity=90); top: 30px; height: 30px; position: relative; }
+    .ad-container a:hover { text-decoration: underline; }
+    #adzerk2 { height: 250px; }
+</style>
+<script>
+    StackExchange.ready(function () {
+        $(".ad-container").hover(
+            function () {
+                $(".ad-container .footer-container .footer").stop(true, true).animate({ top: "0px" }, "fast");
+            },
+            function () {
+                $(".ad-container .footer-container .footer").animate({ top: "30px" }, "fast");
+            });
+    });
+</script>
+    <div class="ad-container">    
+        <div class="ad">    
+        <a href="http://meta.raspberrypi.stackexchange.com/ads/ct/713?url=http%3a%2f%2fraspberrypise.tumblr.com%2f&amp;s=246c37db1a8481ad538e7d203cda682159e707093f546884dbe12ad7f9a96084" rel="nofollow" target="_blank"><img src="Playing%20audio%20files%20with%20Python%20-%20Raspberry%20Pi%20Stack%20Exchange_files/LZBZp.png" alt="enter image description here" title="enter image description here" height="250" width="300"></a>
+        </div>
+        <div class="footer-container">
+            <div style="top: 30px;" class="footer">
+                9 votes · <a href="http://meta.raspberrypi.stackexchange.com/questions/704#713" title="click to comment on this ad" target="_blank">comment</a> · <a href="http://meta.raspberrypi.stackexchange.com/ads/display/704" target="_blank">stats</a>
+            </div>
+        </div>
+    </div>
+			  
+    
+            
+
+				<div class="module sidebar-related">
+					<h4 id="h-related">Related</h4>
+                    <div class="related js-gps-related-questions" data-tracker="rq=1">
+                        <div class="spacer js-gps-track">
+<a href="http://raspberrypi.stackexchange.com/q/3648?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">3
+    </div>
+</a><a href="http://raspberrypi.stackexchange.com/questions/3648/usb-microphone-recording-input-and-audio-output?rq=1" class="question-hyperlink">USB microphone recording input and audio output</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://raspberrypi.stackexchange.com/q/3746?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">1
+    </div>
+</a><a href="http://raspberrypi.stackexchange.com/questions/3746/sound-click-at-the-start-and-ending-while-playing-audio-file?rq=1" class="question-hyperlink">Sound click at the start and ending while playing audio file</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://raspberrypi.stackexchange.com/q/4027?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">6
+    </div>
+</a><a href="http://raspberrypi.stackexchange.com/questions/4027/how-do-capture-audio-using-python?rq=1" class="question-hyperlink">How do capture audio using Python?</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://raspberrypi.stackexchange.com/q/4601?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">1
+    </div>
+</a><a href="http://raspberrypi.stackexchange.com/questions/4601/espeak-over-python-cgi?rq=1" class="question-hyperlink">Espeak over python cgi</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://raspberrypi.stackexchange.com/q/4826?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes answered-accepted default">3
+    </div>
+</a><a href="http://raspberrypi.stackexchange.com/questions/4826/python-audio-bindings?rq=1" class="question-hyperlink">python audio bindings</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://raspberrypi.stackexchange.com/q/9541?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">1
+    </div>
+</a><a href="http://raspberrypi.stackexchange.com/questions/9541/issues-playing-back-wav-files-with-pygame?rq=1" class="question-hyperlink">Issues playing back wav files with pygame</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://raspberrypi.stackexchange.com/q/9649?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">4
+    </div>
+</a><a href="http://raspberrypi.stackexchange.com/questions/9649/let-raspbmc-play-bluetooth-audio?rq=1" class="question-hyperlink">Let Raspbmc play bluetooth audio</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://raspberrypi.stackexchange.com/q/10205?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">1
+    </div>
+</a><a href="http://raspberrypi.stackexchange.com/questions/10205/no-default-output-device-9996-playing-sound-through-django?rq=1" class="question-hyperlink">No default output device -9996: playing sound through Django</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://raspberrypi.stackexchange.com/q/38756?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">0
+    </div>
+</a><a href="http://raspberrypi.stackexchange.com/questions/38756/real-time-audio-input-output-in-python-with-pyaudio?rq=1" class="question-hyperlink">Real time audio input/output in Python with PyAudio</a>
+</div>
+<div class="spacer js-gps-track">
+<a href="http://raspberrypi.stackexchange.com/q/41933?rq=1" title="Vote score (upvotes - downvotes)">
+    <div class="answer-votes default">1
+    </div>
+</a><a href="http://raspberrypi.stackexchange.com/questions/41933/pyaudio-playing-audio-in-callback-is-choppy?rq=1" class="question-hyperlink">PyAudio playing audio in Callback is choppy</a>
+</div>
+
+                    </div>
+				</div>
+            
+<div id="hot-network-questions" class="module">
+    <h4>
+        <a href="http://stackexchange.com/questions?tab=hot" class="js-gps-track" data-gps-track="posts_hot_network.click({ item_type:1, location:11 })">
+            Hot Network Questions
+        </a>
+    </h4>
+    <ul>
+            <li>
+                <div class="favicon favicon-mathematica" title="Mathematica Stack Exchange"></div><a href="http://mathematica.stackexchange.com/questions/110848/is-it-possible-to-draw-this-figure-using-mathematica" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:387 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Is it possible to draw this figure using Mathematica?
+                </a>
+
+            </li>
+            <li>
+                <div class="favicon favicon-codegolf" title="Programming Puzzles &amp; Code Golf Stack Exchange"></div><a href="http://codegolf.stackexchange.com/questions/76299/strongly-connected-components" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Strongly Connected Components
+                </a>
+
+            </li>
+            <li>
+                <div class="favicon favicon-rpg" title="Role-playing Games Stack Exchange"></div><a href="http://rpg.stackexchange.com/questions/77746/what-are-the-consequences-of-making-quicken-spell-an-exception-to-the-spellcasti" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:122 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What are the consequences of making Quicken Spell an exception to the spellcasting action economy?
+                </a>
+
+            </li>
+            <li>
+                <div class="favicon favicon-rpg" title="Role-playing Games Stack Exchange"></div><a href="http://rpg.stackexchange.com/questions/77680/can-mage-hand-pour-out-a-vial-of-acid" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:122 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Can Mage Hand pour out a vial of acid?
+                </a>
+
+            </li>
+            <li>
+                <div class="favicon favicon-mathematica" title="Mathematica Stack Exchange"></div><a href="http://mathematica.stackexchange.com/questions/111145/test-for-non-numeric-variables" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:387 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Test for non-numeric variables
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-worldbuilding" title="Worldbuilding Stack Exchange"></div><a href="http://worldbuilding.stackexchange.com/questions/38672/humans-can-now-fly-what-happens-to-the-transportation-industry" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:579 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Humans can now fly. What happens to the transportation industry?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-programmers" title="Programmers Stack Exchange"></div><a href="http://programmers.stackexchange.com/questions/313617/team-constantly-fails-to-meet-sprint-goals" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:131 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Team constantly fails to meet sprint goals
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-movies" title="Movies &amp; TV Stack Exchange"></div><a href="http://movies.stackexchange.com/questions/50792/how-are-surgery-scenes-shot-in-tv-film" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:367 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How are surgery scenes shot in TV/Film?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-codereview" title="Code Review Stack Exchange"></div><a href="http://codereview.stackexchange.com/questions/123941/quote-of-the-day-program" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:196 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Quote of the day program
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-math" title="Mathematics Stack Exchange"></div><a href="http://math.stackexchange.com/questions/1714096/tricky-system-of-trigonometric-equations" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:69 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    tricky system of trigonometric equations
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-bicycles" title="Bicycles Stack Exchange"></div><a href="http://bicycles.stackexchange.com/questions/37806/fixie-vs-road-bike-the-right-fixie-bike-for-bunch-rides" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:126 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Fixie vs Road Bike - the right fixie bike for bunch rides
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-english" title="English Language &amp; Usage Stack Exchange"></div><a href="http://english.stackexchange.com/questions/315124/seeking-generic-word-place-where-opponents-fight" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:97 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Seeking Generic Word: Place where opponents fight
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-travel" title="Travel Stack Exchange"></div><a href="http://travel.stackexchange.com/questions/65667/how-long-can-you-stay-on-the-caledonian-sleeper-train-once-it-has-arrived" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:273 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How long can you stay on the Caledonian sleeper train once it has arrived?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-superuser" title="Super User"></div><a href="http://superuser.com/questions/1057539/same-public-ips-is-possible" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:3 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Same Public IPs is possible?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-electronics" title="Electrical Engineering Stack Exchange"></div><a href="http://electronics.stackexchange.com/questions/224824/why-did-my-oscilloscope-hookup-trip-my-rcd" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:135 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Why did my oscilloscope hookup trip my RCD?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-english" title="English Language &amp; Usage Stack Exchange"></div><a href="http://english.stackexchange.com/questions/315467/what-is-this-method-of-joking-about-a-morbid-situation-called" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:97 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What is this method of joking about a morbid situation called?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-dba" title="Database Administrators Stack Exchange"></div><a href="http://dba.stackexchange.com/questions/133439/database-model-about-libraries" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:182 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Database model about libraries
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-mathematica" title="Mathematica Stack Exchange"></div><a href="http://mathematica.stackexchange.com/questions/111114/is-there-a-simple-strategy-to-determine-whether-a-point-is-inside-a-boundary" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:387 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Is there a simple strategy to determine whether a point is inside a boundary?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-money" title="Personal Finance &amp; Money Stack Exchange"></div><a href="http://money.stackexchange.com/questions/62043/why-is-being-upside-down-on-a-mortgage-so-bad" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:93 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Why is being "upside down" on a mortgage so bad?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-ell" title="English Language Learners Stack Exchange"></div><a href="http://ell.stackexchange.com/questions/85647/the-glacial-pace-at-which-justice-has-arrived" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:481 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    "the glacial pace at which justice has arrived"
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-academia" title="Academia Stack Exchange"></div><a href="http://academia.stackexchange.com/questions/65783/providing-syllabi-far-in-advance" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:415 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Providing syllabi far in advance
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-scifi" title="Science Fiction &amp; Fantasy Stack Exchange"></div><a href="http://scifi.stackexchange.com/questions/123127/why-didnt-bellatrix-use-legilimency-on-hermione" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:186 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Why didn't Bellatrix use Legilimency on Hermione?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-askubuntu" title="Ask Ubuntu"></div><a href="http://askubuntu.com/questions/750419/how-to-run-a-sudo-command-with-after-it-when-sudo-authentication-caching-is" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:89 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How to run a sudo command with '&amp;' after it when sudo authentication caching is disabled?
+                </a>
+
+            </li>
+            <li style="display: list-item;" class="dno js-hidden">
+                <div class="favicon favicon-academia" title="Academia Stack Exchange"></div><a href="http://academia.stackexchange.com/questions/65700/how-to-quit-put-on-hold-a-phd-program-due-to-personality-clash-with-advisor" class="js-gps-track" data-gps-track="site.switch({ item_type:11, target_site:415 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How to quit/put on hold a PhD program due to personality clash with advisor?
+                </a>
+
+            </li>
+    </ul>
+
+        
+</div>
+		</div>
+	
+<div id="feed-link">
+    <div id="feed-link-text">
+        <a href="http://raspberrypi.stackexchange.com/feeds/question/7088" title="feed of this question and its answers">
+            <span class="feed-icon"></span>question feed
+        </a>
+    </div>
+</div>	<script>
+StackExchange.ready(function(){$.get('/posts/7088/ivc/1f2a');});
+</script>
+<noscript>
+    <div><img src="/posts/7088/ivc/1f2a" class="dno" alt="" width="0" height="0"></div>
+</noscript><div style="display:none" id="prettify-lang">lang-py</div></div>
+
+
+        </div>
+    </div>
+    <div id="footer" class="categories">
+        <div class="footerwrap">
+            <div id="footer-menu">
+                <div class="top-footer-links">
+                    <a href="http://stackoverflow.com/company/about">about us</a>
+                        <a href="http://raspberrypi.stackexchange.com/tour">tour</a>
+                    <a href="http://raspberrypi.stackexchange.com/help">help</a>
+                    <a href="http://blog.stackoverflow.com/?blb=1">blog</a>
+                        <a href="http://chat.stackexchange.com/">chat</a>
+                    <a href="http://data.stackexchange.com/">data</a>
+                    <a href="http://stackexchange.com/legal">legal</a>
+                    <a href="http://stackexchange.com/legal/privacy-policy">privacy policy</a>
+                    <a href="http://stackoverflow.com/company/work-here">work here</a>
+                    <a href="http://stackexchange.com/mediakit">advertising info</a>
+
+                    <a onclick='StackExchange.switchMobile("on")'>mobile</a>
+                    <b><a href="http://raspberrypi.stackexchange.com/contact">contact us</a></b>
+                        <b><a href="http://meta.raspberrypi.stackexchange.com/">feedback</a></b>
+                    
+                </div>
+                <div id="footer-sites">
+                    <table>
+    <tbody><tr>
+            <th colspan="3">
+                Technology
+            </th>
+            <th>
+                Life / Arts
+            </th>
+            <th>
+                Culture / Recreation
+            </th>
+            <th>
+                Science
+            </th>
+            <th>
+                Other
+            </th>
+    </tr>
+    <tr>
+            <td>
+                <ol>
+                        <li><a href="http://stackoverflow.com/" title="professional and enthusiast programmers">Stack Overflow</a></li>
+                        <li><a href="http://serverfault.com/" title="system and network administrators">Server Fault</a></li>
+                        <li><a href="http://superuser.com/" title="computer enthusiasts and power users">Super User</a></li>
+                        <li><a href="http://webapps.stackexchange.com/" title="power users of web applications">Web Applications</a></li>
+                        <li><a href="http://askubuntu.com/" title="Ubuntu users and developers">Ask Ubuntu</a></li>
+                        <li><a href="http://webmasters.stackexchange.com/" title="pro webmasters">Webmasters</a></li>
+                        <li><a href="http://gamedev.stackexchange.com/" title="professional and independent game developers">Game Development</a></li>
+                        <li><a href="http://tex.stackexchange.com/" title="users of TeX, LaTeX, ConTeXt, and related typesetting systems">TeX - LaTeX</a></li>
+                            </ol></td><td><ol>
+                        <li><a href="http://programmers.stackexchange.com/" title="professional programmers interested in conceptual questions about software development">Programmers</a></li>
+                        <li><a href="http://unix.stackexchange.com/" title="users of Linux, FreeBSD and other Un*x-like operating systems">Unix &amp; Linux</a></li>
+                        <li><a href="http://apple.stackexchange.com/" title="power users of Apple hardware and software">Ask Different (Apple)</a></li>
+                        <li><a href="http://wordpress.stackexchange.com/" title="WordPress developers and administrators">WordPress Development</a></li>
+                        <li><a href="http://gis.stackexchange.com/" title="cartographers, geographers and GIS professionals">Geographic Information Systems</a></li>
+                        <li><a href="http://electronics.stackexchange.com/" title="electronics and electrical engineering professionals, students, and enthusiasts">Electrical Engineering</a></li>
+                        <li><a href="http://android.stackexchange.com/" title="enthusiasts and power users of the Android operating system">Android Enthusiasts</a></li>
+                        <li><a href="http://security.stackexchange.com/" title="information security professionals">Information Security</a></li>
+                            </ol></td><td><ol>
+                        <li><a href="http://dba.stackexchange.com/" title="database professionals who wish to improve their database skills and learn from others in the community">Database Administrators</a></li>
+                        <li><a href="http://drupal.stackexchange.com/" title="Drupal developers and administrators">Drupal Answers</a></li>
+                        <li><a href="http://sharepoint.stackexchange.com/" title="SharePoint enthusiasts">SharePoint</a></li>
+                        <li><a href="http://ux.stackexchange.com/" title="user experience researchers and experts">User Experience</a></li>
+                        <li><a href="http://mathematica.stackexchange.com/" title="users of Mathematica">Mathematica</a></li>
+                        <li><a href="http://salesforce.stackexchange.com/" title="Salesforce administrators, implementation experts, developers and anybody in-between">Salesforce</a></li>
+                        <li><a href="http://expressionengine.stackexchange.com/" title="administrators, end users, developers and designers for ExpressionEngine® CMS">ExpressionEngine® Answers</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#technology" class="more">
+                                more (13)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="http://photo.stackexchange.com/" title="professional, enthusiast and amateur photographers">Photography</a></li>
+                        <li><a href="http://scifi.stackexchange.com/" title="science fiction and fantasy enthusiasts">Science Fiction &amp; Fantasy</a></li>
+                        <li><a href="http://graphicdesign.stackexchange.com/" title="Graphic Design professionals, students, and enthusiasts">Graphic Design</a></li>
+                        <li><a href="http://movies.stackexchange.com/" title="movie and tv enthusiasts">Movies &amp; TV</a></li>
+                        <li><a href="http://cooking.stackexchange.com/" title="professional and amateur chefs">Seasoned Advice (cooking)</a></li>
+                        <li><a href="http://diy.stackexchange.com/" title="contractors and serious DIYers">Home Improvement</a></li>
+                        <li><a href="http://money.stackexchange.com/" title="people who want to be financially literate">Personal Finance &amp; Money</a></li>
+                        <li><a href="http://academia.stackexchange.com/" title="academics and those enrolled in higher education">Academia</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#lifearts" class="more">
+                                more (9)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="http://english.stackexchange.com/" title="linguists, etymologists, and serious English language enthusiasts">English Language &amp; Usage</a></li>
+                        <li><a href="http://skeptics.stackexchange.com/" title="scientific skepticism">Skeptics</a></li>
+                        <li><a href="http://judaism.stackexchange.com/" title="those who base their lives on Jewish law and tradition and anyone interested in learning more">Mi Yodeya (Judaism)</a></li>
+                        <li><a href="http://travel.stackexchange.com/" title="road warriors and seasoned travelers">Travel</a></li>
+                        <li><a href="http://christianity.stackexchange.com/" title="committed Christians, experts in Christianity and those interested in learning more">Christianity</a></li>
+                        <li><a href="http://gaming.stackexchange.com/" title="passionate videogamers on all platforms">Arqade (gaming)</a></li>
+                        <li><a href="http://bicycles.stackexchange.com/" title="people who build and repair bicycles, people who train cycling, or commute on bicycles">Bicycles</a></li>
+                        <li><a href="http://rpg.stackexchange.com/" title="gamemasters and players of tabletop, paper-and-pencil role-playing games">Role-playing Games</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#culturerecreation" class="more">
+                                more (21)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="http://math.stackexchange.com/" title="people studying math at any level and professionals in related fields">Mathematics</a></li>
+                        <li><a href="http://stats.stackexchange.com/" title="people interested in statistics, machine learning, data analysis, data mining, and data visualization">Cross Validated (stats)</a></li>
+                        <li><a href="http://cstheory.stackexchange.com/" title="theoretical computer scientists and researchers in related fields">Theoretical Computer Science</a></li>
+                        <li><a href="http://physics.stackexchange.com/" title="active researchers, academics and students of physics">Physics</a></li>
+                        <li><a href="http://mathoverflow.net/" title="professional mathematicians">MathOverflow</a></li>
+                        <li><a href="http://chemistry.stackexchange.com/" title="scientists, academics, teachers and students">Chemistry</a></li>
+                        <li><a href="http://biology.stackexchange.com/" title="biology researchers, academics, and students">Biology</a></li>
+                    
+                        <li>
+                            <a href="http://stackexchange.com/sites#science" class="more">
+                                more (5)
+                            </a>
+                        </li>
+                </ol>
+            </td>
+            <td>
+                <ol>
+                        <li><a href="http://stackapps.com/" title="apps, scripts, and development with the Stack Exchange API">Stack Apps</a></li>
+                        <li><a href="http://meta.stackexchange.com/" title="meta-discussion of the Stack Exchange family of Q&amp;A websites">Meta Stack Exchange</a></li>
+                        <li><a href="http://area51.stackexchange.com/" title="proposing new sites in the Stack Exchange network">Area 51</a></li>
+                        <li><a href="http://careers.stackoverflow.com/">Stack Overflow Careers</a></li>
+                    
+                </ol>
+            </td>
+    </tr>
+</tbody></table>
+                </div>
+            </div>
+
+            <div id="copyright">
+                site design / logo © 2016 Stack Exchange Inc; user contributions licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/" rel="license">cc by-sa 3.0</a> 
+                with <a href="http://blog.stackoverflow.com/2009/06/attribution-required/" rel="license">attribution required</a>
+            </div>
+            <div id="svnrev">
+                rev 2016.3.25.3380
+            </div>
+            
+        </div>
+    </div>
+    <noscript>
+        <div id="noscript-warning">Raspberry Pi Stack Exchange works best with JavaScript enabled<img src="http://pixel.quantserve.com/pixel/p-c1rF4kxgLUzNc.gif" alt="" class="dno"></div>
+    </noscript>
+
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () { (i[r].q = i[r].q || []).push(arguments) }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m);
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-5620270-24', {'cookieDomain': 'stackexchange.com'});
+                        ga('set', 'dimension2', '|python|audio|');         ga('send', 'pageview');
+        var _qevents = _qevents || [],
+            _comscore = _comscore || [];
+        (function () {
+            var ssl='https:'==document.location.protocol,
+                s=document.getElementsByTagName('script')[0],
+                qc=document.createElement('script');
+            qc.async=true;
+            qc.src=(ssl?'https://secure':'http://edge')+'.quantserve.com/quant.js';
+            s.parentNode.insertBefore(qc, s);
+            var sc=document.createElement('script');
+            sc.async=true;
+            sc.src=(ssl?'https://sb':'http://b') + '.scorecardresearch.com/beacon.js';
+            s.parentNode.insertBefore(sc, s);
+        })();
+        _comscore.push({ c1: "2", c2: "17440561" });
+        _qevents.push({ qacct: "p-c1rF4kxgLUzNc" });
+    </script>
+            
+    
+</body></html>

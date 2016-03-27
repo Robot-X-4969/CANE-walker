@@ -1,0 +1,148 @@
+a {
+  color: #c51f51;
+  text-decoration: none; }
+
+h1 {
+  color: #c51f51; }
+
+nav.main ul li a.active, nav.main ul li a:hover {
+  color: #c51f51;
+  border-bottom: 1px solid #c51f51; }
+
+.error {
+  border: 1px solid #c51f51 !important; }
+
+.select .select-icon {
+  background: url(../images/pink/select-icon.png) no-repeat center;
+  background-size: 30px 30px;
+  -o-background-size: 30px 30px;
+  -webkit-background-size: 30px 30px; }
+.select.google .select-icon {
+  background: url(../images/pink/select-icon.png) no-repeat center;
+  background-size: 20px 20px;
+  -o-background-size: 20px 20px;
+  -webkit-background-size: 20px 20px; }
+
+#search {
+  background: #c51f51; }
+  #search .expand {
+    background: #c51f51; }
+
+#mobile-search-icon {
+  background: #c51f51; }
+
+#mobile-search {
+  background: #c51f51; }
+
+#links .spacer {
+  background: #c51f51; }
+
+#main-cart .cart {
+  background: #c51f51; }
+
+#welcome a {
+  color: #c51f51; }
+
+#shop-now {
+  background: url(../images/pink/shop-now.png) no-repeat center;
+  background-size: cover;
+  -o-background-size: cover;
+  -webkit-background-size: cover; }
+
+#notification .success, .notification .success {
+  background: url(../images/pink/success.png) no-repeat left center;
+  background-size: 14px 14px;
+  -o-background-size: 14px 14px;
+  -webkit-background-size: 14px 14px; }
+#notification .atention, .notification .atention {
+  background: url(../images/pink/attention.png) no-repeat left center;
+  background-size: 14px 14px;
+  -o-background-size: 14px 14px;
+  -webkit-background-size: 14px 14px; }
+#notification .warning, .notification .warning {
+  background: url(../images/pink/warning.png) no-repeat left center;
+  background-size: 14px 14px;
+  -o-background-size: 14px 14px;
+  -webkit-background-size: 14px 14px; }
+
+#product-container .product .hover {
+  background: #c51f51; }
+  #product-container .product .hover .more {
+    background: url(../images/pink/product-more.png) no-repeat center #ffffff;
+    background-size: 11px 20px;
+    -o-background-size: 11px 20px;
+    -webkit-background-size: 11px 20px; }
+
+.pagination span.prev {
+  background: url(../images/pink/pagination-prev.png) no-repeat left -30px;
+  background-size: 30px 90px;
+  -o-background-size: 30px 90px;
+  -webkit-background-size: 30px 90px; }
+.pagination span.next {
+  background: url(../images/pink/pagination-next.png) no-repeat right -30px;
+  background-size: 30px 90px;
+  -o-background-size: 30px 90px;
+  -webkit-background-size: 30px 90px; }
+.pagination a.prev {
+  background: url(../images/pink/pagination-prev.png) no-repeat left top;
+  background-size: 30px 90px;
+  -o-background-size: 30px 90px;
+  -webkit-background-size: 30px 90px; }
+  .pagination a.prev:hover {
+    background-position: left bottom; }
+.pagination a.next {
+  background: url(../images/pink/pagination-next.png) no-repeat right top;
+  background-size: 30px 90px;
+  -o-background-size: 30px 90px;
+  -webkit-background-size: 30px 90px; }
+  .pagination a.next:hover {
+    background-position: right bottom; }
+
+.categories ul li > ul li > ul li a:hover {
+  color: #c51f51; }
+
+.need-help .customer-services a {
+  background: url(../images/pink/customer-icon.png) no-repeat left center;
+  background-size: 32px 32px;
+  -o-background-size: 32px 32px;
+  -webkit-background-size: 32px 32px; }
+.need-help .design-sug a {
+  background: url(../images/pink/info-icon.png) no-repeat left center;
+  background-size: 32px 32px;
+  -o-background-size: 32px 32px;
+  -webkit-background-size: 32px 32px; }
+.need-help .question a {
+  background: url(../images/pink/question-icon.png) no-repeat left center;
+  background-size: 32px 32px;
+  -o-background-size: 32px 32px;
+  -webkit-background-size: 32px 32px; }
+
+.product-detail h3 {
+  background: #c51f51; }
+.product-detail .options .option {
+  color: #c51f51; }
+.product-detail .new-price {
+  background: #c51f51; }
+.product-detail .quantity {
+  background: #c51f51; }
+
+.cart-info input[type=submit], .checkout-product input[type=submit] {
+  background: url(../images/pink/update.png) no-repeat center;
+  background-size: 25px 25px;
+  -o-background-size: 25px 25px;
+  -webkit-background-size: 25px 25px; }
+
+.account ul li {
+  background: url(../images/pink/tri-bullet.png) no-repeat left 5px;
+  background-size: 6px 11px;
+  -o-background-size: 6px 11px;
+  -webkit-background-size: 6px 11px; }
+
+@media all and (max-width: 640px) {
+  .cart-info input[type=submit] {
+    background: url(../images/update.png) no-repeat center;
+    background-size: 15px 15px;
+    -o-background-size: 15px 15px;
+    -webkit-background-size: 15px 15px; } }
+
+/*# sourceMappingURL=pink.css.map */

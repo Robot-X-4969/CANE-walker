@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>Raspberry Pi GPIO Pinout - Pi 1, B+, Pi 2</title>
+		<meta name="description" content="The comprehensive Raspberry Pi GPIO Pinout guide for the original Raspberry Pi, B+ and Pi 2">
+		<link href="Raspberry%20Pi%20GPIO%20Pinout_files/css.css" rel="stylesheet" type="text/css">
+		<link href="Raspberry%20Pi%20GPIO%20Pinout_files/prettify.css" rel="stylesheet">
+		<link href="Raspberry%20Pi%20GPIO%20Pinout_files/font-awesome_002.css" rel="stylesheet">
+		<link href="Raspberry%20Pi%20GPIO%20Pinout_files/pinout.css" rel="stylesheet">
+		<link href="Raspberry%20Pi%20GPIO%20Pinout_files/print.css" rel="stylesheet" media="print">
+		<link rel="stylesheet" href="Raspberry%20Pi%20GPIO%20Pinout_files/font-awesome.css">
+		<link rel="alternate" href="http://de.pinout.xyz/" hreflang="de">
+		<link rel="alternate" href="http://pinout.xyz/" hreflang="en">
+		<link rel="alternate" href="http://es.pinout.xyz/" hreflang="es">
+		<link rel="alternate" href="http://fr.pinout.xyz/" hreflang="fr">
+		<link rel="alternate" href="http://it.pinout.xyz/" hreflang="it">
+		<link rel="alternate" href="http://pinout.xyz/" hreflang="pt">
+		<link rel="alternate" href="http://tr.pinout.xyz/" hreflang="tr">
+		<script src="Raspberry%20Pi%20GPIO%20Pinout_files/analytics.js" async=""></script><script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-69846516-1', 'auto');
+		  ga('send', 'pageview');
+
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<h1 class="logo"><a title="Raspberry Pi GPIO Pinout home" href="http://pinout.xyz/"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/pinout-logo.png" style="top:8px;"><span>Raspberry Pi</span>n<span class="out">out</span></a></h1>
+			<nav id="gpio">
+				<div id="pinbase"></div>
+				<div id="pinbasebplus"></div>
+				<ul class="bottom">
+<li class="pin1 pow3v3"><a href="http://pinout.xyz/pinout/pin1_3v3_power" title=""><span class="default"><span class="phys">1</span> 3v3 Power</span><span class="pin"></span></a></li>
+<li class="pin3 gpio i2c"><a href="http://pinout.xyz/pinout/pin3_gpio2" title="Wiring Pi pin 8"><span class="default"><span class="phys">3</span> BCM 2 <small>(SDA)</small></span><span class="pin"></span></a></li>
+<li class="pin5 gpio i2c"><a href="http://pinout.xyz/pinout/pin5_gpio3" title="Wiring Pi pin 9"><span class="default"><span class="phys">5</span> BCM 3 <small>(SCL)</small></span><span class="pin"></span></a></li>
+<li class="pin7 gpio"><a href="http://pinout.xyz/pinout/pin7_gpio4" title="Wiring Pi pin 7"><span class="default"><span class="phys">7</span> BCM 4 <small>(GPCLK0)</small></span><span class="pin"></span></a></li>
+<li class="pin9 gnd"><a href="http://pinout.xyz/pinout/ground" title=""><span class="default"><span class="phys">9</span> Ground</span><span class="pin"></span></a></li>
+<li class="pin11 gpio"><a href="http://pinout.xyz/pinout/pin11_gpio17" title="Wiring Pi pin 0"><span class="default"><span class="phys">11</span> BCM 17 </span><span class="pin"></span></a></li>
+<li class="pin13 gpio"><a href="http://pinout.xyz/pinout/pin13_gpio27" title="Wiring Pi pin 2"><span class="default"><span class="phys">13</span> BCM 27 </span><span class="pin"></span></a></li>
+<li class="pin15 gpio"><a href="http://pinout.xyz/pinout/pin15_gpio22" title="Wiring Pi pin 3"><span class="default"><span class="phys">15</span> BCM 22 </span><span class="pin"></span></a></li>
+<li class="pin17 pow3v3"><a href="http://pinout.xyz/pinout/pin17_3v3_power" title=""><span class="default"><span class="phys">17</span> 3v3 Power</span><span class="pin"></span></a></li>
+<li class="pin19 gpio spi"><a href="http://pinout.xyz/pinout/pin19_gpio10" title="Wiring Pi pin 12"><span class="default"><span class="phys">19</span> BCM 10 <small>(MOSI)</small></span><span class="pin"></span></a></li>
+<li class="pin21 gpio spi"><a href="http://pinout.xyz/pinout/pin21_gpio9" title="Wiring Pi pin 13"><span class="default"><span class="phys">21</span> BCM 9 <small>(MISO)</small></span><span class="pin"></span></a></li>
+<li class="pin23 gpio spi"><a href="http://pinout.xyz/pinout/pin23_gpio11" title="Wiring Pi pin 14"><span class="default"><span class="phys">23</span> BCM 11 <small>(SCLK)</small></span><span class="pin"></span></a></li>
+<li class="pin25 gnd"><a href="http://pinout.xyz/pinout/ground" title=""><span class="default"><span class="phys">25</span> Ground</span><span class="pin"></span></a></li>
+<li class="pin27 gpio i2c"><a href="http://pinout.xyz/pinout/pin27_gpio0" title="Wiring Pi pin 30"><span class="default"><span class="phys">27</span> BCM 0 <small>(ID_SD)</small></span><span class="pin"></span></a></li>
+<li class="pin29 gpio"><a href="http://pinout.xyz/pinout/pin29_gpio5" title="Wiring Pi pin 21"><span class="default"><span class="phys">29</span> BCM 5 </span><span class="pin"></span></a></li>
+<li class="pin31 gpio"><a href="http://pinout.xyz/pinout/pin31_gpio6" title="Wiring Pi pin 22"><span class="default"><span class="phys">31</span> BCM 6 </span><span class="pin"></span></a></li>
+<li class="pin33 gpio"><a href="http://pinout.xyz/pinout/pin33_gpio13" title="Wiring Pi pin 23"><span class="default"><span class="phys">33</span> BCM 13 <small>(PWM1)</small></span><span class="pin"></span></a></li>
+<li class="pin35 gpio spi"><a href="http://pinout.xyz/pinout/pin35_gpio19" title="Wiring Pi pin 24"><span class="default"><span class="phys">35</span> BCM 19 <small>(MISO)</small></span><span class="pin"></span></a></li>
+<li class="pin37 gpio"><a href="http://pinout.xyz/pinout/pin37_gpio26" title="Wiring Pi pin 25"><span class="default"><span class="phys">37</span> BCM 26 </span><span class="pin"></span></a></li>
+<li class="pin39 gnd"><a href="http://pinout.xyz/pinout/ground" title=""><span class="default"><span class="phys">39</span> Ground</span><span class="pin"></span></a></li>
+</ul>
+<ul class="top">
+<li class="pin2 pow5v"><a href="http://pinout.xyz/pinout/pin2_5v_power" title=""><span class="default"><span class="phys">2</span> 5v Power</span><span class="pin"></span></a></li>
+<li class="pin4 pow5v"><a href="http://pinout.xyz/pinout/pin4_5v_power" title=""><span class="default"><span class="phys">4</span> 5v Power</span><span class="pin"></span></a></li>
+<li class="pin6 gnd"><a href="http://pinout.xyz/pinout/ground" title=""><span class="default"><span class="phys">6</span> Ground</span><span class="pin"></span></a></li>
+<li class="pin8 gpio uart"><a href="http://pinout.xyz/pinout/pin8_gpio14" title="Wiring Pi pin 15"><span class="default"><span class="phys">8</span> BCM 14 <small>(TXD)</small></span><span class="pin"></span></a></li>
+<li class="pin10 gpio uart"><a href="http://pinout.xyz/pinout/pin10_gpio15" title="Wiring Pi pin 16"><span class="default"><span class="phys">10</span> BCM 15 <small>(RXD)</small></span><span class="pin"></span></a></li>
+<li class="pin12 gpio"><a href="http://pinout.xyz/pinout/pin12_gpio18" title="Wiring Pi pin 1"><span class="default"><span class="phys">12</span> BCM 18 <small>(PWM0)</small></span><span class="pin"></span></a></li>
+<li class="pin14 gnd"><a href="http://pinout.xyz/pinout/ground" title=""><span class="default"><span class="phys">14</span> Ground</span><span class="pin"></span></a></li>
+<li class="pin16 gpio"><a href="http://pinout.xyz/pinout/pin16_gpio23" title="Wiring Pi pin 4"><span class="default"><span class="phys">16</span> BCM 23 </span><span class="pin"></span></a></li>
+<li class="pin18 gpio"><a href="http://pinout.xyz/pinout/pin18_gpio24" title="Wiring Pi pin 5"><span class="default"><span class="phys">18</span> BCM 24 </span><span class="pin"></span></a></li>
+<li class="pin20 gnd"><a href="http://pinout.xyz/pinout/ground" title=""><span class="default"><span class="phys">20</span> Ground</span><span class="pin"></span></a></li>
+<li class="pin22 gpio"><a href="http://pinout.xyz/pinout/pin22_gpio25" title="Wiring Pi pin 6"><span class="default"><span class="phys">22</span> BCM 25 </span><span class="pin"></span></a></li>
+<li class="pin24 gpio spi"><a href="http://pinout.xyz/pinout/pin24_gpio8" title="Wiring Pi pin 10"><span class="default"><span class="phys">24</span> BCM 8 <small>(CE0)</small></span><span class="pin"></span></a></li>
+<li class="pin26 gpio spi"><a href="http://pinout.xyz/pinout/pin26_gpio7" title="Wiring Pi pin 11"><span class="default"><span class="phys">26</span> BCM 7 <small>(CE1)</small></span><span class="pin"></span></a></li>
+<li class="pin28 gpio i2c"><a href="http://pinout.xyz/pinout/pin28_gpio1" title="Wiring Pi pin 31"><span class="default"><span class="phys">28</span> BCM 1 <small>(ID_SC)</small></span><span class="pin"></span></a></li>
+<li class="pin30 gnd"><a href="http://pinout.xyz/pinout/ground" title=""><span class="default"><span class="phys">30</span> Ground</span><span class="pin"></span></a></li>
+<li class="pin32 gpio"><a href="http://pinout.xyz/pinout/pin32_gpio12" title="Wiring Pi pin 26"><span class="default"><span class="phys">32</span> BCM 12 <small>(PWM0)</small></span><span class="pin"></span></a></li>
+<li class="pin34 gnd"><a href="http://pinout.xyz/pinout/ground" title=""><span class="default"><span class="phys">34</span> Ground</span><span class="pin"></span></a></li>
+<li class="pin36 gpio"><a href="http://pinout.xyz/pinout/pin36_gpio16" title="Wiring Pi pin 27"><span class="default"><span class="phys">36</span> BCM 16 </span><span class="pin"></span></a></li>
+<li class="pin38 gpio spi"><a href="http://pinout.xyz/pinout/pin38_gpio20" title="Wiring Pi pin 28"><span class="default"><span class="phys">38</span> BCM 20 <small>(MOSI)</small></span><span class="pin"></span></a></li>
+<li class="pin40 gpio spi"><a href="http://pinout.xyz/pinout/pin40_gpio21" title="Wiring Pi pin 29"><span class="default"><span class="phys">40</span> BCM 21 <small>(SCLK)</small></span><span class="pin"></span></a></li>
+</ul>
+			</nav>
+			<div id="content">
+				<div id="sections">
+					<ul>
+						<li class="boards"><a href="" title="Add-on boards for Raspberry Pi">Boards</a>
+							<div class="dropdown"><div class="group-nav"><ul><li class="group_featured active" data-group="featured">Featured</li><li class="group_audio" data-group="audio">Audio</li><li class="group_lcd" data-group="lcd">LCD</li><li class="group_instrument" data-group="instrument">Instrument</li><li class="group_iot" data-group="iot">IOT</li><li class="group_multi" data-group="multi">Multi</li><li class="group_other" data-group="other">Other</li><li class="group_led" data-group="led">LED</li><li class="group_motor" data-group="motor">Motor</li><li class="group_gesture" data-group="gesture">Gesture</li></ul></div><div style="display: block;" class="group group_featured"><div class="featured"><a href="http://pinout.xyz/pinout/propeller_hat"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/propeller-hat.png"><strong>Propeller HAT</strong><span>The 8-core Propeller Microcontroller in HAT form-factor</span></a></div><div class="featured"><a href="http://pinout.xyz/pinout/piano_hat"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/piano-hat.png"><strong>Piano HAT</strong><span>A tiny Pi piano with 16 touch-sensitive buttons</span></a></div><div class="featured"><a href="http://pinout.xyz/pinout/adc_pi_zero"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/ab-adc-pi-zero.png"><strong>ADC Pi Zero</strong><span>8 channel Analogue to Digital Converter</span></a></div></div><div style="display: none;" class="group group_multi"><ul><li class="featured"><a href="http://pinout.xyz/pinout/sense_hat"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/sense-hat.png"><strong>Sense HAT</strong><span>Add-on board that includes an 8×8 RGB LED matrix, 5-button joystick as well as IMU and environmental sensors</span></a></li><li class="featured"><a href="http://pinout.xyz/pinout/explorer_hat_pro"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/explorer-hat-pro.png"><strong>Explorer HAT Pro</strong><span>An all-in-one light, input, motor, touch and output add-on board.</span></a></li><hr><li><a href="http://pinout.xyz/pinout/pibrella">Pibrella</a></li><li><a href="http://pinout.xyz/pinout/traffic_hat">Traffic HAT</a></li><li><a href="http://pinout.xyz/pinout/explorer_hat">Explorer HAT</a></li><li><a href="http://pinout.xyz/pinout/explorer_phat">Explorer pHAT</a></li></ul></div><div style="display: none;" class="group group_led"><ul><li class="featured"><a href="http://pinout.xyz/pinout/scroll_phat"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/scroll-phat.png"><strong>Scroll pHAT</strong><span>A 11 x 5 LED matrix.</span></a></li><hr><li><a href="http://pinout.xyz/pinout/piborg_ledborg">PiBorg LEDBorg</a></li><li><a href="http://pinout.xyz/pinout/piglow">PiGlow</a></li><li><a href="http://pinout.xyz/pinout/unicorn_hat">Unicorn HAT</a></li></ul></div><div style="display: none;" class="group group_iot"><ul><li><a href="http://pinout.xyz/pinout/esp_iot_phat">ESP IoT pHAT</a></li></ul></div><div style="display: none;" class="group group_instrument"><ul><li class="featured"><a href="http://pinout.xyz/pinout/drum_hat"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/drum-hat.png"><strong>Drum HAT</strong><span>An 8 pad finger Drum HAT for your Raspberry Pi</span></a></li><li class="featured"><a href="http://pinout.xyz/pinout/piano_hat"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/piano-hat.png"><strong>Piano HAT</strong><span>A tiny Pi piano with 16 touch-sensitive buttons</span></a></li></ul></div><div style="display: none;" class="group group_lcd"><ul><li class="featured"><a href="http://pinout.xyz/pinout/display_o_tron_hat"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/display-o-tron-hat.png"><strong>Display-o-Tron HAT</strong><span>A 3-line character LCD with a 6-zone RGB backlight and 6 touch buttons</span></a></li><hr><li><a href="http://pinout.xyz/pinout/display_o_tron_3000">Display-o-Tron 3000</a></li></ul></div><div style="display: none;" class="group group_other"><ul><li class="featured"><a href="http://pinout.xyz/pinout/propeller_hat"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/propeller-hat.png"><strong>Propeller HAT</strong><span>The 8-core Propeller Microcontroller in HAT form-factor</span></a></li><li class="featured"><a href="http://pinout.xyz/pinout/adc_pi_zero"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/ab-adc-pi-zero.png"><strong>ADC Pi Zero</strong><span>8 channel Analogue to Digital Converter</span></a></li><hr><li><a href="http://pinout.xyz/pinout/raspberry_pi_dots">Raspberry Pi Dots</a></li><li><a href="http://pinout.xyz/pinout/serial_pi_plus">Serial Pi Plus</a></li><li><a href="http://pinout.xyz/pinout/rtc_pi_plus">RTC Pi Plus</a></li><li><a href="http://pinout.xyz/pinout/io_pi_plus">IO Pi Plus</a></li><li><a href="http://pinout.xyz/pinout/adc_pi_plus">ADC Pi Plus</a></li><li><a href="http://pinout.xyz/pinout/1_wire_pi_plus">1 Wire Pi Plus</a></li><li><a href="http://pinout.xyz/pinout/adc_differential_pi">ADC Differential Pi</a></li></ul></div><div style="display: none;" class="group group_motor"><ul><li><a href="http://pinout.xyz/pinout/ryanteck_motor_controller_board">Motor Controller Board</a></li></ul></div><div style="display: none;" class="group group_audio"><ul><li><a href="http://pinout.xyz/pinout/discohat">DiscoHAT</a></li><li><a href="http://pinout.xyz/pinout/cirrus_logic_audio_card">Cirrus Logic Audio Card</a></li><li><a href="http://pinout.xyz/pinout/pi_dac">Pi-DAC+</a></li><li><a href="http://pinout.xyz/pinout/phat_dac">pHAT DAC</a></li></ul></div><div style="display: none;" class="group group_gesture"><ul><li><a href="http://pinout.xyz/pinout/skywriter_hat">Skywriter HAT</a></li></ul></div></div>
+						</li>
+						<li class="interfaces"><a href="" title="Raspberry Pi hardware interfaces">Interfaces</a>
+							<div class="dropdown"><div class="group group_pinout"><ul><li><a href="http://pinout.xyz/pinout/dpi">DPI</a></li><li><a href="http://pinout.xyz/pinout/gpclk">GPCLK</a></li><li><a href="http://pinout.xyz/pinout/jtag">JTAG</a></li><li><a href="http://pinout.xyz/pinout/pcm">PCM</a></li><li><a href="http://pinout.xyz/pinout/sd">SD</a></li><li><a href="http://pinout.xyz/pinout/i2c">I2C</a></li><li><a href="http://pinout.xyz/pinout/ground">Ground</a></li><li><a href="http://pinout.xyz/pinout/spi">SPI</a></li><li><a href="http://pinout.xyz/pinout/uart">UART</a></li><li><a href="http://pinout.xyz/pinout/wiringpi_gpio_pinout">WiringPi GPIO Pinout</a></li></ul></div></div>
+						</li>
+						<li class="guides"><a href="" title="Connection guides for Raspberry Pi GPIO">Guides</a>
+							<div class="dropdown"><div class="group group_info"><ul><li><a href="http://pinout.xyz/pinout/arduino_spi">Arduino SPI</a></li></ul></div></div>
+						</li>
+					</ul>
+				</div>
+				<div id="lang">
+					<ul class="lang-nav">
+						<li><a href="http://de.pinout.xyz/" rel="alternate" hreflang="de"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/de.png"></a>
+		</li><li><a href="http://pinout.xyz/" rel="alternate" hreflang="en"><img class="grayscale" src="Raspberry%20Pi%20GPIO%20Pinout_files/en.png"></a>
+		</li><li><a href="http://es.pinout.xyz/" rel="alternate" hreflang="es"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/es.png"></a>
+		</li><li><a href="http://fr.pinout.xyz/" rel="alternate" hreflang="fr"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/fr.png"></a>
+		</li><li><a href="http://it.pinout.xyz/" rel="alternate" hreflang="it"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/it.png"></a>
+		</li><li><a href="http://pinout.xyz/" rel="alternate" hreflang="pt"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/pt.png"></a>
+		</li><li><a href="http://tr.pinout.xyz/" rel="alternate" hreflang="tr"><img src="Raspberry%20Pi%20GPIO%20Pinout_files/tr.png"></a>
+					</li></ul>
+				</div>
+				<div id="pages">
+					<article class="page_index"><h1>Pinout!</h1>
+<h3>The comprehensive Raspberry Pi GPIO Pinout guide now with Raspberry Pi Model B+, Raspberry Pi 2 and Pi Zero.</h3>
+<p>This GPIO Pinout is designed to be both a quick-reference and a comprehensive guide to your Raspberry Pi's GPIO pins.</p>
+<h2>What do these numbers mean?</h2>
+<ul>
+<li>BCM - Broadcom pin number, commonly called "GPIO", these are the ones you probably want to use with RPi.GPIO and GPIO Zero</li>
+<li>WiringPi - Wiring Pi pin number (shown as a tooltip), for Gordon's Wiring Pi library</li>
+<li>Physical - Number corresponding to the pins physical location on the header</li>
+</ul>
+<h2>Raspberry Pi Zero</h2>
+<p>With the launch of the Pi Zero bringing Raspberry Pi into the hands 
+of so many more people, we're pushing Pinout a little further with some 
+visual tweaks and categorised menus to help you find what you need.</p>
+<h2>Raspberry Pi 2</h2>
+<p>To celebrate the launch of the Pi 2 and the new Pi-enthusiasts it'll 
+bring, Pinout has been updated to be cleaner, more comprehensive and 
+more accurate and will continue to be improved.</p>
+<h2>Raspberry Pi Model A+ and B+</h2>
+<p>Now that the Raspberry Pi Model B Plus is here, I've updated Pinout with the 14 extra pins you'll find on your shiny new board.</p>
+<h2>Raspberry Pi Model "A" and "B"</h2>
+<p>Pinout was originally designed for the old 26-pin Raspberry Pi 
+models, you'll see the outline of this original header displayed on the 
+left in a slightly darker shade. If you click a pin you'll see details 
+of its BCM pin assignment on the original Rev 1 Pi.</p></article>
+				</div>
+			</div>
+			<div class="footer" style="clear: both;padding: 20px 0px;text-align:center;">
+				<p>Spotted an error, want to add your board's pinout? <a href="https://github.com/gadgetoid/Pinout2">Head on over to our GitHub repository</a> and submit an Issue or a Pull Request!</p>
+				<p>Originally part of <a href="http://pi.gadgetoid.com/">pi.gadgetoid.com</a></p>
+				<p>Maintained by <a href="https://twitter.com/gadgetoid"><i class="fa fa-twitter"></i> @Gadgetoid</a> and <a href="https://twitter.com/roguehal13"><i class="fa fa-twitter"></i> @RogueHAL13</a></p>
+				
+			</div>
+		</div>
+
+		<script type="text/javascript" src="Raspberry%20Pi%20GPIO%20Pinout_files/jquery-1.js"></script>
+		<script type="text/javascript" src="Raspberry%20Pi%20GPIO%20Pinout_files/prettify.js"></script>
+    	<script src="Raspberry%20Pi%20GPIO%20Pinout_files/lang-ruby.js"></script>
+    	<script src="Raspberry%20Pi%20GPIO%20Pinout_files/lang-bash.js"></script>
+		<script src="Raspberry%20Pi%20GPIO%20Pinout_files/pinout.js"></script>
+
+
+</body></html>
