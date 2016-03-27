@@ -221,10 +221,10 @@ float blipsFreq(float distance, float minCm, float maxCm, float minFreq, float m
 }
 
 void updateCombinedFrequencies(){
-  freqCombined[0] = freqRaw[0] + 0.5*freqRaw[1];
-  freqCombined[1] = freqRaw[2] + 0.5*freqRaw[1];
-  freqCombined[2] = freqRaw[3] + 0.5*freqRaw[4];
-  freqCombined[3] = freqRaw[5] + 0.5*freqRaw[4];
+  freqCombined[0] = freqRaw[0];// + 0.5*freqRaw[1];
+  freqCombined[1] = freqRaw[2];// + 0.5*freqRaw[1];
+  freqCombined[2] = freqRaw[3];// + 0.5*freqRaw[4];
+  freqCombined[3] = freqRaw[5];// + 0.5*freqRaw[4];
 }
 
 void addDistEntry(int s, int val){

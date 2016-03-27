@@ -4,7 +4,7 @@ public class ImageMagickDiff
 {
     private final static String[] staticArgs = {
         "cmd /c composite ",
-        " -compose difference - | convert - -colorspace Gray -auto-level -black-threshold 90%% -white-threshold 90%% "
+        " -compose difference - | convert - -colorspace Gray -auto-level -black-threshold 95%% -white-threshold 95%% "
     };
     
     private String cmd;

@@ -7,8 +7,8 @@ public class ImageDiffRunner
     public static void main(String[] args)
     {
         String dirPath = ".\\image",
-                laserOnPath = dirPath + "\\on_cr.bmp",
-                laserOffPath = dirPath + "\\off_cr.bmp",
+                laserOnPath = dirPath + "\\on.bmp",
+                laserOffPath = dirPath + "\\off.bmp",
                 outputPath = dirPath + "\\out.bmp";
         
         ImageMagickDiff laserFinder = new ImageMagickDiff(laserOnPath, laserOffPath, outputPath);
