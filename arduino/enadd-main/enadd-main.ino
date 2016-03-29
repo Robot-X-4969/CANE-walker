@@ -1,8 +1,8 @@
+#define IFDEBUG if(true)
 
 //pins
-const int trigger = 30;
+const int trigger[] = {30,30,30, 7,7,7};
 const int usEcho[] = {22, 23, 24, 25, 26, 27}; //left side across front to right side
-const int vibs[] = {2, 3, 4, 5}; 
 const int sounds[] = {40, 41, 42, 43}; //1,2,3,4 on sound card; corresponds with bl,fl,fr,br sounds
 const int dropoffSound[] = {44, 45}; //5 and 6 on sound card
 const int irReturn[] = {A0, A2};
@@ -10,12 +10,11 @@ const int irTogglePinOut = 50, irTogglePinIn = 53;
 
 //presets
 const int offset[] = {5, 20, 25, 25, 20, 5};
-const int maxDist[] = {100, 125, 300, 300, 125, 100};
+const int maxDist[] = {200, 300, 400, 400, 300, 200};
 const float blipsBaseline = 0.25;
 const float blipsUrgent = 5.0;
 const int soundSendMicros = 6500;
-const long vibTimeMillis = 70;
-const float irSpikeLimit = 0.4; //TODO find this value, should be around 0.1?
+const float irSpikeLimit = 0.4; // should be around 0.1?
 const int irSpikeConsecutiveLimit = 10;
 
 //global variable declarations
@@ -26,8 +25,6 @@ float irDistBaseline[2];
 long resetTime[4];
 float freqRaw[6], freqCombined[4];
 long lastIrCalibrationTime;
-//float bigIrDist[2][100];
-//int nextIrHistoryIndex[2];
 boolean irToggleState;
 
 
@@ -38,42 +35,28 @@ void setup() {
   
   delay(2000); // wait for 2F*5.5V to transfer
   
-  pinMode(trigger, OUTPUT);
-  //for(int i = 0; i < 6; i++){
-  //  pinMode(usEcho[i], INPUT);
-  //}
+  pinMode(trigger[0], OUTPUT);
+  pinMode(trigger[4], OUTPUT);
   for(int i = 0; i < 4; i++){
-    pinMode(vibs[i], OUTPUT);
-  }for(int i = 0; i < 4; i++){
     pinMode(sounds[i], OUTPUT);
   }
   pinMode(dropoffSound[0], OUTPUT);
   pinMode(dropoffSound[1], OUTPUT);
   
   irToggleState = getIRToggleState();
-  Serial.print("IR Toggle State = "); Serial.println( irToggleState );
+  IFDEBUG Serial.print("IR Toggle State = "); Serial.println( irToggleState );
   
   if(irToggleState) {
     //set baseline IR value
     recalibrate();
   }
-  /*float total0 = 0.0, total1 = 0.0;
-  for(int i = 0; i < 50; i++) {
-    delayMicroseconds( 40000 ); //40 ms
-    total0 += float( irToCm( analogRead(irReturn[0]) ) ); 
-    total1 += float( irToCm( analogRead(irReturn[1]) ) );
-  }
-  irDistBaseline[0] = total0 / 50.0;
-  irDistBaseline[1] = total1 / 50.0;
-  Serial.print(irDistBaseline[0]); Serial.print("  "); Serial.println(irDistBaseline[1]);
-  lastIrCalibrationTime = millis();
-  nextIrHistoryIndex[0] = nextIrHistoryIndex[1] = 0;*/
   
   //initialize other values
   for(int i = 0; i < 4; i++) {
     resetTime[i] = millis();
-  } for(int i = 0; i < 6; i++) {
-    addDistEntry(i, getDistance(usEcho[i], trigger));
+  }
+  for(int i = 0; i < 6; i++) {
+	addDistEntry(i, getDistance(usEcho[i], trigger[i]));
     freqRaw[i] = blipsFreq( (float)getClosestDistToAvg(i), offset[i], maxDist[i], blipsBaseline, blipsUrgent);
     getIRData(0);
     getIRData(1);
@@ -86,7 +69,7 @@ void loop() {
   //long start, time;
   //start = millis();
   for(int i = 0; i < 6; i++){
-    addDistEntry( i, getDistance(usEcho[i], trigger) );
+    addDistEntry( i, getDistance(usEcho[i], trigger[i]) );
     freqRaw[i] = blipsFreq( (float)getClosestDistToAvg(i), offset[i], maxDist[i], blipsBaseline, blipsUrgent);
     updateCombinedFrequencies();
     if(irToggleState) {
@@ -99,7 +82,7 @@ void loop() {
         if( (dist[2][2] > 100 || dist[2][2] == 0) && (dist[3][2] > 100 || dist[3][2] == 0) ){
           recalibrate();
         } else {
-          Serial.println("Calibration blocked by obstacle");
+          IFDEBUG Serial.println("Calibration blocked by obstacle");
           lastIrCalibrationTime += 10000;
         }
       }
@@ -109,21 +92,25 @@ void loop() {
     
     if(irToggleState != getIRToggleState()) {
       irToggleState = !irToggleState;
-      Serial.print("switching ir toggle to "); Serial.println(irToggleState);
+      IFDEBUG Serial.print("switching ir toggle to "); Serial.println(irToggleState);
     }
   }
   //time = millis() - start;
   
-  for(int i = 0; i < 6; i++){
-    //Serial.print( dist[i][2] ); Serial.print("\t");
+  IFDEBUG {
+	Serial.print("US dist:\t");
+	for(int i = 0; i < 6; i++) {
+	Serial.print( dist[i][2] ); Serial.print("\t");
     //Serial.print( freqRaw[i] ); Serial.print("\t");
+	}
   }
-  if(irToggleState) {
+  IFDEBUG if(irToggleState) {
+	Serial.print("IR dist:\t");
     Serial.print(irDist[0][9]);
     Serial.print("\t");
     Serial.print(irDist[1][9]);
-    Serial.println();
   }
+  Serial.println();
 }
 
 
@@ -145,7 +132,6 @@ void runUI()
     }
     if( dropoffCount1 >= irSpikeConsecutiveLimit ) {
       Serial.println("DROPOFF RIGHT");
-      //digitalWrite(dropoffSound[0], HIGH);
       digitalWrite(dropoffSound[1], HIGH);
     }
     if( dropoffCount0 >= irSpikeConsecutiveLimit || 
@@ -162,8 +148,6 @@ void runUI()
     target = 1000.0 / freqCombined[i];
     if(elapsed > target) {
       anyActive = true;
-      //analogWrite(vibs[i], 255);
-      //Serial.println("beep");
       digitalWrite(sounds[i], HIGH);
       //the WAV trigger only samples its triggers every few milliseconds
       delayMicroseconds(soundSendMicros); 
@@ -171,20 +155,17 @@ void runUI()
       resetTime[i] = millis(); //reset this tone's "timer"
     }
   }
-  //if(anyActive) delay( vibTimeMillis );
-  for(int i = 0; i < 4; i++)
-    analogWrite( vibs[i], 0 );
 }
 
 
 
 
-void ping(int t) {
-  digitalWrite(trigger, LOW);
+void ping(int trig) {
+  digitalWrite(trig, LOW);
   delayMicroseconds(5);
-  digitalWrite(trigger, HIGH);
+  digitalWrite(trig, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trigger, LOW);
+  digitalWrite(trig, LOW);
 }
 int getDistance(int pin, int trig) {
   ping(trig); //sends out distance signal
@@ -195,39 +176,32 @@ int getDistance(int pin, int trig) {
 
 long microsToCm(long t)
 {
-  return t / 58;
+  return (long)( (double)t / 58.0 );
 }
 
 float blipsFreq(float distance, float minCm, float maxCm, float minFreq, float maxFreq) {
-  if(distance >= minCm && distance <= maxCm){
-    //return maxFreq - (maxFreq-minFreq)/((float)(maxCm-minCm))*((float)(distance-minFreq));
-    //Serial.print(distance); Serial.print(" "); Serial.print(minCm); Serial.print(" "); Serial.print(maxCm); Serial.print(" ");
-    //Serial.print(minFreq); Serial.print(" "); Serial.println(maxFreq);
+  if(distance >= minCm && distance <= maxCm) {
     float fact1 = maxFreq-minFreq;
-    //Serial.print("fact1: "); Serial.println(fact1);
     float posDiff = abs(distance-maxCm);
     float fact2 = pow(posDiff, 2.4);
-    //Serial.print("fact2: "); Serial.println(fact2);
     float divisor = pow(maxCm-minCm, 2.4);
-    //Serial.print("divisor: "); Serial.println(divisor);
     float result = (fact1*fact2) / divisor + minFreq;
-    //Serial.print("result: "); Serial.println(result);
     return result;
-  }else if(distance < minCm && distance != 0){
+  } else if(distance < minCm && distance != 0) {
     return maxFreq;
-  }else{
+  } else {
     return 0.01;
   }
 }
 
-void updateCombinedFrequencies(){
+void updateCombinedFrequencies() {
   freqCombined[0] = freqRaw[0];// + 0.5*freqRaw[1];
   freqCombined[1] = freqRaw[2];// + 0.5*freqRaw[1];
   freqCombined[2] = freqRaw[3];// + 0.5*freqRaw[4];
   freqCombined[3] = freqRaw[5];// + 0.5*freqRaw[4];
 }
 
-void addDistEntry(int s, int val){
+void addDistEntry(int s, int val) {
   dist[s][0] = dist[s][1];
   dist[s][1] = dist[s][2];
   dist[s][2] = val;
@@ -243,10 +217,6 @@ void addIRDistEntry(int s, float val) {
   irDist[s][7] = irDist[s][8];
   irDist[s][8] = irDist[s][9];
   irDist[s][9] = val;
-  
-  //bigIrDist[s][nextIrHistoryIndex[s]] = val;
-  //nextIrHistoryIndex[s]++;
-  //if(nextIrHistoryIndex[s] >= 100) nextIrHistoryIndex[s] = 0;
 }
 
 int getClosestDistToAvg(int s) {
@@ -258,8 +228,8 @@ int getClosestDistToAvg(int s) {
   return dist[s][closest];
 }
 
-boolean boolArrayContainsTrue(boolean arr[]) {
-  for(int i = 0; i < (sizeof(arr)/sizeof(arr[0])); i++) {
+boolean boolArrayContainsTrue(boolean arr[], int len) {
+  for(int i = 0; i < len; i++) {
     if(arr[i]) return true;
   }
   return false;
@@ -309,7 +279,7 @@ float irToCm(float raw) {
 }
 
 void recalibrate() {
-  Serial.print("RECALIBRATING IRs  ");
+  IFDEBUG Serial.print("RECALIBRATING IRs  ");
   
   float total0 = 0.0, total1 = 0.0;
   for(int i = 0; i < 50; i++) {
@@ -319,21 +289,8 @@ void recalibrate() {
   }
   irDistBaseline[0] = total0 / 50.0;
   irDistBaseline[1] = total1 / 50.0;
-  Serial.print(irDistBaseline[0]); Serial.print("  "); Serial.println(irDistBaseline[1]);
+  IFDEBUG Serial.print(irDistBaseline[0]); Serial.print("  "); Serial.println(irDistBaseline[1]);
   lastIrCalibrationTime = millis();
-  //nextIrHistoryIndex[0] = nextIrHistoryIndex[1] = 0;
-  
-  /*float total0 = 0; float total1 = 0;
-  for(int i = 0; i < 100; i++) {
-    total0 += //bigIrDist[0][i];
-    total1 += //bigIrDist[1][i];
-  }
-  float avg0 = total0 / 100.0;
-  float avg1 = total1 / 100.0;
-  irDistBaseline[0] = avg0;
-  irDistBaseline[1] = avg1;
-  lastIrCalibrationTime = millis();
-  Serial.print(irDistBaseline[0]); Serial.print(", "); Serial.println(irDistBaseline[1]);*/
 }
 
 boolean getIRToggleState() {
