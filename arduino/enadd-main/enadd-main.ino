@@ -183,8 +183,8 @@ float blipsFreq(float distance, float minCm, float maxCm, float minFreq, float m
   if(distance >= minCm && distance <= maxCm) {
     float fact1 = maxFreq-minFreq;
     float posDiff = abs(distance-maxCm);
-    float fact2 = pow(posDiff, 2.4);
-    float divisor = pow(maxCm-minCm, 2.4);
+    float fact2 = pow(posDiff, 2.0);
+    float divisor = pow(maxCm-minCm, 2.0);
     float result = (fact1*fact2) / divisor + minFreq;
     return result;
   } else if(distance < minCm && distance != 0) {
