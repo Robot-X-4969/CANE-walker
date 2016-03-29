@@ -1,16 +1,17 @@
-#define IFDEBUG if(true)
+#define IFDEBUG if(false)
 
 //pins
-const int trigger[] = {30,30,30, 7,7,7};
-const int usEcho[] = {22, 23, 24, 25, 26, 27}; //left side across front to right side
+const int trigger[] = {30,30, /* 30 */ 7,7 /* ,7 */};
+const int usEcho[] = {22, /* 23, */ 24, 25, /* 26, */ 27}; //left side across front to right side
 const int sounds[] = {40, 41, 42, 43}; //1,2,3,4 on sound card; corresponds with bl,fl,fr,br sounds
 const int dropoffSound[] = {44, 45}; //5 and 6 on sound card
 const int irReturn[] = {A0, A2};
 const int irTogglePinOut = 50, irTogglePinIn = 53;
 
 //presets
-const int offset[] = {5, 20, 25, 25, 20, 5};
-const int maxDist[] = {200, 300, 400, 400, 300, 200};
+const int offset[] = {5, /* 20, */ 25, 25, /* 20, */ 5};
+const int maxDist[] = {200, /* 300, */ 400, 400, /* 300, */ 200};
+const int N_US_SENSORS = 4;
 const float blipsBaseline = 0.25;
 const float blipsUrgent = 5.0;
 const int soundSendMicros = 6500;
@@ -18,12 +19,12 @@ const float irSpikeLimit = 0.4; // should be around 0.1?
 const int irSpikeConsecutiveLimit = 10;
 
 //global variable declarations
-int dist[6][3];
+int dist[/*6*/4][3];
 float irData[2][8];
 float irDist[2][10]; //if 8 of 10 are above limit, signal dropoff
 float irDistBaseline[2];
 long resetTime[4];
-float freqRaw[6], freqCombined[4];
+float beepFreq[4]; //freqRaw[6], freqCombined[4];
 long lastIrCalibrationTime;
 boolean irToggleState;
 
@@ -35,8 +36,6 @@ void setup() {
   
   delay(2000); // wait for 2F*5.5V to transfer
   
-  pinMode(trigger[0], OUTPUT);
-  pinMode(trigger[4], OUTPUT);
   for(int i = 0; i < 4; i++){
     pinMode(sounds[i], OUTPUT);
   }
@@ -55,37 +54,27 @@ void setup() {
   for(int i = 0; i < 4; i++) {
     resetTime[i] = millis();
   }
-  for(int i = 0; i < 6; i++) {
+  for(int i = 0; i < N_US_SENSORS; i++) {
+	pinMode(trigger[i], OUTPUT);
 	addDistEntry(i, getDistance(usEcho[i], trigger[i]));
-    freqRaw[i] = blipsFreq( (float)getClosestDistToAvg(i), offset[i], maxDist[i], blipsBaseline, blipsUrgent);
+    beepFreq[i] = blipsFreq( (float)getClosestDistToAvg(i), offset[i], maxDist[i], blipsBaseline, blipsUrgent);
     getIRData(0);
     getIRData(1);
   }
-  updateCombinedFrequencies();
   
 }
 
 void loop() {
   //long start, time;
   //start = millis();
-  for(int i = 0; i < 6; i++){
+  for(int i = 0; i < N_US_SENSORS; i++){
     addDistEntry( i, getDistance(usEcho[i], trigger[i]) );
-    freqRaw[i] = blipsFreq( (float)getClosestDistToAvg(i), offset[i], maxDist[i], blipsBaseline, blipsUrgent);
-    updateCombinedFrequencies();
+    beepFreq[i] = blipsFreq( (float)getClosestDistToAvg(i), offset[i], maxDist[i], blipsBaseline, blipsUrgent);
     if(irToggleState) {
       getIRData(0);
       getIRData(1);
       addIRDistEntry(0, irToCm( correctedIRRawVal(0) ));
       addIRDistEntry(1, irToCm( correctedIRRawVal(1) ));
-      
-      if( millis()-lastIrCalibrationTime > 30000 ) {
-        if( (dist[2][2] > 100 || dist[2][2] == 0) && (dist[3][2] > 100 || dist[3][2] == 0) ){
-          recalibrate();
-        } else {
-          IFDEBUG Serial.println("Calibration blocked by obstacle");
-          lastIrCalibrationTime += 10000;
-        }
-      }
     }
     
     runUI();
@@ -97,9 +86,20 @@ void loop() {
   }
   //time = millis() - start;
   
+  if(irToggleState) {
+	if( millis()-lastIrCalibrationTime > 30000 ) {
+	  if( (dist[2][2] > 100 || dist[2][2] == 0) && (dist[3][2] > 100 || dist[3][2] == 0) ){
+	    recalibrate();
+	  } else {
+	    IFDEBUG Serial.println("Calibration blocked by obstacle");
+	    lastIrCalibrationTime += 10000;
+	  }
+    }
+  }
+  
   IFDEBUG {
 	Serial.print("US dist:\t");
-	for(int i = 0; i < 6; i++) {
+	for(int i = 0; i < N_US_SENSORS; i++) {
 	Serial.print( dist[i][2] ); Serial.print("\t");
     //Serial.print( freqRaw[i] ); Serial.print("\t");
 	}
@@ -145,7 +145,7 @@ void runUI()
   }
   for(int i = 0; i < 4; i++) {
     elapsed = millis() - resetTime[i];
-    target = 1000.0 / freqCombined[i];
+    target = 1000.0 / beepFreq[i];
     if(elapsed > target) {
       anyActive = true;
       digitalWrite(sounds[i], HIGH);
@@ -194,12 +194,6 @@ float blipsFreq(float distance, float minCm, float maxCm, float minFreq, float m
   }
 }
 
-void updateCombinedFrequencies() {
-  freqCombined[0] = freqRaw[0];// + 0.5*freqRaw[1];
-  freqCombined[1] = freqRaw[2];// + 0.5*freqRaw[1];
-  freqCombined[2] = freqRaw[3];// + 0.5*freqRaw[4];
-  freqCombined[3] = freqRaw[5];// + 0.5*freqRaw[4];
-}
 
 void addDistEntry(int s, int val) {
   dist[s][0] = dist[s][1];
