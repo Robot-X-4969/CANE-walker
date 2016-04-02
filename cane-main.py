@@ -1,9 +1,3 @@
-import picamera
-from time import sleep
+from src import laser_finder
 
-with picamera.PiCamera() as cam:
-    cam.resolution = (640, 480)
-    cam.start_preview()
-    sleep(20)
-    cam.stop_preview()
-
+laser_finder.find_difference()
