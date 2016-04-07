@@ -1,3 +1,10 @@
-from src import laser_finder
+from src import ultrasonic_sensor as usmod
 
-laser_finder.find_difference()
+
+try:
+    usmod.setup()
+    while True:
+        print("Distance:", usmod.find_dist())
+        time.sleep(0.5)
+except KeyboardInterrupt:
+    pass
