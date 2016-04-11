@@ -20,13 +20,13 @@ def find_dist():
 
     def findEchoHigh():
         return gpio.input(echo)
-    time_check( findEchoHigh )
+    time_check( findEchoHigh, timeout )
 
     def findEchoLow():
         return not gpio.input(echo)
-    tDiffSoundMicros = time_check( findEchoLow ) * 1000000
+    tDiffSoundMicros = time_check( findEchoLow, timeout ) * 1000000
     
-    return microsToCm(tDiffSoundMicros)
+    return micros_to_cm(tDiffSoundMicros)
 
 
 def micros_to_cm(micros):
@@ -36,12 +36,12 @@ def micros_wait(t):
     tEnd = time.time() + t/1000000.0
     while time.time() < tEnd: pass
 
-def time_check( return_checker ):
+def time_check( return_checker, max_time ):
     tStart = time.time()
-    tTimeout = tStart + timeout
+    tTimeout = tStart + max_time
     complete = return_checker()
     while not complete:
         complete = return_checker()
-        if time.time() >= tTimeout: return
+        if time.time() >= tTimeout: return 0
     return time.time() - tStart
     

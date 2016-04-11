@@ -51,4 +51,12 @@ def capture_test_vid():
 		cam.led = False
 
 def analyze_images(strImg1, strImg2):
-	pass
+        strCmd = 'composite -compose difference ' + +strImg1+' '+strImg2
+        strCmd = strCmd + ' - | convert - -colorspace Gray -auto-level'
+        strCmd = strCmd + '-black-threshold 95%% -white-threshold 95%% out.bmp'
+	os.system( strCmd )
+	
+
+def capture_lasered_images():
+        pass
+        

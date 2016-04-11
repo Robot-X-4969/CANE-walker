@@ -1,4 +1,5 @@
 from src import ultrasonic_sensor as usmod
+import time
 
 
 try:
@@ -8,3 +9,4 @@ try:
         time.sleep(0.5)
 except KeyboardInterrupt:
     pass
+
