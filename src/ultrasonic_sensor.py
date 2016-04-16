@@ -7,10 +7,12 @@ from threading import Thread
 class UltrasonicSensor:
     timeout = 0.05
 	
-    def __init__(self, trigger_pin, echo_pin):
+    def __init__(self, trigger_pin, echo_pin, min, max):
         self.echo = echo_pin
 		self.trigger = trigger_pin
         self.distance = 0
+		self.min_dist = min
+		self.max_dist = max
 		gpio.setmode(gpio.BCM)
 		gpio.setup(self.trigger, gpio.OUT)
 		gpio.setup(self.echo, gpio.IN)
@@ -22,13 +24,19 @@ class UltrasonicSensor:
         return not gpio.input(self.echo)
 		
 	def find_distance(self):
-		time_check(sensor.check_echo_started, UltrasonicSensor.timeout)
-		sensor.distance = micros_to_cm( time_check(
-			sensor.check_echo_ended, UltrasonicSensor.timeout) * 1000000.0 )
+		time_check(self.check_echo_started, UltrasonicSensor.timeout)
+		self.distance = micros_to_cm( time_check(
+			self.check_echo_ended, UltrasonicSensor.timeout) * 1000000.0 )
+		if self.distance < self.min_dist:
+			self.distance = self.min_dist
+		elif self.distance > self.max_dist:
+			self.distance = self.max_dist
 		
 	def get_distance_thread(self):
 		return Thread(target=find_distance, args=(self))
 		
+	def blip_freq(self):
+		pass
 
 
 
