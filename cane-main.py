@@ -1,12 +1,24 @@
 from src import ultrasonic_sensor as usmod
-import time
+
+#TODO fix pin locations
+sensors = [
+	UltrasonicSensor(22,18),
+	# UltrasonicSensor(22,19),
+	# UltrasonicSensor(22,20),
+	# UltrasonicSensor(22,21),
+]
 
 
 try:
-    usmod.setup()
     while True:
-        print("Distance:", usmod.find_dist())
-        time.sleep(0.5)
+        sense_threads = []
+		for s in sensors:
+			thread = s.get_distance_thread()
+			sense_threads.append( s )
+			s.start()
+		for t in sense_threads:
+			t.join()
 except KeyboardInterrupt:
-    pass
+    for t in sense_threads:
+		t.join()
 

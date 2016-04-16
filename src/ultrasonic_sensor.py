@@ -1,32 +1,35 @@
 import RPi.GPIO as gpio
 import time
-
-trigger = 22
-echo = 18
-timeout = 0.05
-
-def setup():
-    gpio.setmode(gpio.BCM)
-    gpio.setup(trigger, gpio.OUT)
-    gpio.setup(echo, gpio.IN)
+from threading import Thread
 
 
-def find_dist():
-    gpio.output(trigger, gpio.LOW)
-    micros_wait(10)
-    gpio.output(trigger, gpio.HIGH)
-    micros_wait(10)
-    gpio.output(trigger, gpio.LOW)
 
-    def findEchoHigh():
-        return gpio.input(echo)
-    time_check( findEchoHigh, timeout )
+class UltrasonicSensor:
+    timeout = 0.05
+	
+    def __init__(self, trigger_pin, echo_pin):
+        self.echo = echo_pin
+		self.trigger = trigger_pin
+        self.distance = 0
+		gpio.setmode(gpio.BCM)
+		gpio.setup(self.trigger, gpio.OUT)
+		gpio.setup(self.echo, gpio.IN)
+		
+    def check_echo_started(self):
+        return gpio.input(self.echo)
+		
+    def check_echo_ended(self):
+        return not gpio.input(self.echo)
+		
+	def find_distance(self):
+		time_check(sensor.check_echo_started, UltrasonicSensor.timeout)
+		sensor.distance = micros_to_cm( time_check(
+			sensor.check_echo_ended, UltrasonicSensor.timeout) * 1000000.0 )
+		
+	def get_distance_thread(self):
+		return Thread(target=find_distance, args=(self))
+		
 
-    def findEchoLow():
-        return not gpio.input(echo)
-    tDiffSoundMicros = time_check( findEchoLow, timeout ) * 1000000
-    
-    return micros_to_cm(tDiffSoundMicros)
 
 
 def micros_to_cm(micros):
@@ -42,6 +45,6 @@ def time_check( return_checker, max_time ):
     complete = return_checker()
     while not complete:
         complete = return_checker()
-        if time.time() >= tTimeout: return 0
+        if time.time() >= tTimeout: return 0.0
     return time.time() - tStart
     
