@@ -8,17 +8,17 @@ sensors = [
 	# UltrasonicSensor(22,21),
 ]
 
+sense_threads = []
 
 try:
     while True:
-        sense_threads = []
-		for s in sensors:
-			thread = s.get_distance_thread()
-			sense_threads.append( s )
-			s.start()
-		for t in sense_threads:
-			t.join()
+        for s in sensors:
+            thread = s.get_distance_thread()
+            sense_threads.append( thread )
+            thread.start()
+        for t in sense_threads:
+            t.join()
 except KeyboardInterrupt:
     for t in sense_threads:
-		t.join()
+        t.join()
 
