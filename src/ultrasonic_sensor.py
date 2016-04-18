@@ -13,12 +13,14 @@ class UltrasonicSensor:
 		^ can be zero
 	* max_dist - ignores objects farther than this (after offset applied)
     """
-    def __init__(self, trigger_pin, echo_pin, offset, max_dist):
+    def __init__(self, trigger_pin, echo_pin, offset, max_dist, min_blip_freq, max_blip_freq):
         self.echo = echo_pin
         self.trigger = trigger_pin
         self.distance = 0
         self.dist_offset = offset
         self.dist_max = max_dist
+        self.max_freq = max_blip_freq
+        self.min_freq = min_blip_freq
         self.timeout = meters_to_seconds(6.0)
         gpio.setmode(gpio.BCM)
         gpio.setup(self.trigger, gpio.OUT)
@@ -37,11 +39,10 @@ class UltrasonicSensor:
             self.distance = 0.0
 
     def get_distance_thread(self):
-        return threading.Thread(target=self.find_distance)
-        #                                       args=(self,)
+        return threading.Thread(target=UltrasonicSensor.find_distance, args=(self,))
 
-    def blips_freq(self, maxfreq, minfreq):
-        return maxfreq - (maxfreq - minfreq) / self.dist_max * self.distance
+    def blips_freq(self):
+        return self.max_freq - (self.max_freq - self.min_freq) / self.dist_max * self.distance
 
 
 
