@@ -21,7 +21,7 @@ class UltrasonicSensor:
         self.dist_max = max_dist
         self.max_freq = max_blip_freq
         self.min_freq = min_blip_freq
-        self.timeout = meters_to_seconds(6.0)
+        self.timeout = 0.05 #meters_to_seconds(10.0)
         gpio.setmode(gpio.BCM)
         gpio.setup(self.trigger, gpio.OUT)
         gpio.setup(self.echo, gpio.IN)
@@ -33,16 +33,23 @@ class UltrasonicSensor:
         return not gpio.input(self.echo)
 
     def find_distance(self):
-        time_check(self.check_echo_started, UltrasonicSensor.timeout)
-        self.distance = seconds_to_meters( time_check(self.check_echo_ended, UltrasonicSensor.timeout) ) - self.dist_offset
+        time_check(self.check_echo_started, self.timeout)
+        tmp_time = time_check(self.check_echo_ended, self.timeout)
+        self.distance = seconds_to_meters( tmp_time ) - self.dist_offset
+        print('sensor time', tmp_time)
+        print('raw distance', self.distance)
         if self.distance < 0.0 or self.distance > self.dist_max:
             self.distance = 0.0
+        #print('after correction', self.distance)
 
     def get_distance_thread(self):
         return threading.Thread(target=UltrasonicSensor.find_distance, args=(self,))
 
     def blips_freq(self):
-        return self.max_freq - (self.max_freq - self.min_freq) / self.dist_max * self.distance
+        if self.distance > 0.0:
+            return self.max_freq - (self.max_freq - self.min_freq) / self.dist_max * self.distance
+        else:
+            return 0.001
 
 
 
@@ -65,6 +72,8 @@ def time_check( return_checker, max_time ):
     complete = return_checker()
     while not complete:
         complete = return_checker()
-        if time.time() >= tTimeout: return 0.0
+        if time.time() >= tTimeout: 
+            return 0.0
+    #print('sensor time', time.time() - tStart)
     return time.time() - tStart
     
