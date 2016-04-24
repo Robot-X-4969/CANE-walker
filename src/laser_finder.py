@@ -2,6 +2,19 @@ import picamera
 from picamera.streams import PiCameraCircularIO
 import time
 import os
+import threading
+
+
+class LaserFinder(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+    
+    def run(self):
+        with picamera.PiCamera() as camera:
+            camera.led = False
+            camera.resolution = (640,480)
+            camera.capture_continuous(
+                'image{timestamp:%H-%M-%S-%f}.bmp', format='bmp', use_video_port=True)
 
 
 
@@ -57,6 +70,3 @@ def analyze_images(strImg1, strImg2):
 	os.system( strCmd )
 	
 
-def capture_lasered_images():
-        pass
-        
