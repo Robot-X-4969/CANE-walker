@@ -65,7 +65,7 @@ def capture_test_vid():
 
 def analyze_images(strImg1, strImg2):
 	strCmd = 'composite -compose difference '+strImg1+' '+strImg2 + \
-		' - | convert - -colorspace Gray -auto-level' + \
+		' - | convert - -colorspace Gray -auto-level ' + \
 		'-black-threshold 95%% -white-threshold 95%% out.bmp'
 	os.system( strCmd )
 	
