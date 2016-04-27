@@ -5,9 +5,9 @@ import time
 import threading
 
 # GLOBALS
-TRIG_L = 12
+TRIG_L = 18
 TRIG_R = 23 #fix
-ECHO_LS = 20
+ECHO_LS = 22
 ECHO_LF = 19 #fix
 ECHO_RF = 20 #fix
 ECHO_RS = 21 #fix
@@ -40,9 +40,7 @@ sound_repeaters = [
 
 try:
     while True:
-        sense_threads = []
-        for s in sensors:
-            sense_threads.append( s.get_distance_thread() )
+        sense_threads = [s.get_distance_thread() for s in sensors]
         for th in sense_threads:
             th.start()
         for th in sense_threads:
