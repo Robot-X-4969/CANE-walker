@@ -21,7 +21,7 @@ class UltrasonicSensor:
         self.dist_max = max_dist
         self.max_freq = max_blip_freq
         self.min_freq = min_blip_freq
-        self.timeout = 0.05 #meters_to_seconds(10.0)
+        self.timeout = 0.1 #meters_to_seconds(6.0)
         gpio.setmode(gpio.BCM)
         gpio.setup(self.trigger, gpio.OUT)
         gpio.setup(self.echo, gpio.IN)
@@ -33,10 +33,15 @@ class UltrasonicSensor:
         return not gpio.input(self.echo)
 
     def find_distance(self):
-        time_check(self.check_echo_started, self.timeout)
+        gpio.output(self.trigger, gpio.LOW)
+        micros_wait(10)
+        gpio.output(self.trigger, gpio.HIGH)
+        micros_wait(10)
+        gpio.output(self.trigger, gpio.LOW)
+        wait_time = time_check(self.check_echo_started, self.timeout)
         tmp_time = time_check(self.check_echo_ended, self.timeout)
         self.distance = seconds_to_meters( tmp_time ) - self.dist_offset
-        print('sensor time', tmp_time)
+        print('went high after', wait_time, 'then measured', tmp_time)
         print('raw distance', self.distance)
         if self.distance < 0.0 or self.distance > self.dist_max:
             self.distance = 0.0
