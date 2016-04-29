@@ -13,6 +13,8 @@ class UltrasonicSensor:
 		^ can be zero
 	* max_dist - ignores objects farther than this (after offset applied)
     """
+    REALLY_FAR_AWAY = 1000000
+
     def __init__(self, trigger_pin, echo_pin, offset, max_dist, min_blip_freq, max_blip_freq):
         self.echo = echo_pin
         self.trigger = trigger_pin
@@ -38,14 +40,20 @@ class UltrasonicSensor:
         gpio.output(self.trigger, gpio.HIGH)
         micros_wait(10)
         gpio.output(self.trigger, gpio.LOW)
-        wait_time = time_check(self.check_echo_started, self.timeout)
+
+        time_check(self.check_echo_started, self.timeout)
         tmp_time = time_check(self.check_echo_ended, self.timeout)
-        self.distance = seconds_to_meters( tmp_time ) - self.dist_offset
-        print('went high after', wait_time, 'then measured', tmp_time)
-        print('raw distance', self.distance)
-        if self.distance < 0.0 or self.distance > self.dist_max:
-            self.distance = 0.0
-        #print('after correction', self.distance)
+        raw_distance = seconds_to_meters( tmp_time )
+        self.distance = raw_distance - self.dist_offset
+        #print('went high after', wait_time, 'then measured', tmp_time)
+        #print('raw distance', self.distance)
+        if raw_distance > 0.0:
+            if self.distance < 0.0:
+                self.distance = 0.0
+            elif self.distance > self.dist_max:
+                self.distance = self.REALLY_FAR_AWAY
+        else:
+            self.distance = self.REALLY_FAR_AWAY
 
     def get_distance_thread(self):
         return threading.Thread(target=UltrasonicSensor.find_distance, args=(self,))
