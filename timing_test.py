@@ -5,6 +5,7 @@ from src import laser_finder
 
 with picamera.PiCamera() as cam:
     cam.resolution = (800,600)
+    cam.framerate = 20
     time.sleep(2.0)
 
     start1 = time.time()
@@ -18,7 +19,8 @@ with picamera.PiCamera() as cam:
 
     time.sleep(0.1)
     start3 = time.time()
-    cam.capture_sequence(list(range(10)), format='bmp', use_video_port=True)
+    cam.capture_sequence([str(i)+".bmp" for i in range(20)], \
+                         format='bmp', use_video_port=True)
     time3 = time.time() - start3
 
 start4 = time.time()
@@ -27,5 +29,5 @@ time4 = time.time() - start4
 
 print('single image, image port:', time1)
 print('single image, video port:', time2)
-print('10 images, video port:', time3)
+print('20 images, video port:', time3)
 print('800x600 image analysis:', time4)
