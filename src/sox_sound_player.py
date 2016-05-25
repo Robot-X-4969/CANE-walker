@@ -14,9 +14,9 @@ class SoxSoundThread (threading.Thread):
         while self.is_robotting:
             if time.time() > self.t_last + self.delay:
                 #print('running', self.cmd_str)
+                self.t_last = time.time()
                 os.system( self.cmd_str )
 		        #print('finished', self.cmd_str)
-                self.t_last = time.time()
             time.sleep(0.01)
 
     def set_frequency(self, frequency):
