@@ -7,7 +7,7 @@ class SoxSoundThread (threading.Thread):
         threading.Thread.__init__(self)
         self.cmd_str = 'play -q ' + filename
         self.t_last = time.time()
-        self.delay = 0
+        self.delay = 1000000
         self.is_robotting = True
 
     def run(self):
@@ -22,5 +22,5 @@ class SoxSoundThread (threading.Thread):
     def set_frequency(self, frequency):
         self.delay = 1.0 / frequency
 
-    def stop_robotting(self):
+    def terminate(self):
         self.is_robotting = False
