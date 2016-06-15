@@ -10,7 +10,8 @@ imfile1, imfile2 = io.BytesIO(), io.BytesIO()
 with picamera.PiCamera() as cam:
     cam.resolution = (640, 480)
     cam.led = False
-    cam.framerate = 85
+    cam.framerate = 55
+    time.sleep(2.0)
     imagestart = time.time()
     laser.turn_on()
     cam.capture(imfile1, format='jpeg', use_video_port=True)
@@ -24,7 +25,7 @@ im1 = Image.open(imfile1)
 im2 = Image.open(imfile2)
 
 processstart = time.time()
-((pos1,pos2), imdiff, raw_blobs, blobs) = vision.image_process(im1, im2, vebose_output=True)
+((pos1,pos2), imdiff, raw_blobs, blobs) = vision.image_process(im1, im2, verbose_output=True)
 dot_separation = vision.dot_separation(pos1, pos2)
 processend = totalend = time.time()
 
