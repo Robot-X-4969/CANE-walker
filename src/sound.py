@@ -1,23 +1,24 @@
-import threading
-import os
-import time
+from threading import Thread
+from os import system
+from time import time, sleep
 
-class SoxSoundThread (threading.Thread):
+class SoxSoundThread (Thread):
     def __init__(self, filename):
-        threading.Thread.__init__(self)
+        Thread.__init__(self)
         self.cmd_str = 'play -q ' + filename
-        self.t_last = time.time()
+        self.t_last = time()
         self.delay = 1000000
         self.is_robotting = True
 
     def run(self):
         while self.is_robotting:
-            if time.time() > self.t_last + self.delay:
+            if time() > self.t_last + self.delay:
                 #print('running', self.cmd_str)
-                self.t_last = time.time()
-                os.system( self.cmd_str )
-		        #print('finished', self.cmd_str)
-            time.sleep(0.01)
+                self.t_last = time()
+                system( self.cmd_str )
+                #print('finished', self.cmd_str)
+            else:
+                sleep(0.02)
 
     def set_frequency(self, frequency):
         self.delay = 1.0 / frequency

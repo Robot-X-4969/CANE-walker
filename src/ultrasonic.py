@@ -1,11 +1,11 @@
 import RPi.GPIO as gpio
-import time
-import threading
+from time import clock
+from threading import Thread
 
 
 REALLY_FAR_AWAY = 1000
 
-class UltrasonicSensor:	
+class UltrasonicSensor:
     """ 
     Constructor Parameters:
 	* trigger_pin - number for the GPIO pin connected to TRIG on the sensor
@@ -13,6 +13,8 @@ class UltrasonicSensor:
 	* offset - distance from sensor when walker hits an obstacle
 		^ can be zero
 	* max_dist - ignores objects farther than this (after offset applied)
+      * min_blip_freq - beep tempo at farthest distance
+      * max_blip_freq - beep tempo at nearest distance
     """
     
 
@@ -43,12 +45,6 @@ class UltrasonicSensor:
         gpio.output(self.trigger, gpio.LOW)
 
     def find_distance(self):
-        #gpio.output(self.trigger, gpio.LOW)
-        #micros_wait(10)
-        #gpio.output(self.trigger, gpio.HIGH)
-        #micros_wait(10)
-        #gpio.output(self.trigger, gpio.LOW)
-
         time_check(self.check_echo_started, self.timeout)
         tmp_time = time_check(self.check_echo_ended, self.timeout)
         raw_distance = seconds_to_meters( tmp_time )
@@ -63,7 +59,7 @@ class UltrasonicSensor:
             
 
     def get_distance_thread(self):
-        return threading.Thread(target=UltrasonicSensor.find_distance, args=(self,))
+        return Thread(target=UltrasonicSensor.find_distance, args=(self,))
 
     def blips_freq(self):
         if self.distance < self.dist_max:
@@ -81,19 +77,19 @@ def meters_to_seconds(meters):
 	return meters / 170.145
 
 def micros_wait(t):
-    tEnd = time.time() + t * 10**-6
-    while time.time() < tEnd:
+    tEnd = clock() + t * 10**-6
+    while clock() < tEnd:
         pass
     return
 
 def time_check( return_checker, max_time ):
-    tStart = time.time()
+    tStart = clock()
     tTimeout = tStart + max_time
     complete = return_checker()
     while not complete:
         complete = return_checker()
-        if time.time() >= tTimeout: 
+        if clock() >= tTimeout: 
             return -1
-    #print('sensor time', time.time() - tStart)
-    return time.time() - tStart
+    #print('sensor time', time() - tStart)
+    return clock() - tStart
     
