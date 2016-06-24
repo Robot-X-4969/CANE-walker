@@ -1,13 +1,14 @@
 from RPi import GPIO
 
-laserpin = 12
+class Laser:
+    def __init__(self, laser_pin):
+        self.laserpin = laser_pin
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.laserpin, GPIO.OUT)
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(laserpin, GPIO.OUT)
+    def turn_on(self):
+        GPIO.output(self.laserpin, GPIO.HIGH)
 
-def turn_on():
-    GPIO.output(laserpin, GPIO.HIGH)
-
-def turn_off():
-    GPIO.output(laserpin, GPIO.LOW)
+    def turn_off(self):
+        GPIO.output(self.laserpin, GPIO.LOW)
 

@@ -21,6 +21,7 @@ angle_weight = 15.0
 movement_threshold_left = 30 #find better value
 movement_threshold_right = 25  # ^ same
 separation_threshold = 20      # ^ same
+POSERR = (-4969,-4969)
 
 
 # ***** UTITLITY CLASSES *****
@@ -28,7 +29,8 @@ class ConnectedComponent:
     def __init__(self):
         self.coords = set()
     def __repr__(self):
-        return "<position "+str(self.avg_position())+", size "+str(self.size()+">")
+        return "<position "+str(self.avg_position())+", size "+\
+                str(self.size())+">"
     def addcoord(self, x, y):
         self.coords.add((x,y))
     def contains(self, x, y):
@@ -44,9 +46,13 @@ class Calibration:
     leftpos = (-1,-1)
     rightpos = (-1,-1)
     separation = -1
-    def calibrate(camera):
-        p1, p2 = capture_to_positions(camera)
-        #left dot has higher y-value
+    @staticmethod 
+    def calibrate(camera, laser, logfile=None):
+        ((p1, p2), image1, image2, imdiff, raw_blobs, blobs) = \
+            capture_to_positions(camera, laser, verbose=True)
+        image1.save('img-output/calibration1.png')
+        image2.save('img-output/calibration2.png')
+        imdiff.save('img-output/calibration_diff.png')
         Calibration.leftpos = p1 if p1[1]>p2[1] else p2
         Calibration.rightpos = p1 if p2 is Calibration.leftpos else p2
         Calibration.separation = _dot_separation(p1,p2)
@@ -79,12 +85,12 @@ def _dot_separation(pos1, pos2):
 
 # ***** MAIN LOGIC *****
 def differentiate_images(imon, imoff):
-    imon = imon.crop(cropbox)
-    imoff = imoff.crop(cropbox)
-    imdiff = ImageChops.difference(imon,imoff).convert('L')
+    imon = imon.crop(cropbox).convert('L')
+    imoff = imoff.crop(cropbox).convert('L')
+    imdiff = ImageChops.difference(imon,imoff)
     imdiff = ImageOps.autocontrast(imdiff)
-    return imdiff.point(lambda x: 0 if x<190 else 255)
-    #return imdiff
+    imdiff = imdiff.point(lambda x: 0 if x<160 else 255)
+    return imdiff
 
 
 def find_connected_components(img):
@@ -104,7 +110,8 @@ def find_connected_components(img):
                 tmpx, tmpy = posstack.pop()
                 for dx,dy in search_dirs:
                     newx, newy = tmpx+dx, tmpy+dy
-                    if _eligible_move(pxarr,newx,newy) and not (newx,newy) in posstack \
+                    if _eligible_move(pxarr,newx,newy) \
+                            and not (newx,newy) in posstack \
                             and _get_owning_component(blobs,newx,newy) == None:
                         posstack.append((newx,newy))
                         currentcomp.addcoord(newx,newy)
@@ -121,7 +128,7 @@ def image_process(image1, image2, verbose_output=False):
     if len(blobs) <= 2:
         good_positions = [b.avg_position() for b in blobs]
     else:
-        combos = combinations(blobs, 2)
+        combos = list(combinations(blobs, 2))
         pos_costs = []
         for b1,b2 in combos:
             pos1, pos2 = b1.avg_position(), b2.avg_position()
@@ -141,19 +148,22 @@ def image_process(image1, image2, verbose_output=False):
         if verbose_output:
             print "Vision: "+str(len(combos))+" pairs of blobs"
             print "Vision: "+str(len(pos_costs))+" at correct angles"
-        good_positions = min(pos_costs, key=lambda pc: pc[1])
+        good_positions = sorted(pos_costs, key=lambda pc: pc[1])
+    out_positions = (
+      good_positions[0] if len(good_positions)>0 else POSERR, \
+      good_positions[1] if len(good_positions)>1 else POSERR  )
     if verbose_output:
-        return (good_positions, image1, image2, imdiff, raw_blobs, blobs)
+        return (out_positions, image1, image2, imdiff, raw_blobs, blobs)
     else:
-        return good_positions
+        return out_positions
 
 
 
-def capture_to_positions(camera, f_laseron, f_laseroff, verbose=False):
+def capture_to_positions(camera, laser, verbose=False):
     imfile1, imfile2 = BytesIO(), BytesIO()
-    f_laseron()
+    laser.turn_on()
     camera.capture(imfile1, format='jpeg', use_video_port=True)
-    f_laseroff()
+    laser.turn_off()
     camera.capture(imfile2, format='jpeg', use_video_port=True)
     imfile1.seek(0)
     imfile2.seek(0)
