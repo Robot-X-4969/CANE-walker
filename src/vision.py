@@ -2,6 +2,7 @@ from PIL import Image, ImageChops, ImageOps
 from math import sqrt, atan2
 from io import BytesIO
 from itertools import combinations
+from src.logger import log, log_calibration
 
 # CONSTANTS
 imwidth = 640
@@ -10,7 +11,7 @@ cropbox = (200,0,450,480) #find better values
 cropwidth = 250
 cropheight = 480
 blob_size_min = 5
-blob_size_max = 36
+blob_size_max = 45
 blob_size_ideal = 15
 ideal_angle_1 = 0.33
 ideal_angle_2 = -2.81
@@ -18,9 +19,9 @@ angle_allowed_1 = (0.0, 1.1)
 angle_allowed_2 = (-3.14, -2.04)
 size_weight = 1.0
 angle_weight = 15.0
-movement_threshold_left = 30 #find better value
-movement_threshold_right = 25  # ^ same
-separation_threshold = 20      # ^ same
+movement_threshold_left = 60 #find better value
+movement_threshold_right = 50  # ^ same
+separation_threshold = 40      # ^ same
 POSERR = (-4969,-4969)
 
 
@@ -47,19 +48,17 @@ class Calibration:
     rightpos = (-1,-1)
     separation = -1
     @staticmethod 
-    def calibrate(camera, laser, logfile=None):
-        ((p1, p2), image1, image2, imdiff, raw_blobs, blobs) = \
+    def calibrate(camera, laser, filepath, loglines=None):
+        ((p1, p2), image1, image2, im1_cr, imdiff, raw_blobs, blobs) = \
             capture_to_positions(camera, laser, verbose=True)
-        image1.save('img-output/calibration1.png')
-        image2.save('img-output/calibration2.png')
-        imdiff.save('img-output/calibration_diff.png')
-        log(logfile, "Vision: calibration is "+str(p1)+" and "+str(p2))
+        
+        log(loglines, "Vision: calibration is "+str(p1)+" and "+str(p2))
         if p1 == POSERR or p2 == POSERR:
-            log(logfile, "Vision: ERROR! Calibration failed to find 2 positions")
+            log(loglines, "CALIBRATION ERROR! Failed to find 2 positions")
         Calibration.leftpos = p1 if p1[1]>p2[1] else p2
         Calibration.rightpos = p1 if p2 is Calibration.leftpos else p2
         Calibration.separation = _dot_separation(p1,p2)
-
+        log_calibration(filepath, image1, image2, imdiff)
 
 # ***** UTILITY FUNCTIONS *****
 def _get_owning_component(blobs, x, y):
@@ -85,20 +84,15 @@ def _angle_filter(theta):
 def _dot_separation(pos1, pos2):
     return sqrt( (pos1[0]-pos2[0])**2 + (pos1[1]-pos2[1])**2 )
 
-def log(f, s):
-    print s
-    if not f is None:
-        f.write(s + '\n')
-
 
 # ***** MAIN LOGIC *****
-def differentiate_images(imon, imoff):
+def differentiate_images(imon, imoff, verbose=False):
     imon = imon.crop(cropbox).convert('L')
     imoff = imoff.crop(cropbox).convert('L')
     imdiff = ImageChops.difference(imon,imoff)
     imdiff = ImageOps.autocontrast(imdiff)
     imdiff = imdiff.point(lambda x: 0 if x<160 else 255)
-    return imdiff
+    return (imdiff, imon, imoff) if verbose else imdiff
 
 
 def find_connected_components(img):
@@ -126,13 +120,16 @@ def find_connected_components(img):
     return blobs
 
 
-def image_process(image1, image2, verbose_output=False, logfile=None):
-    imdiff = differentiate_images(image1,image2)
+def image_process(imon, imoff, verbose=False, loglines=None):
+    if verbose:
+        (imdiff, imon_cr, imoff_cr) = differentiate_images(imon,imoff,True)
+    else:
+        imdiff = differentiate_images(imon, imoff)
     raw_blobs = find_connected_components(imdiff)
     blobs = filter(_blob_size_filter, raw_blobs)
-    if verbose_output:
-        log(logfile, "Vision: "+str(len(raw_blobs))+" raw connected components")
-        log(logfile, "Vision: "+str(len(blobs))+" correctly sized blobs")
+    if verbose:
+        log(loglines, "Vision: "+str(len(raw_blobs))+" raw blobs")
+        log(loglines, "Vision: "+str(len(blobs))+" correctly sized blobs")
     if len(blobs) <= 2:
         good_positions = [b.avg_position() for b in blobs]
     else:
@@ -153,21 +150,29 @@ def image_process(image1, image2, verbose_output=False, logfile=None):
                                abs(theta-ideal_angle_2))
             cost = size_factor*size_weight + angle_factor*angle_weight
             pos_costs.append( ((pos1,pos2), cost) )
-        if verbose_output:
-            log(logfile, "Vision: "+str(len(combos))+" pairs of blobs")
-            log(logfile, "Vision: "+str(len(pos_costs))+" at correct angles")
-        good_positions = sorted(pos_costs, key=lambda pc: pc[1])
+        if verbose:
+            log(loglines, "Vision: "+str(len(combos))+" pairs of blobs")
+            log(loglines, "Vision: "+str(len(pos_costs))+" at correct angles")
+        #sorted_positions = sorted(pos_costs, key=lambda pc: pc[1])
+        #good_positions = [p[0] for p in sorted_positions[0:2]]
+        if len(pos_costs) > 0:
+            good_positions = min(pos_costs, key=lambda pc: pc[1])[0]
+        else:
+            good_positions = []
+    log(loglines, "positions: " + str(good_positions))
+    log(loglines, "calibration: "+str((Calibration.leftpos, 
+                                       Calibration.rightpos)))
     out_positions = (
       good_positions[0] if len(good_positions)>0 else POSERR, \
       good_positions[1] if len(good_positions)>1 else POSERR  )
-    if verbose_output:
-        return (out_positions, image1, image2, imdiff, raw_blobs, blobs)
+    if verbose:
+        return (out_positions, imon, imoff, imon_cr, imdiff, raw_blobs, blobs)
     else:
         return out_positions
 
 
 
-def capture_to_positions(camera, laser, verbose=False):
+def capture_to_positions(camera, laser, verbose=False, loglines=None):
     imfile1, imfile2 = BytesIO(), BytesIO()
     laser.turn_on()
     camera.capture(imfile1, format='jpeg', use_video_port=True)
@@ -177,25 +182,25 @@ def capture_to_positions(camera, laser, verbose=False):
     imfile2.seek(0)
     im1 = Image.open(imfile1)
     im2 = Image.open(imfile2)
-    return image_process(im1, im2, verbose_output=verbose)
+    return image_process(im1, im2, verbose, loglines)
 
 
    
-def is_dropoff(pos1, pos2, verbose=False, logfile=None):
+def is_dropoff(pos1, pos2, verbose=False, loglines=None):
     bad_signs = 0
-    L, R = (pos1, pos2) if pos1[1]>pos2[1] else (pos2, pos1)
+    (L, R) = (pos1, pos2) if pos1[1]>pos2[1] else (pos2, pos1)
     if _dot_separation(L, Calibration.leftpos) > movement_threshold_left:
-        if verbose: log(logfile, "Vision: left dot looks like a dropoff")
+        if verbose: log(loglines, "Vision: left dot looks like a dropoff")
         bad_signs += 1
-    elif verbose: log(logfile, "Vision: left dot is okay")
+    elif verbose: log(loglines, "Vision: left dot is okay")
     if _dot_separation(R, Calibration.rightpos) > movement_threshold_right:
-        if verbose: log(logfile, "Vision: right dot looks like a dropoff")
+        if verbose: log(loglines, "Vision: right dot looks like a dropoff")
         bad_signs += 1
-    elif verbose: log(logfile, "Vision: right dot is okay")
+    elif verbose: log(loglines, "Vision: right dot is okay")
     if _dot_separation(L,R) - Calibration.separation > separation_threshold:
-        if verbose: log(logfile, \
+        if verbose: log(loglines, \
             "Vision: separation distance looks like a dropoff")
         bad_signs += 1
-    elif verbose: log(logfile, "Vision: separation distance is okay")
+    elif verbose: log(loglines, "Vision: separation distance is okay")
     return bad_signs > 0
     
