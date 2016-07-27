@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import os
 
 def log(L, s):
@@ -31,4 +31,4 @@ def safe_remove_dirs(*paths):
                 os.system('rm -r '+path)
             
 def date_time():
-    return str(datetime.datetime.now()).replace(':', ' ')
+    return str(datetime.now()).replace(':', ' ')

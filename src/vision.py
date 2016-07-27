@@ -171,8 +171,7 @@ def image_process(imon, imoff, verbose=False, loglines=None):
         return out_positions
 
 
-
-def capture_to_positions(camera, laser, verbose=False, loglines=None):
+def capture_images(camera, laser):
     imfile1, imfile2 = BytesIO(), BytesIO()
     laser.turn_on()
     camera.capture(imfile1, format='jpeg', use_video_port=True)
@@ -182,6 +181,10 @@ def capture_to_positions(camera, laser, verbose=False, loglines=None):
     imfile2.seek(0)
     im1 = Image.open(imfile1)
     im2 = Image.open(imfile2)
+    return im1, im2
+
+def capture_to_positions(camera, laser, verbose=False, loglines=None):
+    im1, im2 = capture_images(camera, laser)
     return image_process(im1, im2, verbose, loglines)
 
 
