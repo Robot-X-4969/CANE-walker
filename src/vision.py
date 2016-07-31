@@ -1,7 +1,7 @@
 import math
 from io import BytesIO
 import itertools
-from PIL import Image, ImageChops, ImageOps
+from PIL import Image, ImageChops, ImageOps, ImageDraw
 from src import util
 
 # CONSTANTS
@@ -12,40 +12,14 @@ imwidth = 640
 # height to set camera, in pixels
 imheight = 480 
 
-# area in which to look for dots; top-left x,y, bottom-right x,y
-cropbox = (200,0,450,480) 
-cropwidth = cropbox[2] - cropbox[0]
-cropheight = cropbox[3] - cropbox[1]
+# 
+dropoff_radius = 50
 
 # number of pixels in a valid-sized laser dot (minimum)
 blob_size_min = 4 
 
 # number of pixels in a valid-sized laser dot (maximum)
-blob_size_max = 45 
-
-# number of pixels in a ideal-sized laser dot, used to sort
-blob_size_ideal = 15 
-
-# angle (radians) between the laser dots at normal distance
-ideal_angle_1 = 0.33 
-ideal_angle_2 = ideal_angle_1-3.14
-
-# range of valid angles (radians) between dots
-angle_allowed_1 = (0.0, 1.1) 
-angle_allowed_2 = (angle_allowed_1[0]-3.14, angle_allowed_1[1]-3.14)
-
-# relative importance of the dot size (as opposed to the angle)
-size_weight = 1.0
-
-# relative importance of the angle between a pair of dots
-angle_weight = 15.0 
-
-# The maximum allowed difference (in pixels) between the calibration
-# values and the measured ones. Discrepancies exceeding these values
-# are reported as a drop-off
-movement_threshold_left = 60
-movement_threshold_right = 50
-separation_threshold = 40
+blob_size_max = 45
 
 # this is the position reported for one or both dots if said dot is not found
 POSITION_NOT_FOUND = (-4969,-4969)
@@ -96,8 +70,8 @@ class ConnectedComponent:
     def is_eligible_move(pixelarray, x, y):
         # determines whether or not a connected-component finder should
         # assign the pixel at x,y (if it exists) to a connected component
-        return (x >= 0 and x < cropwidth 
-            and y >= 0 and y < cropheight 
+        return (x >= 0 and x < imwidth 
+            and y >= 0 and y < imheight 
             and pixelarray[x,y] > 1)
 
     # Implements a simple algorithm to label 4-connected components in 
@@ -111,8 +85,8 @@ class ConnectedComponent:
         blobs = [] #this will store the ConnectedComponent objects
         search_directions = ((1,0),(0,1),(-1,0),(0,-1)) #4-connectivity
         #for every pixel in the image:
-        for x in xrange(cropwidth):
-            for y in xrange(cropheight):
+        for x in xrange(imwidth):
+            for y in xrange(imheight):
                 #if the pixel is false or already belongs to a blob, skip it
                 if (
                   pixelarray[x,y] < 1 or                  
@@ -153,7 +127,6 @@ class Calibration:
     # Dot locations and separation are in pixels.
     leftpos = (-1,-1) 
     rightpos = (-1,-1)
-    separation = -1
     
     @staticmethod 
     def calibrate(camera, laser, filepath):
@@ -164,7 +137,6 @@ class Calibration:
         
         Calibration.leftpos = p1 if p1[1]>p2[1] else p2
         Calibration.rightpos = p1 if p2 is Calibration.leftpos else p2
-        Calibration.separation = get_dot_separation(p1,p2)
         util.save_image(image1, filepath+'/calibration1.png')
         util.save_image(image2, filepath+'/calibration2.png')
         util.save_image(imdiff, filepath+'/calibration_diff.png')
@@ -173,118 +145,65 @@ class Calibration:
         if not success:
             util.log("CALIBRATION ERROR! Failed to find 2 positions")
         return success
+    
+    @staticmethod
+    def get_mask():
+        # black, single-channel
+        base = Image.new('L', (imwidth,imheight), 0)
+        draw = ImageDraw.Draw(base, 'L')
+        draw.ellipse(
+            (
+                Calibration.leftpos[0] - dropoff_radius,
+                Calibration.leftpos[1] - dropoff_radius,
+                Calibration.leftpos[0] + dropoff_radius,
+                Calibration.leftpos[1] + dropoff_radius,
+            ),
+            255, 255
+        )
+        draw.ellipse(
+            (
+                Calibration.rightpos[0] - dropoff_radius,
+                Calibration.rightpos[1] - dropoff_radius,
+                Calibration.rightpos[0] + dropoff_radius,
+                Calibration.rightpos[1] + dropoff_radius,
+            ),
+            255, 255
+        )
+        del draw
+        return base
 
 
 # UTILITY FUNCTIONS 
 def is_blob_valid_size(blob):
     # determine whether a blob is the same size as a laser dot
     return blob_size_min <= blob.size() <= blob_size_max
-
-def get_relative_dot_angle(pos1, pos2):
-    # find the angle between two potential laser dots
-    return math.atan2(pos2[1]-pos1[1], pos2[0]-pos1[0])
-
-def is_valid_dot_angle(theta):
-    # determine whether a pair of potential laser dots are in the correct
-    # places relative to one another
-    # Good:  A    or    B
-    #         B          A
-    #
-    # Bad:    A   or     B
-    #        B          A
-    return (angle_allowed_1[0] < theta < angle_allowed_1[1]
-         or angle_allowed_2[0] < theta < angle_allowed_2[1])
-
-def get_dot_separation(pos1, pos2):
-    # find distance in pixels between two points
-    return math.sqrt( (pos1[0]-pos2[0])**2 + (pos1[1]-pos2[1])**2 )
-
-def get_positions_and_cost(blob1, blob2):
-    # Cost function: (size error)*(size weight)+(angle error)*(angle weight)
-    # As with any cost, lower is better. This is invoked only when
-    # three or more blobs pass the size filter.
-    position1 = blob1.avg_position()
-    position2 = blob2.avg_position()
-    theta = get_relative_dot_angle(position1, position2)
-    if not is_valid_dot_angle(theta):
-        continue
-    # size factor = distance from ideal of worst-sized blob in the pairing
-    # expected < 20
-    size_factor = max(abs(blob1.size()-blob_size_ideal),
-                      abs(blob2.size()-blob_size_ideal) )
-    # angle factor = angular distance from ideal
-    # expected < 0.8
-    angle_factor = min(abs(theta-ideal_angle_1), 
-                       abs(theta-ideal_angle_2) )
-    # calculate the "cost"
-    cost = (size_factor*size_weight + angle_factor*angle_weight)
-    return ((position1, position2), cost)
+    
+def get_dot_separation(pos1, pos2): 
+    # find distance in pixels between two points 
+    return math.sqrt( (pos1[0]-pos2[0])**2 + (pos1[1]-pos2[1])**2 ) 
 
 
 # MAIN LOGIC
 
-def differentiate_images(image_on, image_off):
+def differentiate_images(image_on, image_off, calibration_mask):
     # Take two images, one with laser on and one with it off, and calculate
     # an image that describes what changed from one to the other using PIL's 
     # difference() method
-    # 1. crop and convert to grayscale
-    image_on = image_on.crop(cropbox).convert('L')
-    image_off = image_off.crop(cropbox).convert('L')
+    # 1. convert to grayscale
+    imonL = image_on.convert('L')
+    imoffL = image_off.convert('L')
     # 2. find difference image
-    image_diff = ImageChops.difference(image_on,image_off)
+    image_diff = ImageChops.difference(imonL,imoffL)
     # 3. adjust brightness such that the darkest pixel is 0 and the 
     #    brightest is 255
     image_diff = ImageOps.autocontrast(image_diff)
     # 4. binarize image by setting every pixel to either 0 or 255
     image_diff = image_diff.point(lambda x: 0 if x<160 else 255)
+    
+    base = Image.new('L', (imwidth, imheight), 0)
+    image_diff = base.paste(image_diff, mask=calibration_mask)
+    
     return (image_diff, image_on, image_off)
-
-
-
-
-
-def image_process(image_on, image_off):
-    # Find two laser dot points given the laser-on and laser-off pictures.
-    # 1. run image difference finder
-    (image_diff, image_on_cr, image_off_cr) = differentiate_images(
-                                              image_on,image_off)
-    # 2. find connected components in the diff image and store it as 
-    #    raw_blobs (unsorted)
-    raw_blobs = ConnectedComponent.find(image_diff)
-    # 3. get rid of all blobs with incorrect sizes
-    possible_dots = filter(is_blob_valid_size, raw_blobs)
-    util.log("Vision: " + str(len(raw_blobs)) + " raw blobs")
-    util.log("Vision: " + str(len(possible_dots)) + " correctly sized blobs")
-    if len(possible_dots) <= 2:
-        # 4a. if 2 or fewer dots are found, their positions are 
-        #     automatically the best
-        best_positions = [b.avg_position() for b in possible_dots]
-    else:
-        # 4b. if 3 or more dot are found, choose the combination
-        #     (using itertools.combinations()) with the lowest cost
-        combos = list(itertools.combinations(possible_dots, 2))
-        positions_and_costs = []
-        for b1,b2 in combos:
-            positions_and_costs.append( get_positions_and_cost(b1,b2) )
-        util.log("Vision: "+str(len(combos))+" pairs of blobs")
-        util.log("Vision: "+str(len(positions_and_costs)) \
-                                +" at correct angles")
-        if len(positions_and_costs) > 0:
-            # 4c. find the minimum cost (the 'key' tells min() to sort by
-            # cost and not position). After selecting, the index 0 grabs the
-            # position tuple and ignores the cost
-            key_fn = lambda position_with_cost: position_with_cost[1]
-            best_positions = min(positions_and_costs, key=key_fn)[0]
-        else:
-            best_positions = []
-    util.log("positions:   " + str(best_positions))
-    util.log("calibration: "+str((Calibration.leftpos, Calibration.rightpos)))
-    # if less than 2 blobs were found, give the "no blob" position
-    out_positions = (
-      best_positions[0] if len(best_positions)>0 else POSITION_NOT_FOUND, \
-      best_positions[1] if len(best_positions)>1 else POSITION_NOT_FOUND  )
-    return (out_positions, image_on, image_off, image_on_cr, 
-                image_diff, raw_blobs, possible_dots)
 
 
 def capture_images(camera, laser):
@@ -303,38 +222,25 @@ def capture_images(camera, laser):
     im2 = Image.open(imfile2)
     return im1, im2
 
-# Combine image capture and processing into one function
-def capture_to_positions(camera, laser):
-    im1, im2 = capture_images(camera, laser)
-    return image_process(im1, im2)
-
 # Determine if the two laser dot points (or lack thereof) indicate 
 # a dropoff. If left position, right position, or their separation is
 # wrong, return true
-def is_dropoff(pos1, pos2):
-    bad_signs = 0
-    (L, R) = (pos1, pos2) if pos1[1]>pos2[1] else (pos2, pos1)
+def is_dropoff(imdiff):
+    blobs = ConnectedComponent.find_blobs(imdiff)
+    if len(blobs) < 2:
+        return True
+        
+    left_found, right_found = False, False
+    for blob in blobs:
+        if not is_blob_valid_size(blob):
+            continue
+        position = blob.avg_position()
+        if (get_dot_separation(position, Calibration.leftpos)
+          < get_dot_separation(position, Calibration.rightpos)
+        ):
+            left_found = True
+        else:
+            right_found = True
     
-    if get_dot_separation(L, Calibration.leftpos) > movement_threshold_left:
-        util.log("Vision: left dot looks like a dropoff")
-        bad_signs += 1
-    else:
-        util.log("Vision: left dot is okay")
-        
-    if get_dot_separation(R, Calibration.rightpos)> movement_threshold_right:
-        util.log("Vision: right dot looks like a dropoff")
-        bad_signs += 1
-    else:
-        util.log("Vision: right dot is okay")
-        
-    if (
-      abs(get_dot_separation(L,R) - Calibration.separation) 
-      > separation_threshold
-    ):
-        util.log("Vision: separation distance looks like a dropoff")
-        bad_signs += 1
-    else:
-        util.log("Vision: separation distance is okay")
-    # if anything looks suspicious, return true
-    return bad_signs > 0
+    return (not left_found) or (not right_found)
     
