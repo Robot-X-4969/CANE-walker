@@ -2,17 +2,18 @@
 import time
 import threading
 import picamera
-from src import ultrasonic, sound, laser, vision, logger
+from src import ultrasonic, sound, laser, vision, util
 
 # COMPILE SETTINGS
-# toggle debug output
-b_debug = True
 
 # toggle ultrasonic sensing and feedback
 b_run_ultrasonic = False
 
 # toggle vision/dropoff sensing and feedback
 b_run_vision = True
+
+# change the way(s) in which log data is stored (print to stdout and/or file)
+util.set_log_mode(util.LogMode.PRINT_AND_MEMORY)
 
 # PINS AND PATHS
 trigger_pins = (23, 18) #L and R ultrasonic sensor trigger pins
@@ -26,8 +27,8 @@ us_sound_paths = ( 'sound/98left.wav', 'sound/884left.wav',
                    'sound/884right.wav', 'sound/98right.wav' )
 laser_pin = 12 #gpio pin powering the laser; should be 5
 dropoff_sound_path = 'sound/dropoff.wav' #dropoff alert file location
-dropoff_debug_dir = 'logs/dropoff/' #directory in which to store dropoff logs
-calibration_debug_dir = 'logs/calibration/' #directory for calibration logs
+dropoff_debug_dir = 'logs/dropoff' #directory in which to store dropoff logs
+calibration_debug_dir = 'logs/calibration' #directory for calibration logs
 
 # INITIALIZE VARIABLES
 # part 1: rearrage settings shown above
@@ -50,21 +51,18 @@ sensors_and_sounds = zip(map(ultrasonic.UltrasonicSensor, trigger_pins,
 dropoff_sound_thr = sound.SoxSoundThread(dropoff_sound_path)
 laser = laser.Laser(laser_pin)
 camera = picamera.PiCamera()
-#array of strings (log info) to be written to a file all at once
-logarr = []
 
 try:
     # clear the debugging directory (to free up space), then configure the 
     # camera for optimally quick image capturing. Wait 2 seconds to let the
     # camera adjust white balance, etc then calibrate the dropoff system
     if b_run_vision:
-        logger.safe_remove_dirs(dropoff_debug_dir, calibration_debug_dir)
+        util.super_remove_dirs(dropoff_debug_dir, calibration_debug_dir)
         camera.led = False
-        camera.resolution = (640,480)
+        camera.resolution = (vision.imwidth, vision.imheight)
         camera.framerate = 55
         time.sleep(2.0)
-        vision.Calibration.calibrate(camera, laser, calibration_debug_dir, 
-                                     logarr)
+        vision.Calibration.calibrate(camera, laser, calibration_debug_dir)
         dropoff_sound_thr.start()
     
     # start the ultrasonic sound repeaters (SoxSoundThread)
@@ -73,6 +71,8 @@ try:
             sound_repeater.start()
 
     while True:
+        util.set_log_path(dropoff_debug_dir + '/' + util.time_stamp())        
+        
         if b_run_ultrasonic:
             # get a pool of sensor-waiting threads, ping left and right
             # sides, start all threads listening, and wait for all responses
@@ -90,38 +90,39 @@ try:
             i = 0
             for sensor, sound_repeater in sensors_and_sounds:
                 sound_repeater.set_frequency( sensor.blips_freq() )
-                logger.log(logarr, 'sensor '+str(i)+', distance ' \
+                util.log('sensor '+str(i)+', distance ' \
                            + str(sensor.distance)+ ', frequency ' \
                            + str(sensor.blips_freq())
-                           )
+                        )
                 i += 1
                 
         if b_run_vision:
             # get the  positions (and other info if desired) from image
             # processing
-            if not b_debug:
-                pos1, pos2 = vision.capture_to_positions(camera, laser, 
-                                                         loglines=logarr)
-            else:
-                ((pos1, pos2), imon,imoff,imon_cr, imdiff, raw_blobs, blobs)\
-                   = vision.capture_to_positions(camera, laser, True, logarr)
+            ((pos1, pos2), imon,imoff,imon_cr, imdiff, raw_blobs, blobs) \
+                = vision.capture_to_positions(camera, laser)
             
             # determine whether the positions indicate a dropoff
-            is_dropoff = vision.is_dropoff(pos1, pos2, b_debug, logarr)
+            is_dropoff = vision.is_dropoff(pos1, pos2)
+            
             if is_dropoff: 
                 # sound clip is 1.5s, so loop it at 0.667 plays/s
-                dropoff_sound_thr.set_frequency(2./3. if is_dropoff else 0.00001)
-                if b_debug:
-                    logger.log(logarr, "Dropoff!")
+                dropoff_sound_thr.set_frequency(2./3. if is_dropoff 
+                                                    else 0.000001)
+                util.log("Dropoff!")
+                path = dropoff_debug_dir + '/' + util.time_stamp()
+                util.save_image(imon, path+'/raw_on.jpg')
+                util.save_image(imoff, path+'/raw_off.jpg')
+                util.save_image(imon_cr, path+'/cropped_on.jpg')
+                util.save_image(imdiff, path+'/diff.jpg')
+            else:
+                util.set_log_path(None)
             
-            logger.log(logarr,'threads active: '+str(threading.active_count()))
-            
-            if b_debug and is_dropoff:
-                logger.log_dropoff(dropoff_debug_dir, imon, imoff, imon_cr, 
-                                   imdiff, logarr)
+            util.log('threads active: '+str(threading.active_count()))
+            util.save_log_memory_to_file()
+                
         
         #time.sleep(2.0)
-        logarr = []
         print ""
 
 except KeyboardInterrupt:
