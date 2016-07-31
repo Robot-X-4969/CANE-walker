@@ -1,6 +1,7 @@
 from RPi import GPIO
 
 class Laser:
+    # Instances of this class toggle specific GPIO pins
     def __init__(self, laser_pin):
         self.laserpin = laser_pin
         GPIO.setmode(GPIO.BCM)
