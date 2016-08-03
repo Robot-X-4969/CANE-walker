@@ -18,9 +18,15 @@ class LogMode:
     memory = []
     
     # Access the state of the logging modes
-    should_print = lambda: LogMode.USE_STDOUT in LogMode.modes
-    should_file = lambda: LogMode.USE_LOGFILE in LogMode.modes
-    should_memory = lambda: LogMode.USE_MEMORY_BUFFER in LogMode.modes
+    @staticmethod
+    def should_print():
+        return LogMode.USE_STDOUT in LogMode.modes
+    @staticmethod
+    def should_file():
+        return LogMode.USE_LOGFILE in LogMode.modes
+    @staticmethod
+    def should_memory():
+        return LogMode.USE_MEMORY_BUFFER in LogMode.modes
 
 # specify the directory/file in which logs will be stored if requested
 def set_log_path(log_path):
