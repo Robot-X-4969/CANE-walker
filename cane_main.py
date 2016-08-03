@@ -13,7 +13,7 @@ b_run_ultrasonic = True
 b_run_vision = True
 
 # change the way(s) in which log data is stored (print to stdout and/or file)
-util.set_log_mode(util.LogMode.USE_STDOUT, util.LogMode.USE_MEMORY_BUFFER)
+util.set_log_modes(util.LogMode.USE_STDOUT, util.LogMode.USE_MEMORY_BUFFER)
 
 # PINS AND PATHS
 trigger_pins = (23, 18) #L and R ultrasonic sensor trigger pins
