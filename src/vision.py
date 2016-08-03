@@ -1,6 +1,5 @@
 import math
 from io import BytesIO
-import itertools
 from PIL import Image, ImageChops, ImageOps, ImageDraw
 from src import util
 
@@ -20,9 +19,6 @@ blob_size_min = 4
 
 # number of pixels in a valid-sized laser dot (maximum)
 blob_size_max = 45
-
-# this is the position reported for one or both dots if said dot is not found
-POSITION_NOT_FOUND = (-4969,-4969)
 
 
 # CLASS DEFINITIONS
@@ -130,21 +126,25 @@ class Calibration:
     
     @staticmethod 
     def calibrate(camera, laser, filepath):
-        ((p1, p2), image1, image2, im1_cr, imdiff, raw_blobs, blobs) \
-            = capture_to_positions(camera, laser)
+        image_on, image_off = capture_images(camera, laser)
+        image_diff = differentiate_images(image_on, image_off, None)
+        blobs = ConnectedComponent.find_blobs(image_diff)
         
-        util.log("Vision: calibration is "+str(p1)+" and "+str(p2))
-        
+        if len(blobs) != 2:
+            # TODO play "calibration failed, please restart to try again"
+            util.log('Vision: calibration failed and saw '+str(len(blobs))
+                        + ' blobs instead of 2')
+            return False
+            
+        p1,p2 = blobs[0].avg_position(), blobs[1].avg_position()
         Calibration.leftpos = p1 if p1[1]>p2[1] else p2
         Calibration.rightpos = p1 if p2 is Calibration.leftpos else p2
-        util.save_image(image1, filepath+'/calibration1.png')
-        util.save_image(image2, filepath+'/calibration2.png')
-        util.save_image(imdiff, filepath+'/calibration_diff.png')
         
-        success = (p1 != POSITION_NOT_FOUND and p2 != POSITION_NOT_FOUND)
-        if not success:
-            util.log("CALIBRATION ERROR! Failed to find 2 positions")
-        return success
+        util.save_image(image_on, filepath+'/calibration1.png')
+        util.save_image(image_off, filepath+'/calibration2.png')
+        util.save_image(image_diff, filepath+'/calibration_diff.png')
+        util.log("Vision: calibration is "+str(p1)+" and "+str(p2))
+        return True
     
     @staticmethod
     def get_mask():
@@ -169,7 +169,6 @@ class Calibration:
             ),
             255, 255
         )
-        del draw
         return base
 
 
@@ -200,10 +199,11 @@ def differentiate_images(image_on, image_off, calibration_mask):
     # 4. binarize image by setting every pixel to either 0 or 255
     image_diff = image_diff.point(lambda x: 0 if x<160 else 255)
     
-    base = Image.new('L', (imwidth, imheight), 0)
-    image_diff = base.paste(image_diff, mask=calibration_mask)
+    if calibration_mask != None:
+        base = Image.new('L', (imwidth, imheight), 0)
+        image_diff = base.paste(image_diff, mask=calibration_mask)
     
-    return (image_diff, image_on, image_off)
+    return image_diff
 
 
 def capture_images(camera, laser):

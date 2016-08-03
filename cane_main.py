@@ -63,6 +63,7 @@ try:
         camera.framerate = 55
         time.sleep(2.0)
         vision.Calibration.calibrate(camera, laser, calibration_debug_dir)
+        calibration_mask = vision.Calibration.get_mask()
         dropoff_sound_thr.start()
     
     # start the ultrasonic sound repeaters (SoxSoundThread)
@@ -97,13 +98,10 @@ try:
                 i += 1
                 
         if b_run_vision:
-            # get the  positions (and other info if desired) from image
-            # processing
-            ((pos1, pos2), imon,imoff,imon_cr, imdiff, raw_blobs, blobs) \
-                = vision.capture_to_positions(camera, laser)
-            
-            # determine whether the positions indicate a dropoff
-            is_dropoff = vision.is_dropoff(pos1, pos2)
+            image_on, image_off = vision.capture_images(camera, laser)
+            image_diff = vision.differentiate_images(image_on, image_off, 
+                                                     calibration_mask)
+            is_dropoff = vision.is_dropoff(image_diff)
             
             if is_dropoff: 
                 # sound clip is 1.5s, so loop it at 0.667 plays/s
@@ -111,19 +109,18 @@ try:
                                                     else 0.000001)
                 util.log("Dropoff!")
                 path = dropoff_debug_dir + '/' + util.time_stamp()
-                util.save_image(imon, path+'/raw_on.jpg')
-                util.save_image(imoff, path+'/raw_off.jpg')
-                util.save_image(imon_cr, path+'/cropped_on.jpg')
-                util.save_image(imdiff, path+'/diff.jpg')
+                util.save_image(image_on, path+'/raw_on.jpg')
+                util.save_image(image_off, path+'/raw_off.jpg')
+                util.save_image(image_diff, path+'/diff.jpg')
             else:
                 util.set_log_path(None)
             
             util.log('threads active: '+str(threading.active_count()))
+            util.log('')
             util.save_log_memory_to_file()
                 
         
         #time.sleep(2.0)
-        print ""
 
 except KeyboardInterrupt:
     # ctrl-C interrupts the program. This code waits for threads to end
