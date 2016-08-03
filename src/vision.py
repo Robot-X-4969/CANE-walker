@@ -89,7 +89,7 @@ class ConnectedComponent:
     def get_owning_component(blobs, x, y):
         #identifies the component in which a pixel is connected, else None
         for blob in blobs:
-            if blob.contains(x,y): return blob
+            if blob.contains_coord(x,y): return blob
         return None
     
     @staticmethod
