@@ -33,7 +33,7 @@ calibration_debug_dir = 'logs/calibration' #directory for calibration logs
 # INITIALIZE VARIABLES
 # part 1: rearrage settings shown above
 trigger_pins = (trigger_pins[0],) * 2 + (trigger_pins[1],) * 2
-offsets = (offsets[0], offsets[1], offsets[1], offsets[0])
+offsets =   (offsets[0],   offsets[1],   offsets[1],   offsets[0])
 max_dists = (max_dists[0], max_dists[1], max_dists[1], max_dists[0])
 blips_min = (blips_min,) * 4
 blips_max = (blips_max,) * 4
@@ -80,7 +80,7 @@ try:
             sense_threads = [s.get_distance_thread() 
                              for s,_ in sensors_and_sounds]
             sensors_and_sounds[0][0].ping()
-            sensors_and_sounds[0][2].ping()
+            sensors_and_sounds[2][0].ping()
             for th in sense_threads:
                 th.start()
             for th in sense_threads:
