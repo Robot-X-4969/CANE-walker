@@ -250,7 +250,7 @@ def image_process(image_on, image_off):
                                               image_on,image_off)
     # 2. find connected components in the diff image and store it as 
     #    raw_blobs (unsorted)
-    raw_blobs = ConnectedComponent.find(image_diff)
+    raw_blobs = ConnectedComponent.find_blobs(image_diff)
     # 3. get rid of all blobs with incorrect sizes
     possible_dots = filter(is_blob_valid_size, raw_blobs)
     util.log("Vision: " + str(len(raw_blobs)) + " raw blobs")
