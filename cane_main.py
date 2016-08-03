@@ -7,7 +7,7 @@ from src import ultrasonic, sound, laser, vision, util
 # COMPILE SETTINGS
 
 # toggle ultrasonic sensing and feedback
-b_run_ultrasonic = False
+b_run_ultrasonic = True
 
 # toggle vision/dropoff sensing and feedback
 b_run_vision = True
@@ -25,7 +25,7 @@ blips_max = 5.0  #beep play frequency at minimum (offset) distance
 #ultrasonic feedback file names/locations (SL, FL, FR, SR)
 us_sound_paths = ( 'sound/98left.wav', 'sound/884left.wav', 
                    'sound/884right.wav', 'sound/98right.wav' )
-laser_pin = 12 #gpio pin powering the laser; should be 5
+laser_pin = 5 #gpio pin powering the laser
 dropoff_sound_path = 'sound/dropoff.wav' #dropoff alert file location
 dropoff_debug_dir = 'logs/dropoff' #directory in which to store dropoff logs
 calibration_debug_dir = 'logs/calibration' #directory for calibration logs
