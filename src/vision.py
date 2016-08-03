@@ -142,7 +142,7 @@ class ConnectedComponent:
                                         blobs,new_x,new_y) == None
                         ):
                             #...then label it and add it to the stack
-                            current_component.addcoord(new_x, new_y)
+                            current_component.add_coord(new_x, new_y)
                             position_history_stack.append( (new_x,new_y) )
         #when all pixels have been exhausted, return the connected-comps list
         return blobs
