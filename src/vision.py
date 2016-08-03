@@ -121,7 +121,7 @@ class ConnectedComponent:
                     continue
                 #bright and not classified; therefore classify that shiznit
                 current_component = ConnectedComponent()
-                current_component.addcoord(x,y)
+                current_component.add_coord(x,y)
                 blobs.append(current_component)
                 #use a stack to back-track the 2D branching path
                 position_history_stack = [(x,y)]
