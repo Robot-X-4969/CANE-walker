@@ -207,7 +207,7 @@ def get_positions_and_cost(blob1, blob2):
     position2 = blob2.avg_position()
     theta = get_relative_dot_angle(position1, position2)
     if not is_valid_dot_angle(theta):
-        continue
+        return None
     # size factor = distance from ideal of worst-sized blob in the pairing
     # expected < 20
     size_factor = max(abs(blob1.size()-blob_size_ideal),
@@ -265,7 +265,9 @@ def image_process(image_on, image_off):
         combos = list(itertools.combinations(possible_dots, 2))
         positions_and_costs = []
         for b1,b2 in combos:
-            positions_and_costs.append( get_positions_and_cost(b1,b2) )
+            pos_cost = get_positions_and_cost(b1,b2)
+            if pos_cost != None:
+                positions_and_costs.append(pos_cost)
         util.log("Vision: "+str(len(combos))+" pairs of blobs")
         util.log("Vision: "+str(len(positions_and_costs)) \
                                 +" at correct angles")
