@@ -27,14 +27,14 @@ BLIP_FREQ_MAX = 5.0
 sensors = [
     #UltrasonicSensor(TRIG_L, ECHO_LS, OFFSET_SIDE, MAX_DIST_SIDE, BLIP_FREQ_MIN, BLIP_FREQ_MAX),
     #UltrasonicSensor(TRIG_L, ECHO_LF, OFFSET_FRONT, MAX_DIST_FRONT, BLIP_FREQ_MIN, BLIP_FREQ_MAX),
-    UltrasonicSensor(TRIG_R, ECHO_RF, OFFSET_FRONT, MAX_DIST_FRONT, BLIP_FREQ_MIN, BLIP_FREQ_MAX),
+    #UltrasonicSensor(TRIG_R, ECHO_RF, OFFSET_FRONT, MAX_DIST_FRONT, BLIP_FREQ_MIN, BLIP_FREQ_MAX),
     UltrasonicSensor(TRIG_R, ECHO_RS, OFFSET_SIDE, MAX_DIST_SIDE, BLIP_FREQ_MIN, BLIP_FREQ_MAX),
 ]
 
 sound_repeaters = [
     #SoxSoundThread(SOUND_LS),
     #SoxSoundThread(SOUND_LF),
-    SoxSoundThread(SOUND_RF),
+    #SoxSoundThread(SOUND_RF),
     SoxSoundThread(SOUND_RS),
 ]
 
