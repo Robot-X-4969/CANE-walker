@@ -10,10 +10,11 @@ from src import ultrasonic, sound, laser, vision, util
 b_run_ultrasonic = True
 
 # toggle vision/dropoff sensing and feedback
-b_run_vision = True
+b_run_vision = False
 
 # change the way(s) in which log data is stored (print to stdout and/or file)
 util.set_log_modes(util.LogMode.USE_STDOUT, util.LogMode.USE_MEMORY_BUFFER)
+
 
 # PINS AND PATHS
 trigger_pins = (23, 18) #L and R ultrasonic sensor trigger pins
@@ -87,14 +88,12 @@ try:
                 th.join()
             
             # update the blip frequencies of each sound player
-            i = 0
             for sensor, sound_repeater in sensors_and_sounds:
                 sound_repeater.set_frequency( sensor.blips_freq() )
-                util.log('sensor '+str(i)+', distance ' \
-                           + str(sensor.distance)+ ', frequency ' \
-                           + str(sensor.blips_freq())
+                util.log('sensor '+str(sensor.echo)+'; distance '
+                              +str(sensor.distance) +'; frequency '
+                              +str(sensor.blips_freq())
                         )
-                i += 1
                 
         if b_run_vision:
             # get the  positions (and other info if desired) from image
@@ -120,10 +119,11 @@ try:
             
             util.log('threads active: '+str(threading.active_count()))
             util.save_log_memory_to_file()
-                
-        
+            
         #time.sleep(2.0)
         print ""
+
+
 
 except KeyboardInterrupt:
     # ctrl-C interrupts the program. This code waits for threads to end

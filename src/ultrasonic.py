@@ -1,6 +1,7 @@
 import RPi.GPIO as gpio
 from time import clock
 from threading import Thread
+from src import util
 
 # distance (in meters, technically) to use when no object is seen. This 
 # should be outside the range in which the walker reacts in any way
@@ -50,8 +51,8 @@ class UltrasonicSensor:
     # update the sensor's distance variable (see resources directory for 
     # technical info)
     def find_distance(self):
-        # wait until the echo pin goes high, ignoring how long it takes
-        time_check(self.check_echo_started, self.timeout)
+        # wait until the echo pin goes high
+        wait_time = time_check(self.check_echo_started, self.timeout)
         # wait until the echo pin goes low, storing the elapsed time
         echo_time = time_check(self.check_echo_ended, self.timeout)
         if echo_time < 0: #timed out; there is nothing in view
@@ -62,6 +63,10 @@ class UltrasonicSensor:
             if self.distance < 0.0: 
                 #found something but it's less than the minimum distance
                 self.distance = 0.0
+        util.log(str(self.echo)+' went high after '+str(wait_time)
+            + '; measured time '+str(echo_time)
+            + '; raw distance '+str(self.distance)
+        )
             
     # return a new thread which runs find_distance()
     def get_distance_thread(self):
