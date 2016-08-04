@@ -49,13 +49,14 @@ class UltrasonicSensor:
         #micros_wait(10)
         #gpio.output(self.trigger, gpio.LOW)
 
-        time_check(self.check_echo_started, self.timeout)
-        tmp_time = time_check(self.check_echo_ended, self.timeout)
-        raw_distance = seconds_to_meters( tmp_time )
+        wait_time = time_check(self.check_echo_started, self.timeout)
+        echo_time = time_check(self.check_echo_ended, self.timeout)
+        raw_distance = seconds_to_meters( echo_time )
         self.distance = raw_distance - self.dist_offset
-        #print("""'went high after', wait_time, """'measured time', tmp_time)
-        print('raw distance', self.distance)
-        if raw_distance < 0: #timed out
+        print 'went high after '+str(wait_time)+ \
+              '; measured time '+str(echo_time) + \
+              '; raw distance '+str(self.distance)
+        if echo_time < 0: #timed out
             self.distance = REALLY_FAR_AWAY
         elif self.distance < 0.0: #found something but it's too close
             self.distance = 0.0  #thus self.distance >= 0 always

@@ -53,9 +53,10 @@ try:
 
         for i in range(len(sound_repeaters)):
             sound_repeaters[i].set_frequency( sensors[i].blips_freq() )
-            print( 'sensor', i, 'distance', sensors[i].distance, 'frequency', sensors[i].blips_freq() )
+            print 'sensor '+str(i)+'; distance '+str(sensors[i].distance) \
+                  +'; frequency '+str(sensors[i].blips_freq())
 
-        print( 'threads active', threading.active_count() )
+        print 'threads active '+str(threading.active_count())
         time.sleep(0.5)
 
 except KeyboardInterrupt:
