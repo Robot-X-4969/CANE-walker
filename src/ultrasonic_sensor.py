@@ -24,7 +24,7 @@ class UltrasonicSensor:
         self.dist_max = max_dist
         self.max_freq = max_blip_freq
         self.min_freq = min_blip_freq
-        self.timeout = meters_to_seconds(6.0)
+        self.timeout = 0.1
         gpio.setmode(gpio.BCM)
         gpio.setup(self.trigger, gpio.OUT)
         gpio.setup(self.echo, gpio.IN)
@@ -53,7 +53,7 @@ class UltrasonicSensor:
         echo_time = time_check(self.check_echo_ended, self.timeout)
         raw_distance = seconds_to_meters( echo_time )
         self.distance = raw_distance - self.dist_offset
-        print 'went high after '+str(wait_time) + \
+        print str(self.trigger)+' went high after '+str(wait_time) + \
               '; measured time '+str(echo_time) + \
               '; raw distance '+str(self.distance)
         if echo_time < 0: #timed out
@@ -64,11 +64,13 @@ class UltrasonicSensor:
             
 
     def get_distance_thread(self):
-        return threading.Thread(target=UltrasonicSensor.find_distance, args=(self,))
+        return threading.Thread(target=UltrasonicSensor.find_distance, 
+                                args=(self,))
 
     def blips_freq(self):
         if self.distance < self.dist_max:
-            return self.max_freq - (self.max_freq - self.min_freq) / self.dist_max * self.distance
+            return (self.max_freq - (self.max_freq - self.min_freq) 
+                   / self.dist_max * self.distance)
         else:
             return 0.001
 
@@ -82,19 +84,19 @@ def meters_to_seconds(meters):
 	return meters / 170.145
 
 def micros_wait(t):
-    tEnd = time.time() + t * 10**-6
-    while time.time() < tEnd:
+    tEnd = time.clock() + t * 10**-6
+    while time.clock() < tEnd:
         pass
     return
 
 def time_check( return_checker, max_time ):
-    tStart = time.time()
+    tStart = time.clock()
     tTimeout = tStart + max_time
     complete = return_checker()
     while not complete:
         complete = return_checker()
-        if time.time() >= tTimeout: 
+        if time.clock() >= tTimeout: 
             return -1
-    #print('sensor time', time.time() - tStart)
-    return time.time() - tStart
+    #print('sensor time', time.clock() - tStart)
+    return time.clock() - tStart
     
