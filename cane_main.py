@@ -7,7 +7,7 @@ from src import ultrasonic, sound, laser, vision, util
 # COMPILE SETTINGS
 
 # toggle ultrasonic sensing and feedback
-b_run_ultrasonic = False
+b_run_ultrasonic = True
 
 # toggle vision/dropoff sensing and feedback
 b_run_vision = True
@@ -45,7 +45,7 @@ blips_max = (blips_max,) * 4
 sensors_and_sounds = zip(map(ultrasonic.UltrasonicSensor, trigger_pins,
                              echo_pins, offsets, max_dists, blips_min,
                              blips_max
-                             ),
+                         ),
                          map(sound.SoxSoundThread, us_sound_paths)
                      )
 dropoff_sound_thr = sound.SoxSoundThread(dropoff_sound_path)
