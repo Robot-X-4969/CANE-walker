@@ -5,12 +5,12 @@ import time
 import threading
 
 # GLOBALS
-TRIG_L = 18
-TRIG_R = 23 #fix
-ECHO_LS = 23
-ECHO_LF = 22
-ECHO_RF = 20 #fix
-ECHO_RS = 21 #fix
+TRIG_L = 23
+TRIG_R = 18
+ECHO_LS = 16
+ECHO_LF = 21
+ECHO_RF = 12
+ECHO_RS = 24
 OFFSET_SIDE = 0.05
 OFFSET_FRONT = 0.25
 MAX_DIST_SIDE = 1.0
@@ -25,14 +25,14 @@ BLIP_FREQ_MAX = 5.0
 
 #TODO fix pin locations
 sensors = [
-    #UltrasonicSensor(TRIG_L, ECHO_LS, OFFSET_SIDE, MAX_DIST_SIDE, BLIP_FREQ_MIN, BLIP_FREQ_MAX),
+    UltrasonicSensor(TRIG_L, ECHO_LS, OFFSET_SIDE, MAX_DIST_SIDE, BLIP_FREQ_MIN, BLIP_FREQ_MAX),
     UltrasonicSensor(TRIG_L, ECHO_LF, OFFSET_FRONT, MAX_DIST_FRONT, BLIP_FREQ_MIN, BLIP_FREQ_MAX),
     #UltrasonicSensor(TRIG_R, ECHO_RF, OFFSET_FRONT, MAX_DIST_FRONT, BLIP_FREQ_MIN, BLIP_FREQ_MAX),
     #UltrasonicSensor(TRIG_R, ECHO_RS, OFFSET_SIDE, MAX_DIST_SIDE, BLIP_FREQ_MIN, BLIP_FREQ_MAX),
 ]
 
 sound_repeaters = [
-    #SoxSoundThread(SOUND_LS),
+    SoxSoundThread(SOUND_LS),
     SoxSoundThread(SOUND_LF),
     #SoxSoundThread(SOUND_RF),
     #SoxSoundThread(SOUND_RS),
