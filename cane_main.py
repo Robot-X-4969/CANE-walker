@@ -53,7 +53,7 @@ try:
 
         for i in range(len(sound_repeaters)):
             sound_repeaters[i].set_frequency( sensors[i].blips_freq() )
-            print 'sensor '+str(sensors[i].trigger)+'; distance ' \
+            print 'sensor '+str(sensors[i].echo)+'; distance ' \
                   +str(sensors[i].distance) \
                   +'; frequency '+str(sensors[i].blips_freq())
 

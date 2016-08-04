@@ -53,7 +53,7 @@ class UltrasonicSensor:
         echo_time = time_check(self.check_echo_ended, self.timeout)
         raw_distance = seconds_to_meters( echo_time )
         self.distance = raw_distance - self.dist_offset
-        print str(self.trigger)+' went high after '+str(wait_time) + \
+        print str(self.echo)+' went high after '+str(wait_time) + \
               '; measured time '+str(echo_time) + \
               '; raw distance '+str(self.distance)
         if echo_time < 0: #timed out
