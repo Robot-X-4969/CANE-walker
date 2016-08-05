@@ -51,9 +51,9 @@ class UltrasonicSensor:
     # update the sensor's distance variable (see resources directory for 
     # technical info)
     def find_distance(self):
-        time = self.measure_echo_pulse()
+        echo_time = self.measure_echo_pulse()
         
-        self.distance = convert_time_to_distance(time)
+        self.distance = self.convert_time_to_distance(echo_time)
         """util.log(str(self.echo)+' went high after '+str(wait_time)
             + ' with loop count '+str(wait_count)
             + '; measured time '+str(echo_time)+' with loop count '
@@ -62,36 +62,39 @@ class UltrasonicSensor:
     
     # Measure the length of the echo pulse and return it, in seconds.
     def measure_echo_pulse(self):
-        time = 0.0 # Length of time, in seconds.
+        echo_time = 0.0 # Length of time, in seconds.
 
         # wait until the echo pin goes high
         # Multiply by 1000 to convert seconds to milliseconds.
-        error = gpio.wait_for_edge(self.echo, gpio.RISING, timeout=self.timeout*1000) 
+        # TODO determine timeout outside of wait_for_edge
+        error = gpio.wait_for_edge(self.echo, gpio.RISING, 
+                                   timeout=int(self.timeout*1000))
         if error is None:
-            time = REALLY_FAR_AWAY
+            echo_time = REALLY_FAR_AWAY
             util.log(str(self.echo)+' never went high')
         
-        startTime = time.clock()
+        startTime = clock()
 
         # wait until the echo pin goes low, storing the elapsed time
-        error = gpio.wait_for_edge(self.echo, gpio.FALLING, timeout=self.timeout*1000)
+        error = gpio.wait_for_edge(self.echo, gpio.FALLING, 
+                                   timeout=int(self.timeout*1000))
         if error is None:
-            time = REALLY_FAR_AWAY
+            echo_time = REALLY_FAR_AWAY
             util.log(str(self.echo)+' never went low')
         
-        endTime = time.clock()
+        endTime = clock()
 
         # Calculate elapsed time.
-        time = endTime - startTime
+        echo_time = endTime - startTime
 
-        return time
+        return echo_time
 
     # Convert the provided time (in seconds) to an output distance (in meters).
-    def convert_time_to_distance(self, time):
+    def convert_time_to_distance(self, input_time):
         distance = 0.0 # Distance in meters
 
         # convert time to meters and adjust for offset
-        distance = seconds_to_meters(time) - self.dist_offset
+        distance = seconds_to_meters(input_time) - self.dist_offset
         if distance < 0.0: 
             # found something but it's less than the minimum distance
             distance = 0.0
