@@ -52,9 +52,15 @@ class UltrasonicSensor:
     # technical info)
     def find_distance(self):
         # wait until the echo pin goes high
-        wait_time = time_check(self.check_echo_started, self.timeout)
+        wait_time, wait_count = time_check(self.check_echo_started, 
+                                           self.timeout)
+        if wait_time < 0:
+            self.distance = REALLY_FAR_AWAY
+            util.log(str(self.echo)+' never went high in '+str(wait_count))
+            return
         # wait until the echo pin goes low, storing the elapsed time
-        echo_time = time_check(self.check_echo_ended, self.timeout)
+        echo_time, echo_count = time_check(self.check_echo_ended, 
+                                           self.timeout)
         if echo_time < 0: #timed out; there is nothing in view
             self.distance = REALLY_FAR_AWAY
         else:
@@ -64,8 +70,9 @@ class UltrasonicSensor:
                 #found something but it's less than the minimum distance
                 self.distance = 0.0
         util.log(str(self.echo)+' went high after '+str(wait_time)
-            + '; measured time '+str(echo_time)
-            + '; raw distance '+str(self.distance)
+            + ' with loop count '+str(wait_count)
+            + '; measured time '+str(echo_time)+' with loop count '
+            + str(echo_count)+'; raw distance '+str(self.distance)
         )
             
     # return a new thread which runs find_distance()
@@ -101,13 +108,15 @@ def micros_wait(t):
 # run a function repeatedly until it returns true, then return the time
 # it took to reach that state. If max_time (in seconds) is 
 def time_check( return_checker, max_time ):
+    count = 0
     tStart = clock()
     tTimeout = tStart + max_time
-    complete = return_checker()
+    complete = False
     while not complete:
         complete = return_checker()
+        count += 1
         if clock() >= tTimeout: 
-            return -1
+            return -1, count
     #print('sensor time', time() - tStart)
-    return clock() - tStart
+    return clock() - tStart, count
     

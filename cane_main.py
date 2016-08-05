@@ -43,11 +43,11 @@ blips_max = (blips_max,) * 4
 # 4-tuples of settings. Then combine those 2 lists into one where each
 # index is for one sensor. sensors_and_sounds[0] -> (<UltrasonicSensor for
 # side-left>, <SoxSoundThread for side-left>)
-sensors_and_sounds = zip(map(ultrasonic.UltrasonicSensor, trigger_pins,
-                             echo_pins, offsets, max_dists, blips_min,
-                             blips_max
+sensors_and_sounds = zip(map(ultrasonic.UltrasonicSensor, trigger_pins[2:4],
+                             echo_pins[2:4], offsets[2:4], max_dists[2:4], 
+                             blips_min[2:4], blips_max[2:4]
                              ),
-                         map(sound.SoxSoundThread, us_sound_paths)
+                         map(sound.SoxSoundThread, us_sound_paths[2:4])
                      )
 dropoff_sound_thr = sound.SoxSoundThread(dropoff_sound_path)
 laser = laser.Laser(laser_pin)
@@ -82,7 +82,7 @@ try:
             sense_threads = [s.get_distance_thread() 
                              for s,_ in sensors_and_sounds]
             sensors_and_sounds[0][0].ping()
-            sensors_and_sounds[2][0].ping()
+            #sensors_and_sounds[2][0].ping()
             for th in sense_threads:
                 th.start()
             for th in sense_threads:
