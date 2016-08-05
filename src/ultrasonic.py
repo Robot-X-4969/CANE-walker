@@ -32,7 +32,7 @@ class UltrasonicSensor:
         self.timeout = meters_to_seconds(6.0) #upper range 1m-4.5m, depending
         gpio.setmode(gpio.BCM)
         gpio.setup(self.trigger, gpio.OUT)
-        gpio.setup(self.echo, gpio.IN)
+        gpio.setup(self.echo, gpio.IN, pull_up_down=gpio.PUD_DOWN)
 
     def check_echo_started(self):
         return gpio.input(self.echo)
