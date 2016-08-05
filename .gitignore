@@ -1,1 +1,6 @@
 *.pyc
+.DS_Store
+training_data/*
+*.aup
+sound/sounds_data/*
+
