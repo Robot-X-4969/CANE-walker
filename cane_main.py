@@ -10,10 +10,11 @@ from src import ultrasonic, sound, laser, vision, util
 b_run_ultrasonic = True
 
 # toggle vision/dropoff sensing and feedback
-b_run_vision = True
+b_run_vision = False
 
 # change the way(s) in which log data is stored (print to stdout and/or file)
-util.set_log_mode(util.LogMode.PRINT_AND_MEMORY)
+util.set_log_modes(util.LogMode.USE_STDOUT, util.LogMode.USE_MEMORY_BUFFER)
+
 
 # PINS AND PATHS
 trigger_pins = (23, 18) #L and R ultrasonic sensor trigger pins
@@ -25,7 +26,7 @@ blips_max = 5.0  #beep play frequency at minimum (offset) distance
 #ultrasonic feedback file names/locations (SL, FL, FR, SR)
 us_sound_paths = ( 'sound/98left.wav', 'sound/884left.wav', 
                    'sound/884right.wav', 'sound/98right.wav' )
-laser_pin = 12 #gpio pin powering the laser; should be 5
+laser_pin = 5 #gpio pin powering the laser
 dropoff_sound_path = 'sound/dropoff.wav' #dropoff alert file location
 dropoff_debug_dir = 'logs/dropoff' #directory in which to store dropoff logs
 calibration_debug_dir = 'logs/calibration' #directory for calibration logs
@@ -33,7 +34,7 @@ calibration_debug_dir = 'logs/calibration' #directory for calibration logs
 # INITIALIZE VARIABLES
 # part 1: rearrage settings shown above
 trigger_pins = (trigger_pins[0],) * 2 + (trigger_pins[1],) * 2
-offsets = (offsets[0], offsets[1], offsets[1], offsets[0])
+offsets =   (offsets[0],   offsets[1],   offsets[1],   offsets[0])
 max_dists = (max_dists[0], max_dists[1], max_dists[1], max_dists[0])
 blips_min = (blips_min,) * 4
 blips_max = (blips_max,) * 4
@@ -50,13 +51,14 @@ sensors_and_sounds = zip(map(ultrasonic.UltrasonicSensor, trigger_pins,
                      )
 dropoff_sound_thr = sound.SoxSoundThread(dropoff_sound_path)
 laser = laser.Laser(laser_pin)
-camera = picamera.PiCamera()
+camera = None
 
 try:
     # clear the debugging directory (to free up space), then configure the 
     # camera for optimally quick image capturing. Wait 2 seconds to let the
     # camera adjust white balance, etc then calibrate the dropoff system
     if b_run_vision:
+        camera = picamera.PiCamera()
         util.super_remove_dirs(dropoff_debug_dir, calibration_debug_dir)
         camera.led = False
         camera.resolution = (vision.imwidth, vision.imheight)
@@ -71,32 +73,32 @@ try:
             sound_repeater.start()
 
     while True:
-        util.set_log_path(dropoff_debug_dir + '/' + util.time_stamp())        
-        
         if b_run_ultrasonic:
+            util.set_log_path(None)            
+            
             # get a pool of sensor-waiting threads, ping left and right
             # sides, start all threads listening, and wait for all responses
             # and/or time-outs
             sense_threads = [s.get_distance_thread() 
                              for s,_ in sensors_and_sounds]
             sensors_and_sounds[0][0].ping()
-            sensors_and_sounds[0][2].ping()
+            #sensors_and_sounds[2][0].ping()
             for th in sense_threads:
                 th.start()
             for th in sense_threads:
                 th.join()
             
             # update the blip frequencies of each sound player
-            i = 0
             for sensor, sound_repeater in sensors_and_sounds:
                 sound_repeater.set_frequency( sensor.blips_freq() )
-                util.log('sensor '+str(i)+', distance ' \
-                           + str(sensor.distance)+ ', frequency ' \
-                           + str(sensor.blips_freq())
+                util.log('sensor '+str(sensor.echo)+'; distance '
+                              +str(sensor.distance) +'; frequency '
+                              +str(sensor.blips_freq())
                         )
-                i += 1
                 
         if b_run_vision:
+            util.set_log_path(dropoff_debug_dir + '/' + util.time_stamp())                
+            
             # get the  positions (and other info if desired) from image
             # processing
             ((pos1, pos2), imon,imoff,imon_cr, imdiff, raw_blobs, blobs) \
@@ -118,12 +120,13 @@ try:
             else:
                 util.set_log_path(None)
             
-            util.log('threads active: '+str(threading.active_count()))
-            util.save_log_memory_to_file()
-                
-        
+        util.log('threads active: '+str(threading.active_count()))
+        util.save_log_memory_to_file()
+            
         #time.sleep(2.0)
         print ""
+
+
 
 except KeyboardInterrupt:
     # ctrl-C interrupts the program. This code waits for threads to end
@@ -138,6 +141,7 @@ except KeyboardInterrupt:
 finally:
     # be sure to close the camera access object, otherwise a restart is 
     # needed to open another instance
-    camera.close()
+    if not camera is None:
+        camera.close()
     print "**** all resources closed ****"
     

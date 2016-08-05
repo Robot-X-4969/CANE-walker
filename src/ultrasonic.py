@@ -1,6 +1,7 @@
 import RPi.GPIO as gpio
 from time import clock
 from threading import Thread
+from src import util
 
 # distance (in meters, technically) to use when no object is seen. This 
 # should be outside the range in which the walker reacts in any way
@@ -31,7 +32,7 @@ class UltrasonicSensor:
         self.timeout = meters_to_seconds(6.0) #upper range 1m-4.5m, depending
         gpio.setmode(gpio.BCM)
         gpio.setup(self.trigger, gpio.OUT)
-        gpio.setup(self.echo, gpio.IN)
+        gpio.setup(self.echo, gpio.IN, pull_up_down=gpio.PUD_DOWN)
 
     def check_echo_started(self):
         return gpio.input(self.echo)
@@ -50,10 +51,16 @@ class UltrasonicSensor:
     # update the sensor's distance variable (see resources directory for 
     # technical info)
     def find_distance(self):
-        # wait until the echo pin goes high, ignoring how long it takes
-        time_check(self.check_echo_started, self.timeout)
+        # wait until the echo pin goes high
+        wait_time, wait_count = time_check(self.check_echo_started, 
+                                           self.timeout)
+        if wait_time < 0:
+            self.distance = REALLY_FAR_AWAY
+            util.log(str(self.echo)+' never went high in '+str(wait_count))
+            return
         # wait until the echo pin goes low, storing the elapsed time
-        echo_time = time_check(self.check_echo_ended, self.timeout)
+        echo_time, echo_count = time_check(self.check_echo_ended, 
+                                           self.timeout)
         if echo_time < 0: #timed out; there is nothing in view
             self.distance = REALLY_FAR_AWAY
         else:
@@ -62,6 +69,11 @@ class UltrasonicSensor:
             if self.distance < 0.0: 
                 #found something but it's less than the minimum distance
                 self.distance = 0.0
+        util.log(str(self.echo)+' went high after '+str(wait_time)
+            + ' with loop count '+str(wait_count)
+            + '; measured time '+str(echo_time)+' with loop count '
+            + str(echo_count)+'; raw distance '+str(self.distance)
+        )
             
     # return a new thread which runs find_distance()
     def get_distance_thread(self):
@@ -96,13 +108,15 @@ def micros_wait(t):
 # run a function repeatedly until it returns true, then return the time
 # it took to reach that state. If max_time (in seconds) is 
 def time_check( return_checker, max_time ):
+    count = 0
     tStart = clock()
     tTimeout = tStart + max_time
-    complete = return_checker()
+    complete = False
     while not complete:
         complete = return_checker()
+        count += 1
         if clock() >= tTimeout: 
-            return -1
+            return -1, count
     #print('sensor time', time() - tStart)
-    return clock() - tStart
+    return clock() - tStart, count
     

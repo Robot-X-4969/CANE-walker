@@ -89,7 +89,7 @@ class ConnectedComponent:
     def get_owning_component(blobs, x, y):
         #identifies the component in which a pixel is connected, else None
         for blob in blobs:
-            if blob.contains(x,y): return blob
+            if blob.contains_coord(x,y): return blob
         return None
     
     @staticmethod
@@ -121,7 +121,7 @@ class ConnectedComponent:
                     continue
                 #bright and not classified; therefore classify that shiznit
                 current_component = ConnectedComponent()
-                current_component.addcoord(x,y)
+                current_component.add_coord(x,y)
                 blobs.append(current_component)
                 #use a stack to back-track the 2D branching path
                 position_history_stack = [(x,y)]
@@ -142,7 +142,7 @@ class ConnectedComponent:
                                         blobs,new_x,new_y) == None
                         ):
                             #...then label it and add it to the stack
-                            current_component.addcoord(new_x, new_y)
+                            current_component.add_coord(new_x, new_y)
                             position_history_stack.append( (new_x,new_y) )
         #when all pixels have been exhausted, return the connected-comps list
         return blobs
@@ -208,7 +208,7 @@ def get_positions_and_cost(blob1, blob2):
     position2 = blob2.avg_position()
     theta = get_relative_dot_angle(position1, position2)
     if not is_valid_dot_angle(theta):
-        continue
+        return None
     # size factor = distance from ideal of worst-sized blob in the pairing
     # expected < 20
     size_factor = max(abs(blob1.size()-blob_size_ideal),
@@ -251,7 +251,7 @@ def image_process(image_on, image_off):
                                               image_on,image_off)
     # 2. find connected components in the diff image and store it as 
     #    raw_blobs (unsorted)
-    raw_blobs = ConnectedComponent.find(image_diff)
+    raw_blobs = ConnectedComponent.find_blobs(image_diff)
     # 3. get rid of all blobs with incorrect sizes
     possible_dots = filter(is_blob_valid_size, raw_blobs)
     util.log("Vision: " + str(len(raw_blobs)) + " raw blobs")
@@ -266,7 +266,9 @@ def image_process(image_on, image_off):
         combos = list(itertools.combinations(possible_dots, 2))
         positions_and_costs = []
         for b1,b2 in combos:
-            positions_and_costs.append( get_positions_and_cost(b1,b2) )
+            pos_cost = get_positions_and_cost(b1,b2)
+            if pos_cost != None:
+                positions_and_costs.append(pos_cost)
         util.log("Vision: "+str(len(combos))+" pairs of blobs")
         util.log("Vision: "+str(len(positions_and_costs)) \
                                 +" at correct angles")
