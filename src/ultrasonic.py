@@ -52,7 +52,7 @@ class UltrasonicSensor:
     # technical info)
     def find_distance(self):
         # wait until the echo pin goes high
-        wait_time, wait_count = time_check(self.check_echo_started, 
+        wait_time = (self.check_echo_started, 
                                            self.timeout)
         if wait_time < 0:
             self.distance = REALLY_FAR_AWAY
@@ -108,15 +108,13 @@ def micros_wait(t):
 # run a function repeatedly until it returns true, then return the time
 # it took to reach that state. If max_time (in seconds) is 
 def time_check( return_checker, max_time ):
-    count = 0
     tStart = clock()
     tTimeout = tStart + max_time
     complete = False
     while not complete:
         complete = return_checker()
-        count += 1
         if clock() >= tTimeout: 
-            return -1, count
+            return -1
     #print('sensor time', time() - tStart)
-    return clock() - tStart, count
+    return clock() - tStart
     
