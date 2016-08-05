@@ -29,7 +29,7 @@ class UltrasonicSensor:
         self.dist_max = max_dist
         self.max_freq = max_blip_freq
         self.min_freq = min_blip_freq
-        self.timeout = meters_to_seconds(6.0) #upper range 1m-4.5m, depending
+        self.timeout = meters_to_seconds(10.0) #upper range 1m-4.5m, depending
         gpio.setmode(gpio.BCM)
         gpio.setup(self.trigger, gpio.OUT)
         gpio.setup(self.echo, gpio.IN, pull_up_down=gpio.PUD_DOWN)
@@ -51,30 +51,53 @@ class UltrasonicSensor:
     # update the sensor's distance variable (see resources directory for 
     # technical info)
     def find_distance(self):
-        # wait until the echo pin goes high
-        wait_time = (self.check_echo_started, 
-                                           self.timeout)
-        if wait_time < 0:
-            self.distance = REALLY_FAR_AWAY
-            util.log(str(self.echo)+' never went high in '+str(wait_count))
-            return
-        # wait until the echo pin goes low, storing the elapsed time
-        echo_time, echo_count = time_check(self.check_echo_ended, 
-                                           self.timeout)
-        if echo_time < 0: #timed out; there is nothing in view
-            self.distance = REALLY_FAR_AWAY
-        else:
-            #convert to meters and adjust for offset
-            self.distance = seconds_to_meters(echo_time) - self.dist_offset
-            if self.distance < 0.0: 
-                #found something but it's less than the minimum distance
-                self.distance = 0.0
-        util.log(str(self.echo)+' went high after '+str(wait_time)
+        time = self.measure_echo_pulse()
+        
+        self.distance = convert_time_to_distance(time)
+        """util.log(str(self.echo)+' went high after '+str(wait_time)
             + ' with loop count '+str(wait_count)
             + '; measured time '+str(echo_time)+' with loop count '
             + str(echo_count)+'; raw distance '+str(self.distance)
-        )
-            
+        )"""
+    
+    # Measure the length of the echo pulse and return it, in seconds.
+    def measure_echo_pulse(self):
+        time = 0.0 # Length of time, in seconds.
+
+        # wait until the echo pin goes high
+        # Multiply by 1000 to convert seconds to milliseconds.
+        error = gpio.wait_for_edge(self.echo, gpio.RISING, timeout=self.timeout*1000) 
+        if error is None:
+            time = REALLY_FAR_AWAY
+            util.log(str(self.echo)+' never went high')
+        
+        startTime = time.clock()
+
+        # wait until the echo pin goes low, storing the elapsed time
+        error = gpio.wait_for_edge(self.echo, gpio.FALLING, timeout=self.timeout*1000)
+        if error is None:
+            time = REALLY_FAR_AWAY
+            util.log(str(self.echo)+' never went low')
+        
+        endTime = time.clock()
+
+        # Calculate elapsed time.
+        time = endTime - startTime
+
+        return time
+
+    # Convert the provided time (in seconds) to an output distance (in meters).
+    def convert_time_to_distance(self, time):
+        distance = 0.0 # Distance in meters
+
+        # convert time to meters and adjust for offset
+        distance = seconds_to_meters(time) - self.dist_offset
+        if distance < 0.0: 
+            # found something but it's less than the minimum distance
+            distance = 0.0
+
+        return distance
+
     # return a new thread which runs find_distance()
     def get_distance_thread(self):
         return Thread(target=UltrasonicSensor.find_distance, args=(self,))
