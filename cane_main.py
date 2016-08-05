@@ -51,13 +51,14 @@ sensors_and_sounds = zip(map(ultrasonic.UltrasonicSensor, trigger_pins,
                      )
 dropoff_sound_thr = sound.SoxSoundThread(dropoff_sound_path)
 laser = laser.Laser(laser_pin)
-camera = picamera.PiCamera()
+camera = None
 
 try:
     # clear the debugging directory (to free up space), then configure the 
     # camera for optimally quick image capturing. Wait 2 seconds to let the
     # camera adjust white balance, etc then calibrate the dropoff system
     if b_run_vision:
+        camera = picamera.PiCamera()
         util.super_remove_dirs(dropoff_debug_dir, calibration_debug_dir)
         camera.led = False
         camera.resolution = (vision.imwidth, vision.imheight)
@@ -72,9 +73,9 @@ try:
             sound_repeater.start()
 
     while True:
-        util.set_log_path(dropoff_debug_dir + '/' + util.time_stamp())        
-        
         if b_run_ultrasonic:
+            util.set_log_path(None)            
+            
             # get a pool of sensor-waiting threads, ping left and right
             # sides, start all threads listening, and wait for all responses
             # and/or time-outs
@@ -96,6 +97,8 @@ try:
                         )
                 
         if b_run_vision:
+            util.set_log_path(dropoff_debug_dir + '/' + util.time_stamp())                
+            
             # get the  positions (and other info if desired) from image
             # processing
             ((pos1, pos2), imon,imoff,imon_cr, imdiff, raw_blobs, blobs) \
@@ -117,8 +120,8 @@ try:
             else:
                 util.set_log_path(None)
             
-            util.log('threads active: '+str(threading.active_count()))
-            util.save_log_memory_to_file()
+        util.log('threads active: '+str(threading.active_count()))
+        util.save_log_memory_to_file()
             
         #time.sleep(2.0)
         print ""
@@ -138,6 +141,7 @@ except KeyboardInterrupt:
 finally:
     # be sure to close the camera access object, otherwise a restart is 
     # needed to open another instance
-    camera.close()
+    if not camera is None:
+        camera.close()
     print "**** all resources closed ****"
     
