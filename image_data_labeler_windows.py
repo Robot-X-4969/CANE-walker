@@ -1,6 +1,8 @@
 import os
+import sys
 import glob
 from PIL import Image, ImageDraw
+from src import vision
 
 subdirs = glob.glob('training_data/*')
 for dropoff_entry_dir in subdirs:
@@ -32,36 +34,44 @@ for dropoff_entry_dir in subdirs:
                         float(calibration_split[1].split(', ')[1])
                 )
                 calibration_separation = float(calibration_split[2])
+                if vision.POSITION_NOT_FOUND in (calibration_left_pos,
+                                                 calibration_right_pos):
+                    print 'Calibration is not helpful. Moving on'
+                    continue
             else:
                 print 'Calibration file does not have 3 sections. Moving on.'
                 continue
             
             image = Image.open(dropoff_entry_dir+'/image_on.jpg')
-            draw = ImageDraw.Draw(image, mode='rgba')
+            draw = ImageDraw.Draw(image)
             draw.ellipse(
                 (
-                    calibration_left_pos[0] - 30,
-                    calibration_left_pos[1] - 30,
-                    calibration_left_pos[0] + 30,
-                    calibration_left_pos[1] + 30
+                    calibration_left_pos[0] - 30 + vision.cropbox[0],
+                    calibration_left_pos[1] - 30 + vision.cropbox[1],
+                    calibration_left_pos[0] + 30 + vision.cropbox[0],
+                    calibration_left_pos[1] + 30 + vision.cropbox[1]
                 ),
-                fill = (0,0,0,0), #transparent fill
-                outline = (255,255,255,127) #partially transparent outline
+                fill = None, #transparent fill
+                outline = (128,128,255) #partially bright outline
             )
             draw.ellipse(
                 (
-                    calibration_right_pos[0] - 30,
-                    calibration_right_pos[1] - 30,
-                    calibration_right_pos[0] + 30,
-                    calibration_right_pos[1] + 30
+                    calibration_right_pos[0] - 30 + vision.cropbox[0],
+                    calibration_right_pos[1] - 30 + vision.cropbox[1],
+                    calibration_right_pos[0] + 30 + vision.cropbox[0],
+                    calibration_right_pos[1] + 30 + vision.cropbox[1]
                 ),
-                fill = (0,0,0,0),
-                outline = (255,255,255,127)
+                fill = None,
+                outline = (128,128,255)
             )
             image.show()
-            label = raw_input('Enter label (g or d) -->  ')
-            while not label in ('g','d','G','D'):
-                label = raw_input('Try again (g or d) -->  ')
+            label = raw_input('Enter label (g, d, or exit) -->  ')
+            while not label in ('g','d','G','D','exit'):
+                label = raw_input('Try again (g, d, or exit) -->  ')
+            if label == 'exit':
+                sys.exit(1)
             with open(label_path, 'w') as labelfile:
                 labelfile.write(label)
+        else: #already labeled
+            print 'Already labeled. Moving on'
 
