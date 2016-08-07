@@ -1,4 +1,3 @@
-import os
 import picamera
 from src import vision, laser, util
 
