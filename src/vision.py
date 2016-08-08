@@ -165,9 +165,10 @@ class Calibration:
         Calibration.leftpos = p1 if p1[1]>p2[1] else p2
         Calibration.rightpos = p1 if p2 is Calibration.leftpos else p2
         Calibration.separation = get_dot_separation(p1,p2)
-        util.save_image(image1, filepath+'/calibration1.png')
-        util.save_image(image2, filepath+'/calibration2.png')
-        util.save_image(imdiff, filepath+'/calibration_diff.png')
+        if not filepath is None:
+            util.save_image(image1, filepath+'/calibration1.png')
+            util.save_image(image2, filepath+'/calibration2.png')
+            util.save_image(imdiff, filepath+'/calibration_diff.png')
         
         success = (p1 != POSITION_NOT_FOUND and p2 != POSITION_NOT_FOUND)
         if not success:
