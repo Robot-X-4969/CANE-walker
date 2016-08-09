@@ -34,12 +34,6 @@ class UltrasonicSensor:
         gpio.setup(self.trigger, gpio.OUT)
         gpio.setup(self.echo, gpio.IN, pull_up_down=gpio.PUD_DOWN)
 
-    def check_echo_started(self):
-        return gpio.input(self.echo)
-
-    def check_echo_ended(self):
-        return not gpio.input(self.echo)
-        
     # send pulse to sensor's TRIG pin, starting the measurement process
     def ping(self):
         gpio.output(self.trigger, gpio.LOW)
