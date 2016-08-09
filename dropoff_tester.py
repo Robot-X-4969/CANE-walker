@@ -27,7 +27,7 @@ else:
                      + current_dir)
             continue
         
-        #taken from image labeler:
+        # Taken from image labeler. See documentation there
         calibration_path = current_dir + '/calibration.txt'
         if os.path.exists(calibration_path):
             with open(calibration_path, 'r') as calibrationfile:
@@ -47,15 +47,19 @@ else:
                     float(calibration_split[1].split(', ')[1])
             )
             calibration_separation = float(calibration_split[2])
+            
+            # skip testing on this image if the calibration is not complete
             if vision.POSITION_NOT_FOUND in (calibration_left_pos,
                                              calibration_right_pos):
                 util.log('Calibration is not helpful. Skipping '+current_dir)
                 continue
+        
         else:
             util.log('Calibration file does not have 3 sections. Skipping '
                      + current_dir)
             continue
         
+        # Test whether both image files exist. If not, skip this folder
         image_on_path = current_dir + '/image_on.jpg'
         image_off_path = current_dir + '/image_off.jpg'
         if not (os.path.exists(image_on_path) 
@@ -63,26 +67,34 @@ else:
             util.log('Could not find two images. Skipping '+current_dir)
             continue
         
-        #now test the dropoff detection
+        # If we have reached this point, the test of dropoff algorithm
+        # against labeled data can be run. Step 1: transfer calibration data
+        # to the vision module
         vision.Calibration.leftpos = calibration_left_pos
         vision.Calibration.rightpos = calibration_right_pos
         vision.Calibration.separation = calibration_separation
         
+        # open images in PIL
         image_on = Image.open(image_on_path)
         image_off = Image.open(image_off_path)
         
+        # process images to find positions (ignoring other debugging outputs)
         (pos1,pos2),_,_,_,_,_,_ = vision.image_process(image_on, image_off)
         dropoff_tested = vision.is_dropoff(pos1, pos2)
         
+        # convert label to boolean
         dropoff_label = (label in ('g','G'))
         tested_count += 1
+        # compare tested value and labeled one
         if dropoff_label == dropoff_tested:
             util.log('label and test match as '+str(dropoff_tested))
             correct_count += 1
         else:
+            # if the labels don't match, log info to let user find the 
+            # images
             util.log('test '+str(dropoff_tested)+' does not match label '
                      + str(dropoff_label)+' in dataset '+current_dir)
-            
+
 if tested_count > 0:
     percent = 100.0 * float(correct_count) / float(tested_count)
     util.log('summary: %s correct answers of %s, or %.2f percent'
