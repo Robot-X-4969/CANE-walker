@@ -7,6 +7,7 @@ class LogMode:
     # Enumerate the log modes. Stdout will print log entries to the console.
     # Logfile will print to a file. Memory buffer will store a list of log 
     # entries, then (optionally) print all of them to a file at once.
+    USE_NONE = 0
     USE_STDOUT = 1
     USE_LOGFILE = 2
     USE_MEMORY_BUFFER = 3

@@ -1,12 +1,15 @@
 from glob import glob
 import os
+import time
 from PIL import Image
 from src import vision, util
 
-util.set_log_modes(util.LogMode.USE_STDOUT)
+util.set_log_modes(util.LogMode.USE_NONE)
 
 tested_count = 0
 correct_count = 0
+label_dropoff_count = 0
+test_dropoff_count = 0
 
 items = glob('training_data/*')
 subdirs = filter(os.path.isdir, items)
@@ -79,12 +82,26 @@ else:
         image_off = Image.open(image_off_path)
         
         # process images to find positions (ignoring other debugging outputs)
-        (pos1,pos2),_,_,_,_,_,_ = vision.image_process(image_on, image_off)
+        time_analysis_start = time.clock()
+        (pos1,pos2),_,_,_,image_diff,raw_blobs,possible_dots \
+                = vision.image_process(image_on, image_off)
         dropoff_tested = vision.is_dropoff(pos1, pos2)
+        analysis_time = time.clock() - time_analysis_start
+        if dropoff_tested:
+            test_dropoff_count += 1
+            
+        util.set_log_modes(util.LogMode.USE_STDOUT)
+        if analysis_time > 0.2:
+            util.log('time warning: %s took %.3f seconds' 
+                     % (current_dir, analysis_time))
         
         # convert label to boolean
         dropoff_label = (label in ('d','D'))
+        if dropoff_label:
+            label_dropoff_count += 1
+        
         tested_count += 1
+        
         # compare tested value and labeled one
         if dropoff_label == dropoff_tested:
             util.log('label and test match as '+str(dropoff_tested))
@@ -94,9 +111,19 @@ else:
             # images
             util.log('test '+str(dropoff_tested)+' does not match label '
                      + str(dropoff_label)+' in dataset '+current_dir)
+            util.log('  '+str(len(raw_blobs))+' blobs found')
+            util.log('  '+str(len(possible_dots))+' possible laser dots')
+            util.save_image(image_diff, current_dir+'/image_diff.jpg')
+        
+        util.set_log_modes(util.LogMode.USE_NONE)
 
 if tested_count > 0:
+    util.set_log_modes(util.LogMode.USE_STDOUT)
     percent = 100.0 * float(correct_count) / float(tested_count)
-    util.log('summary: %s correct answers of %s, or %.2f percent'
+    util.log('summary: %d correct answers of %d, or %.2f percent'
               % (correct_count, tested_count, percent))
+    util.log('%d dropoffs labeled vs %d good' 
+             % (label_dropoff_count, tested_count - label_dropoff_count))
+    util.log('%d dropoffs tested vs %d good' 
+             % (test_dropoff_count, tested_count - test_dropoff_count))
 
