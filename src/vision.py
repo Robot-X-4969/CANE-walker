@@ -13,7 +13,7 @@ imwidth = 640
 imheight = 480 
 
 # area in which to look for dots; top-left x,y, bottom-right x,y
-cropbox = (200,0,450,480) 
+cropbox = (0,0,0,0) 
 cropwidth = cropbox[2] - cropbox[0]
 cropheight = cropbox[3] - cropbox[1]
 
