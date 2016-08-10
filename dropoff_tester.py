@@ -83,7 +83,7 @@ else:
         dropoff_tested = vision.is_dropoff(pos1, pos2)
         
         # convert label to boolean
-        dropoff_label = (label in ('g','G'))
+        dropoff_label = (label in ('d','D'))
         tested_count += 1
         # compare tested value and labeled one
         if dropoff_label == dropoff_tested:
