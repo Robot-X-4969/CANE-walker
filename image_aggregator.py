@@ -1,3 +1,4 @@
+import time
 import picamera
 from src import vision, laser, util
 
@@ -11,6 +12,7 @@ try:
     cam.led = False
     cam.resolution = (vision.imwidth, vision.imheight)
     cam.framerate = 75
+    time.sleep(2.0)
     
     # initialize the laser
     lasr = laser.Laser(5)
