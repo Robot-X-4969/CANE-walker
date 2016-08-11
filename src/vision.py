@@ -13,7 +13,7 @@ imwidth = 640
 imheight = 480 
 
 # area in which to look for dots; top-left x,y, bottom-right x,y
-cropbox = (0,0,0,0) 
+cropbox = (100,200,500,325)
 cropwidth = cropbox[2] - cropbox[0]
 cropheight = cropbox[3] - cropbox[1]
 
@@ -151,7 +151,7 @@ class ConnectedComponent:
 class Calibration:
     # A sub-module of vision which stores calibration info.
     # Dot locations and separation are in pixels.
-    leftpos = (-1,-1) 
+    leftpos = (-1,-1)
     rightpos = (-1,-1)
     separation = -1
     

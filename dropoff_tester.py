@@ -41,14 +41,14 @@ else:
             calibration_string = ''
         calibration_split = calibration_string.split(';')
         if len(calibration_split) == 3:
-            calibration_left_pos = (
+            calibration_left_pos = [
                     float(calibration_split[0].split(', ')[0]),
                     float(calibration_split[0].split(', ')[1])
-            )
-            calibration_right_pos = (
+            ]
+            calibration_right_pos = [
                     float(calibration_split[1].split(', ')[0]),
                     float(calibration_split[1].split(', ')[1])
-            )
+            ]
             calibration_separation = float(calibration_split[2])
             
             # skip testing on this image if the calibration is not complete
@@ -73,6 +73,10 @@ else:
         # If we have reached this point, the test of dropoff algorithm
         # against labeled data can be run. Step 1: transfer calibration data
         # to the vision module
+        calibration_left_pos[0] -= vision.cropbox[0]
+        calibration_left_pos[1] -= vision.cropbox[1]
+        calibration_right_pos[0] -= vision.cropbox[0]
+        calibration_right_pos[1] -= vision.cropbox[1]
         vision.Calibration.leftpos = calibration_left_pos
         vision.Calibration.rightpos = calibration_right_pos
         vision.Calibration.separation = calibration_separation
@@ -91,9 +95,14 @@ else:
             test_dropoff_count += 1
             
         util.set_log_modes(util.LogMode.USE_STDOUT)
+        
+        util.log('calibration after adjustments: '+str(calibration_left_pos)
+                 + ' - ' + str(calibration_right_pos))
+        
         if analysis_time > 0.2:
             util.log('time warning: %s took %.3f seconds' 
                      % (current_dir, analysis_time))
+            util.save_image(image_diff, current_dir+'/image_diff.jpg')
         
         # convert label to boolean
         dropoff_label = (label in ('d','D'))
@@ -106,6 +115,13 @@ else:
         if dropoff_label == dropoff_tested:
             util.log('label and test match as '+str(dropoff_tested))
             correct_count += 1
+            
+            # the test was successful, so delete any debugging data from 
+            # the this image set
+            #diff_path = current_dir+'/image_diff.jpg'
+            #if os.path.exists(diff_path):
+                #os.remove(diff_path)
+                
         else:
             # if the labels don't match, log info to let user find the 
             # images

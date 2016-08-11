@@ -12,7 +12,7 @@ try:
     cam.led = False
     cam.resolution = (vision.imwidth, vision.imheight)
     cam.framerate = 75
-    time.sleep(2.0)
+    time.sleep(1.0)
     
     # initialize the laser
     lasr = laser.Laser(5)
@@ -24,6 +24,13 @@ try:
     # out the values it found
     raw_input('Press enter to calibrate')
     vision.Calibration.calibrate(cam, lasr, None)
+    
+    # adjust calibration values to eliminate dependency on crop parameters
+    vision.Calibration.leftpos[0] += vision.cropbox[0]
+    vision.Calibration.leftpos[1] += vision.cropbox[1]
+    vision.Calibration.rightpos[0] += vision.cropbox[2]
+    vision.Calibration.rightpos[1] += vision.cropbox[3]
+    
     print 'calibrated positions:'
     print vision.Calibration.leftpos
     print vision.Calibration.rightpos
