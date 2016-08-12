@@ -18,14 +18,14 @@ util.set_log_modes(util.LogMode.USE_STDOUT, util.LogMode.USE_MEMORY_BUFFER)
 
 # PINS AND PATHS
 trigger_pins = (23, 18) #L and R ultrasonic sensor trigger pins
-echo_pins = (16, 21, 12, 24) #side-left, front-left, FR, + SR US echo pins
+echo_pins = (16, 21)#, 12, 24) #side-left, front-left, FR, + SR US echo pins
 offsets = (0.02, 0.25) #distance from sensors to the side and front of walker
 max_dists = (1.0, 3.5) #distance from side, front where input is not ignored
 blips_min = 0.25 #beep play frequency at maximum distance
 blips_max = 5.0  #beep play frequency at minimum (offset) distance
 #ultrasonic feedback file names/locations (SL, FL, FR, SR)
-us_sound_paths = ( 'sound/98left.wav', 'sound/884left.wav', 
-                   'sound/884right.wav', 'sound/98right.wav' )
+us_sound_paths = ( 'sound/98left.wav', 'sound/884left.wav')#, 
+                   #'sound/884right.wav', 'sound/98right.wav' )
 laser_pin = 5 #gpio pin powering the laser
 dropoff_sound_path = 'sound/dropoff.wav' #dropoff alert file location
 dropoff_debug_dir = 'logs/dropoff' #directory in which to store dropoff logs
@@ -33,11 +33,11 @@ calibration_debug_dir = 'logs/calibration' #directory for calibration logs
 
 # INITIALIZE VARIABLES
 # part 1: rearrage settings shown above
-trigger_pins = (trigger_pins[0],) * 2 + (trigger_pins[1],) * 2
-offsets =   (offsets[0],   offsets[1],   offsets[1],   offsets[0])
-max_dists = (max_dists[0], max_dists[1], max_dists[1], max_dists[0])
-blips_min = (blips_min,) * 4
-blips_max = (blips_max,) * 4
+trigger_pins = (trigger_pins[0],) * 2 #+ (trigger_pins[1],) * 2
+offsets =   (offsets[0],   offsets[1])#,   offsets[1],   offsets[0])
+max_dists = (max_dists[0], max_dists[1])#, max_dists[1], max_dists[0])
+blips_min = (blips_min,) * 2#4
+blips_max = (blips_max,) * 2#4
 # part 2: build new variables
 # map the UltrasonicSensor and SoxSoundThread constructor functions to
 # 4-tuples of settings. Then combine those 2 lists into one where each
