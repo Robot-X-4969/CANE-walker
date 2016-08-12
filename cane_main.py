@@ -123,7 +123,7 @@ try:
         util.log('threads active: '+str(threading.active_count()))
         util.save_log_memory_to_file()
             
-        #time.sleep(2.0)
+        time.sleep(0.1)
         print ""
 
 

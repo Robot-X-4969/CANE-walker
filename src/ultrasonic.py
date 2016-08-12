@@ -63,9 +63,6 @@ class UltrasonicSensor:
         # TODO determine timeout outside of wait_for_edge
         error = gpio.wait_for_edge(self.echo, gpio.RISING, 
                                    timeout=int(self.timeout*1000))
-        if error is None:
-            echo_time = REALLY_FAR_AWAY
-            util.log(str(self.echo)+' never went high')
         
         startTime = clock()
 
