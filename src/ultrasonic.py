@@ -69,9 +69,6 @@ class UltrasonicSensor:
         # wait until the echo pin goes low, storing the elapsed time
         error = gpio.wait_for_edge(self.echo, gpio.FALLING, 
                                    timeout=int(self.timeout*1000))
-        if error is None:
-            echo_time = REALLY_FAR_AWAY
-            util.log(str(self.echo)+' never went low')
         
         endTime = clock()
 
