@@ -1,0 +1,247 @@
+import math
+from io import BytesIO
+from PIL import Image, ImageChops, ImageOps, ImageDraw
+from src import util
+
+# CONSTANTS
+
+# width to set camera, in pixels
+imwidth = 640
+
+# height to set camera, in pixels
+imheight = 480 
+
+# 
+dropoff_radius = 50
+
+# number of pixels in a valid-sized laser dot (minimum)
+blob_size_min = 4 
+
+# number of pixels in a valid-sized laser dot (maximum)
+blob_size_max = 45
+
+
+# CLASS DEFINITIONS
+class ConnectedComponent:
+    #  Stores information about pixels that are touching (connected to) one
+    #  another. Connected components are commonly referred to as "blobs" 
+    #  for short.
+    #  variables:
+    #      coords (list) stores coordinates of "connected" pixels
+    #  useful methods:
+    #      size: returns the number of connected pixels
+    #      avg_position: returns the center of the connected component
+    #      find_blobs: connected-component labeling implementation
+        
+    def __init__(self):
+        self.coords = set() #creates a new set (datatype) of coordinates
+        
+    def __repr__(self):
+        return "<position " + str(self.avg_position()) + ", size " \
+                + str(self.size()) + ">"
+                
+    def add_coord(self, x, y):
+        self.coords.add((x,y))
+        
+    def contains_coord(self, x, y):
+        return (x,y) in self.coords
+        
+    def size(self):
+        return len(self.coords)
+        
+    def avg_position(self):
+        # calculates the center of the blob
+        avgx = float(sum([c[0] for c in self.coords])) / float(self.size())
+        avgy = float(sum([c[1] for c in self.coords])) / float(self.size())
+        return (avgx,avgy)
+    
+    @staticmethod
+    def get_owning_component(blobs, x, y):
+        #identifies the component in which a pixel is connected, else None
+        for blob in blobs:
+            if blob.contains_coord(x,y): return blob
+        return None
+    
+    @staticmethod
+    def is_eligible_move(pixelarray, x, y):
+        # determines whether or not a connected-component finder should
+        # assign the pixel at x,y (if it exists) to a connected component
+        return (x >= 0 and x < imwidth 
+            and y >= 0 and y < imheight 
+            and pixelarray[x,y] > 1)
+
+    # Implements a simple algorithm to label 4-connected components in 
+    # a binary image.
+    # <https://en.wikipedia.org/wiki/Connected-component_labeling>
+    # Pixel values must be integers (PIL mode 'L' or similar) with 
+    # false = 0 and true > 0.
+    @staticmethod
+    def find_blobs(image):
+        pixelarray = image.load() #load pixel array
+        blobs = [] #this will store the ConnectedComponent objects
+        search_directions = ((1,0),(0,1),(-1,0),(0,-1)) #4-connectivity
+        #for every pixel in the image:
+        for x in xrange(imwidth):
+            for y in xrange(imheight):
+                #if the pixel is false or already belongs to a blob, skip it
+                if (
+                  pixelarray[x,y] < 1 or                  
+                  ConnectedComponent.get_owning_component(blobs,x, y)!= None
+                ):
+                    continue
+                #bright and not classified; therefore classify that shiznit
+                current_component = ConnectedComponent()
+                current_component.add_coord(x,y)
+                blobs.append(current_component)
+                #use a stack to back-track the 2D branching path
+                position_history_stack = [(x,y)]
+                
+                #Traverse all bright pixels connected to the original
+                #and label them part of the same connected component
+                while len(position_history_stack) > 0:
+                    old_x, old_y = position_history_stack.pop()
+                    for dx,dy in search_directions:
+                        new_x, new_y = old_x+dx, old_y+dy
+                        #If the pixel is in bounds, is bright, has not 
+                        #been visited already, and has no label...
+                        if (
+                          ConnectedComponent.is_eligible_move(pixelarray,
+                                                              new_x, new_y)
+                          and not (new_x, new_y) in position_history_stack
+                          and ConnectedComponent.get_owning_component(
+                                        blobs,new_x,new_y) == None
+                        ):
+                            #...then label it and add it to the stack
+                            current_component.add_coord(new_x, new_y)
+                            position_history_stack.append( (new_x,new_y) )
+        #when all pixels have been exhausted, return the connected-comps list
+        return blobs
+    
+        
+class Calibration:
+    # A sub-module of vision which stores calibration info.
+    # Dot locations and separation are in pixels.
+    leftpos = (-1,-1)
+    rightpos = (-1,-1)
+    
+    @staticmethod 
+    def calibrate(camera, laser, filepath):
+        image_on, image_off = capture_images(camera, laser)
+        image_diff = differentiate_images(image_on, image_off, None)
+        blobs = ConnectedComponent.find_blobs(image_diff)
+        
+        if len(blobs) != 2:
+            # TODO play "calibration failed, please restart to try again"
+            util.log('Vision: calibration failed and saw '+str(len(blobs))
+                        + ' blobs instead of 2')
+            return False
+            
+        p1,p2 = blobs[0].avg_position(), blobs[1].avg_position()
+        Calibration.leftpos = p1 if p1[1]>p2[1] else p2
+        Calibration.rightpos = p1 if p2 is Calibration.leftpos else p2
+        if not filepath is None:
+        
+        util.save_image(image_on, filepath+'/calibration1.png')
+        util.save_image(image_off, filepath+'/calibration2.png')
+        util.save_image(image_diff, filepath+'/calibration_diff.png')
+        util.log("Vision: calibration is "+str(p1)+" and "+str(p2))
+        return True
+    
+    @staticmethod
+    def get_mask():
+        # black, single-channel
+        base = Image.new('L', (imwidth,imheight), 0)
+        draw = ImageDraw.Draw(base, 'L')
+        draw.ellipse(
+            (
+                Calibration.leftpos[0] - dropoff_radius,
+                Calibration.leftpos[1] - dropoff_radius,
+                Calibration.leftpos[0] + dropoff_radius,
+                Calibration.leftpos[1] + dropoff_radius,
+            ),
+            255, 255
+        )
+        draw.ellipse(
+            (
+                Calibration.rightpos[0] - dropoff_radius,
+                Calibration.rightpos[1] - dropoff_radius,
+                Calibration.rightpos[0] + dropoff_radius,
+                Calibration.rightpos[1] + dropoff_radius,
+            ),
+            255, 255
+        )
+        return base
+
+
+# UTILITY FUNCTIONS 
+def is_blob_valid_size(blob):
+    # determine whether a blob is the same size as a laser dot
+    return blob_size_min <= blob.size() <= blob_size_max
+    
+def get_dot_separation(pos1, pos2): 
+    # find distance in pixels between two points 
+    return math.sqrt( (pos1[0]-pos2[0])**2 + (pos1[1]-pos2[1])**2 ) 
+
+
+# MAIN LOGIC
+
+def differentiate_images(image_on, image_off, calibration_mask):
+    # Take two images, one with laser on and one with it off, and calculate
+    # an image that describes what changed from one to the other using PIL's 
+    # difference() method
+    # 1. convert to grayscale
+    imonL = image_on.convert('L')
+    imoffL = image_off.convert('L')
+    # 2. find difference image
+    image_diff = ImageChops.difference(imonL,imoffL)
+    # 3. adjust brightness such that the darkest pixel is 0 and the 
+    #    brightest is 255
+    image_diff = ImageOps.autocontrast(image_diff)
+    # 4. binarize image by setting every pixel to either 0 or 255
+    image_diff = image_diff.point(lambda x: 0 if x<160 else 255)
+    
+    if calibration_mask != None:
+        base = Image.new('L', (imwidth, imheight), 0)
+        image_diff = base.paste(image_diff, mask=calibration_mask)
+    
+    return image_diff
+
+
+def capture_images(camera, laser):
+    # use picamera and PIL modules to capture images
+    imfile1, imfile2 = BytesIO(), BytesIO()
+    laser.turn_on()
+    # Use video port for rapid capture without de-noising algorithms.
+    # jpeg format is also faster due to hardware acceleration
+    camera.capture(imfile1, format='jpeg', use_video_port=True)
+    laser.turn_off()
+    camera.capture(imfile2, format='jpeg', use_video_port=True)
+    imfile1.seek(0)
+    imfile2.seek(0)
+    # PIL image generation
+    im1 = Image.open(imfile1)
+    im2 = Image.open(imfile2)
+    return im1, im2
+
+# Determine if the two laser dot points (or lack thereof) indicate 
+# a dropoff. If left position, right position, or their separation is
+# wrong, return true
+def is_dropoff(imdiff):
+    blobs = ConnectedComponent.find_blobs(imdiff)
+    if len(blobs) < 2:
+        return True
+        
+    left_found, right_found = False, False
+    for blob in blobs:
+        if not is_blob_valid_size(blob):
+            continue
+        position = blob.avg_position()
+        if (get_dot_separation(position, Calibration.leftpos)
+          < get_dot_separation(position, Calibration.rightpos)
+        ):
+            left_found = True
+        else:
+            right_found = True
+    
+    return (not left_found) or (not right_found)
+    

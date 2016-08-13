@@ -59,7 +59,7 @@ class ConnectedComponent:
     def get_owning_component(blobs, x, y):
         #identifies the component in which a pixel is connected, else None
         for blob in blobs:
-            if blob.contains(x,y): return blob
+            if blob.contains_coord(x,y): return blob
         return None
     
     @staticmethod
@@ -91,7 +91,7 @@ class ConnectedComponent:
                     continue
                 #bright and not classified; therefore classify that shiznit
                 current_component = ConnectedComponent()
-                current_component.addcoord(x,y)
+                current_component.add_coord(x,y)
                 blobs.append(current_component)
                 #use a stack to back-track the 2D branching path
                 position_history_stack = [(x,y)]
@@ -112,7 +112,7 @@ class ConnectedComponent:
                                         blobs,new_x,new_y) == None
                         ):
                             #...then label it and add it to the stack
-                            current_component.addcoord(new_x, new_y)
+                            current_component.add_coord(new_x, new_y)
                             position_history_stack.append( (new_x,new_y) )
         #when all pixels have been exhausted, return the connected-comps list
         return blobs
@@ -121,7 +121,7 @@ class ConnectedComponent:
 class Calibration:
     # A sub-module of vision which stores calibration info.
     # Dot locations and separation are in pixels.
-    leftpos = (-1,-1) 
+    leftpos = (-1,-1)
     rightpos = (-1,-1)
     
     @staticmethod 
@@ -139,10 +139,10 @@ class Calibration:
         p1,p2 = blobs[0].avg_position(), blobs[1].avg_position()
         Calibration.leftpos = p1 if p1[1]>p2[1] else p2
         Calibration.rightpos = p1 if p2 is Calibration.leftpos else p2
-        
-        util.save_image(image_on, filepath+'/calibration1.png')
-        util.save_image(image_off, filepath+'/calibration2.png')
-        util.save_image(image_diff, filepath+'/calibration_diff.png')
+        if not filepath is None:
+            util.save_image(image_on, filepath+'/calibration1.png')
+            util.save_image(image_off, filepath+'/calibration2.png')
+            util.save_image(image_diff, filepath+'/calibration_diff.png')
         util.log("Vision: calibration is "+str(p1)+" and "+str(p2))
         return True
     
@@ -199,11 +199,10 @@ def differentiate_images(image_on, image_off, calibration_mask):
     # 4. binarize image by setting every pixel to either 0 or 255
     image_diff = image_diff.point(lambda x: 0 if x<160 else 255)
     
-    if calibration_mask != None:
-        base = Image.new('L', (imwidth, imheight), 0)
-        image_diff = base.paste(image_diff, mask=calibration_mask)
+    base = Image.new('L', (imwidth, imheight), 0)
+    base.paste(image_diff, mask=calibration_mask)
     
-    return image_diff
+    return base
 
 
 def capture_images(camera, laser):

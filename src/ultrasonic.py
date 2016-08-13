@@ -1,6 +1,7 @@
 import RPi.GPIO as gpio
 from time import clock
 from threading import Thread
+from src import util
 
 # distance (in meters, technically) to use when no object is seen. This 
 # should be outside the range in which the walker reacts in any way
@@ -28,17 +29,11 @@ class UltrasonicSensor:
         self.dist_max = max_dist
         self.max_freq = max_blip_freq
         self.min_freq = min_blip_freq
-        self.timeout = meters_to_seconds(6.0) #upper range 1m-4.5m, depending
+        self.timeout = meters_to_seconds(10.0) #upper range 1m-4.5m, depending
         gpio.setmode(gpio.BCM)
         gpio.setup(self.trigger, gpio.OUT)
-        gpio.setup(self.echo, gpio.IN)
+        gpio.setup(self.echo, gpio.IN, pull_up_down=gpio.PUD_DOWN)
 
-    def check_echo_started(self):
-        return gpio.input(self.echo)
-
-    def check_echo_ended(self):
-        return not gpio.input(self.echo)
-        
     # send pulse to sensor's TRIG pin, starting the measurement process
     def ping(self):
         gpio.output(self.trigger, gpio.LOW)
@@ -50,19 +45,56 @@ class UltrasonicSensor:
     # update the sensor's distance variable (see resources directory for 
     # technical info)
     def find_distance(self):
-        # wait until the echo pin goes high, ignoring how long it takes
-        time_check(self.check_echo_started, self.timeout)
+        echo_time = self.measure_echo_pulse()
+        
+        self.distance = self.convert_time_to_distance(echo_time)
+        """util.log(str(self.echo)+' went high after '+str(wait_time)
+            + ' with loop count '+str(wait_count)
+            + '; measured time '+str(echo_time)+' with loop count '
+            + str(echo_count)+'; raw distance '+str(self.distance)
+        )"""
+    
+    # Measure the length of the echo pulse and return it, in seconds.
+    def measure_echo_pulse(self):
+        echo_time = 0.0 # Length of time, in seconds.
+
+        # wait until the echo pin goes high
+        # Multiply by 1000 to convert seconds to milliseconds.
+        # TODO determine timeout outside of wait_for_edge
+        error = gpio.wait_for_edge(self.echo, gpio.RISING, 
+                                   timeout=int(self.timeout*1000))
+        if error is None:
+            echo_time = REALLY_FAR_AWAY
+            util.log(str(self.echo)+' never went high')
+        
+        startTime = clock()
+
         # wait until the echo pin goes low, storing the elapsed time
-        echo_time = time_check(self.check_echo_ended, self.timeout)
-        if echo_time < 0: #timed out; there is nothing in view
-            self.distance = REALLY_FAR_AWAY
-        else:
-            #convert to meters and adjust for offset
-            self.distance = seconds_to_meters(echo_time) - self.dist_offset
-            if self.distance < 0.0: 
-                #found something but it's less than the minimum distance
-                self.distance = 0.0
-            
+        error = gpio.wait_for_edge(self.echo, gpio.FALLING, 
+                                   timeout=int(self.timeout*1000))
+        if error is None:
+            echo_time = REALLY_FAR_AWAY
+            util.log(str(self.echo)+' never went low')
+        
+        endTime = clock()
+
+        # Calculate elapsed time.
+        echo_time = endTime - startTime
+
+        return echo_time
+
+    # Convert the provided time (in seconds) to an output distance (in meters).
+    def convert_time_to_distance(self, input_time):
+        distance = 0.0 # Distance in meters
+
+        # convert time to meters and adjust for offset
+        distance = seconds_to_meters(input_time) - self.dist_offset
+        if distance < 0.0: 
+            # found something but it's less than the minimum distance
+            distance = 0.0
+
+        return distance
+
     # return a new thread which runs find_distance()
     def get_distance_thread(self):
         return Thread(target=UltrasonicSensor.find_distance, args=(self,))
@@ -98,7 +130,7 @@ def micros_wait(t):
 def time_check( return_checker, max_time ):
     tStart = clock()
     tTimeout = tStart + max_time
-    complete = return_checker()
+    complete = False
     while not complete:
         complete = return_checker()
         if clock() >= tTimeout: 
