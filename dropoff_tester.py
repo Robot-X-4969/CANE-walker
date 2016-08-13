@@ -91,7 +91,7 @@ else:
             
         util.set_log_modes(util.LogMode.USE_STDOUT)
         
-        if analysis_time > 0.2:
+        if analysis_time > 0.1:
             util.log('time warning: %s took %.3f seconds' 
                      % (current_dir, analysis_time))
             util.save_image(image_diff, current_dir+'/image_diff.jpg')

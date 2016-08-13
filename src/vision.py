@@ -11,14 +11,17 @@ imwidth = 640
 # height to set camera, in pixels
 imheight = 480 
 
-# 
-dropoff_radius = 50
+# radius from calibration point to look for dots
+dropoff_radius = 20
 
 # number of pixels in a valid-sized laser dot (minimum)
-blob_size_min = 4 
+blob_size_min = 3
 
 # number of pixels in a valid-sized laser dot (maximum)
 blob_size_max = 45
+
+# Greyscale pixels (0-255) larger than this are binarized white, else black 
+bw_cutoff = 100 
 
 
 # CLASS DEFINITIONS
@@ -197,7 +200,7 @@ def differentiate_images(image_on, image_off, calibration_mask):
     #    brightest is 255
     image_diff = ImageOps.autocontrast(image_diff)
     # 4. binarize image by setting every pixel to either 0 or 255
-    image_diff = image_diff.point(lambda x: 0 if x<160 else 255)
+    image_diff = image_diff.point(lambda x: 0 if x<bw_cutoff else 255)
     
     base = Image.new('L', (imwidth, imheight), 0)
     base.paste(image_diff, mask=calibration_mask)
