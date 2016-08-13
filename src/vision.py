@@ -17,8 +17,11 @@ cropbox = (100,200,500,325)
 cropwidth = cropbox[2] - cropbox[0]
 cropheight = cropbox[3] - cropbox[1]
 
+# Greyscale pixels (0-255) larger than this are binarized white, else black
+bw_cutoff = 160
+
 # number of pixels in a valid-sized laser dot (minimum)
-blob_size_min = 4 
+blob_size_min = 3
 
 # number of pixels in a valid-sized laser dot (maximum)
 blob_size_max = 45 
@@ -237,7 +240,7 @@ def differentiate_images(image_on, image_off):
     #    brightest is 255
     image_diff = ImageOps.autocontrast(image_diff)
     # 4. binarize image by setting every pixel to either 0 or 255
-    image_diff = image_diff.point(lambda x: 0 if x<160 else 255)
+    image_diff = image_diff.point(lambda x: 0 if x < bw_cutoff else 255)
     return (image_diff, image_on, image_off)
 
 

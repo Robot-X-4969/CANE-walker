@@ -96,9 +96,6 @@ else:
             
         util.set_log_modes(util.LogMode.USE_STDOUT)
         
-        util.log('calibration after adjustments: '+str(calibration_left_pos)
-                 + ' - ' + str(calibration_right_pos))
-        
         if analysis_time > 0.2:
             util.log('time warning: %s took %.3f seconds' 
                      % (current_dir, analysis_time))
