@@ -52,8 +52,7 @@ else:
             calibration_separation = float(calibration_split[2])
             
             # skip testing on this image if the calibration is not complete
-            if vision.POSITION_NOT_FOUND in (calibration_left_pos,
-                                             calibration_right_pos):
+            if (-4969,-4969) in (calibration_left_pos,calibration_right_pos):
                 util.log('Calibration is not helpful. Skipping '+current_dir)
                 continue
         
@@ -73,13 +72,9 @@ else:
         # If we have reached this point, the test of dropoff algorithm
         # against labeled data can be run. Step 1: transfer calibration data
         # to the vision module
-        calibration_left_pos[0] -= vision.cropbox[0]
-        calibration_left_pos[1] -= vision.cropbox[1]
-        calibration_right_pos[0] -= vision.cropbox[0]
-        calibration_right_pos[1] -= vision.cropbox[1]
         vision.Calibration.leftpos = calibration_left_pos
         vision.Calibration.rightpos = calibration_right_pos
-        vision.Calibration.separation = calibration_separation
+        dropoff_mask = vision.Calibration.get_mask()
         
         # open images in PIL
         image_on = Image.open(image_on_path)
@@ -87,16 +82,16 @@ else:
         
         # process images to find positions (ignoring other debugging outputs)
         time_analysis_start = time.clock()
-        (pos1,pos2),_,_,_,image_diff,raw_blobs,possible_dots \
-                = vision.image_process(image_on, image_off)
-        dropoff_tested = vision.is_dropoff(pos1, pos2)
+        image_diff = vision.differentiate_images(image_on, image_off, 
+                                                 dropoff_mask)
+        dropoff_tested = vision.is_dropoff(image_diff)
         analysis_time = time.clock() - time_analysis_start
         if dropoff_tested:
             test_dropoff_count += 1
             
         util.set_log_modes(util.LogMode.USE_STDOUT)
         
-        if analysis_time > 0.2:
+        if analysis_time > 0.1:
             util.log('time warning: %s took %.3f seconds' 
                      % (current_dir, analysis_time))
             util.save_image(image_diff, current_dir+'/image_diff.jpg')
@@ -124,8 +119,6 @@ else:
             # images
             util.log('test '+str(dropoff_tested)+' does not match label '
                      + str(dropoff_label)+' in dataset '+current_dir)
-            util.log('  '+str(len(raw_blobs))+' blobs found')
-            util.log('  '+str(len(possible_dots))+' possible laser dots')
             util.save_image(image_diff, current_dir+'/image_diff.jpg')
         
         util.set_log_modes(util.LogMode.USE_NONE)
