@@ -1,7 +1,22 @@
 import RPi.GPIO
 import time
+import threading
 
-class UltrasonicThread:
+class UltrasonicThread (threading.Thread):
+    stateMachines = None # List of state machines to loop through.  Cannot be initialized here, so is set to None.
+    distanceOptions = None # Distance options object, used to hold values for processing.
+
+    def __init__(self, triggerPins, echoPins):
+        for trigger, echo in zip(triggerPins, echoPins):
+            self.stateMachiens.add(UltrasonicStateMachine(trigger, echo)
+        self.distanceOptions = DistanceOptions()
+
+    def run(self):
+        for machine in self.stateMachines:
+            machine.update()
+        time.sleep(0.00001) # TODO Adjust this value.
+
+class DistanceOptions:
     # Content
 
 class UltrasonicStateMachine:
@@ -9,7 +24,7 @@ class UltrasonicStateMachine:
     state = 0 # Keeps track of state and runs proper methods.
     triggerPin = None # Trigger pin.  Can be None.
     echoPin = None
-    distance = 0 # Most recently found distance, in meters.
+    rawTime = 0 # Raw time for sound to bounce against object and back.
 
     def __init__(self, triggerPin, echoPin):
         self.triggerPin = triggerPin
@@ -33,7 +48,7 @@ class UltrasonicStateMachine:
         elif self.state == 3;
             self.waitForEchoEnd()
         elif self.state == 4;
-            self.calculateDistance()
+            self.calculateRawTime()
     
     def startTriggerPing(self):
         GPIO.output(self.triggerPin, GPIO.HIGH)
@@ -42,17 +57,26 @@ class UltrasonicStateMachine:
     triggerEndTime = 0
     waitingForTrigger = False
     def waitForTriggerEnd(self):
-        if waitingForTrigger == False:
-            waitingForTrigger = True
-            triggerEndTime = time.clock() + (10 * 10**-6) # Stop in 10 microseconds.
-        elif triggerEndTime < time.clock():
-            waitingForTrigger = False
-            state += 1
-
+        if self.waitingForTrigger == False:
+            self.waitingForTrigger = True
+            self.triggerEndTime = time.clock() + (10 * 10**-6) # Stop in 10 microseconds.
+        elif self.triggerEndTime < time.clock():
+            self.waitingForTrigger = False
+            self.state += 1
+    
+    self.echoStartTime = 0
     def waitForEchoStart(self):
+        if GPIO.input(echoPin) == GPIO.HIGH:
+            self.echoStartTime = time.clock()
+            self.state += 1
 
+    self.echoEndTime = 0
     def waitForEchoEnd(self):
+        if GPIO.input(echoPin) == GPIO.LOW:
+            self.echoEndTime = time.clock()
+            self.state += 1
 
-    def calculateDistance(self):
+    def calculateRawTime(self):
+        self.rawTime = self.echoEndTime - self.echoStartTime
 
 
