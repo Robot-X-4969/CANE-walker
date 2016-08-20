@@ -47,9 +47,9 @@ class UltrasonicStateMachine:
             self.waitForTriggerEnd()
         elif self.state == 2:
             self.waitForEchoStart()
-        elif self.state == 3;
+        elif self.state == 3:
             self.waitForEchoEnd()
-        elif self.state == 4;
+        elif self.state == 4:
             self.calculateRawTime()
     
     def startTriggerPing(self):
