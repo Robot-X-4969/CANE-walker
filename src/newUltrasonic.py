@@ -18,6 +18,8 @@ class UltrasonicThread (threading.Thread):
 
 class DistanceOptions:
     # Content
+    def __init__(self):
+        pass
 
 class UltrasonicStateMachine:
     # All methods in the state machine should be non-blocking.
