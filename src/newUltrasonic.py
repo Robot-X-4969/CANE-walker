@@ -8,7 +8,7 @@ class UltrasonicThread (threading.Thread):
 
     def __init__(self, triggerPins, echoPins):
         for trigger, echo in zip(triggerPins, echoPins):
-            self.stateMachiens.add(UltrasonicStateMachine(trigger, echo)
+            self.stateMachiens.add(UltrasonicStateMachine(trigger, echo))
         self.distanceOptions = DistanceOptions()
 
     def run(self):
