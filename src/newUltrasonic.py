@@ -24,7 +24,7 @@ class UltrasonicStateMachine:
     state = 0 # Keeps track of state and runs proper methods.
     triggerPin = None # Trigger pin.  Can be None.
     echoPin = None
-    rawTime = 0 # Raw time for sound to bounce against object and back.
+    rawTime = 0 # Raw time for sound to bounce against object and back, seconds.
 
     def __init__(self, triggerPin, echoPin):
         self.triggerPin = triggerPin
@@ -64,13 +64,13 @@ class UltrasonicStateMachine:
             self.waitingForTrigger = False
             self.state += 1
     
-    self.echoStartTime = 0
+    echoStartTime = 0
     def waitForEchoStart(self):
         if GPIO.input(echoPin) == GPIO.HIGH:
             self.echoStartTime = time.clock()
             self.state += 1
 
-    self.echoEndTime = 0
+    echoEndTime = 0
     def waitForEchoEnd(self):
         if GPIO.input(echoPin) == GPIO.LOW:
             self.echoEndTime = time.clock()
@@ -78,5 +78,6 @@ class UltrasonicStateMachine:
 
     def calculateRawTime(self):
         self.rawTime = self.echoEndTime - self.echoStartTime
+        print(self.rawTime)
 
 
