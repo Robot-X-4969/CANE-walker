@@ -20,26 +20,23 @@ class UltrasonicThread (threading.Thread):
     def run(self):
         while True:
             for machine, soundThread in zip(self.stateMachines, self.soundThreads):
-                machine.update()
-                while machine.state != 0:
-                    #print("Pin: " + str(machine.echoPin) + " State: " + str(machine.state))
-                    machine.update()
-                    soundThread.set_frequency(machine.blipsFrequency)
-                #time.sleep(0.00001) # TODO Adjust this value.
+                machine.findDistance()
+                soundThread.set_frequency(machine.blipsFrequency)
+                time.sleep(0.001)
 
 class DistanceOptions:
     minDistance = 0 #Distance when the walker hits an obstacle, in meters.
     maxDistance = 0 #Distance after which objects are ignored, in meters.
-    minBlipFrequency = 0 #Minimum frequency for sound blips, in blips / second.
-    maxBlipFrequency = 0 #Maximum frequency for sound blips, in blips / second.
+    inverseConstant = 1 # k, where y=k/x . x is distance, and y is frequency.
+
     def __init__(self):
-        pass
+        self.inverseConstant = 1
 
 class UltrasonicStateMachine:
     # All methods in the state machine should be non-blocking.
-    state = 0 # Keeps track of state and runs proper methods.
+    timedOut = False
 
-    triggerPin = None # Pin which the Pi pulse to tell the sensor to ping.  Can be None.
+    triggerPin = None # Pin which the Pi pulse to tell the sensor to ping.
     echoPin = None # Pin on which the Pi receives a ping back from the sensor.
 
     distanceOptions = None # Distance options object, used to hold values for processing.
@@ -47,6 +44,8 @@ class UltrasonicStateMachine:
     rawTime = 0 # Raw time for sound to bounce against object and back, seconds.
     rawDistance = 0
     blipsFrequency = 0.0
+
+    consecutiveTimeouts = 0
 
     def __init__(self, triggerPin, echoPin):
         self.triggerPin = triggerPin
@@ -62,67 +61,59 @@ class UltrasonicStateMachine:
            GPIO.setup(self.triggerPin, GPIO.OUT)
         GPIO.setup(self.echoPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-    def update(self):
-        if self.state == 0:
-            self.startTriggerPing()
-        elif self.state == 1:
-            self.waitForTriggerEnd()
-        elif self.state == 2:
-            self.waitForEchoStart()
-        elif self.state == 3:
-            self.waitForEchoEnd()
-        elif self.state == 4:
+    def findDistance(self):
+        self.timedOut = False
+
+        self.startTriggerPing()
+        self.waitForTriggerEnd()
+        self.endTriggerPing()
+        self.waitForEchoStart()
+        self.waitForEchoEnd()
+        if self.timedOut == False:
             self.calculateValues()
-        elif self.state == 5:
-            self.waitingPeriod()
+            self.consecutiveTimeouts = 0
         else:
-            self.state = 0
+            self.consecutiveTimeouts += 1
+            if self.consecutiveTimeouts > 50:
+                self.blipsFrequency = 0.001
+            print("Pin: " + str(self.echoPin) + " timed out!")
     
     def startTriggerPing(self):
-        if self.triggerPin is not None:
-            GPIO.output(self.triggerPin, GPIO.HIGH)
-            self.state += 1
-        else:
-            self.triggerEndTime = time.clock()
-            self.state += 2
+        GPIO.output(self.triggerPin, GPIO.HIGH)
     
-    triggerEndTime = 0
-    waitingForTrigger = False
     def waitForTriggerEnd(self):
-        if self.triggerPin is None:
-            self.state += 1
-        else:
-            if self.waitingForTrigger == False:
-                self.waitingForTrigger = True
-                self.triggerEndTime = time.clock() + (10 * 10**-6) # Stop in 10 microseconds.
-            elif self.triggerEndTime < time.clock():
-                if self.triggerPin is not None:
-                    GPIO.output(self.triggerPin, GPIO.LOW)
-                self.waitingForTrigger = False
-                self.state += 1
-    
+        time.sleep(0.00001)
+
+    def endTriggerPing(self):
+        GPIO.output(self.triggerPin, GPIO.LOW)
+
     echoStartTime = 0
+    waitForEchoStartTime = 0
     def waitForEchoStart(self):
-        if GPIO.input(self.echoPin) == GPIO.HIGH:
-            self.echoStartTime = time.clock()
-            self.state += 1
-        elif time.clock() > self.triggerEndTime + 0.2: # Timeout if it missed the echo.
-            self.state = 0
+        self.waitForEchoStartTime = time.clock()
+        while True:
+            if GPIO.input(self.echoPin) == GPIO.HIGH:
+                self.echoStartTime = time.clock()
+                break
+            elif time.clock() > self.waitForEchoStartTime + 0.01: # Timeout if it missed the echo.
+                self.timedOut = True
+                break
 
     echoEndTime = 0
     def waitForEchoEnd(self):
-        if GPIO.input(self.echoPin) == GPIO.LOW:
-            self.echoEndTime = time.clock()
-            self.state += 1
-        elif time.clock() > self.echoStartTime + 0.2: # Timeout if it missed the echo.
-            self.state = 0
+        while True:
+            if GPIO.input(self.echoPin) == GPIO.LOW:
+                self.echoEndTime = time.clock()
+                break
+            elif time.clock() > self.waitForEchoStartTime + 0.02: # Timeout if it missed the echo.
+                self.timedOut = True
+                break
 
     def calculateValues(self):
         self.calculateRawTime()
         self.calculateRawDistance()
         self.calculateBlipFrequency()
         print("Pin: " + str(self.echoPin) + " Distance (m): " + str(self.rawDistance))
-        self.state += 1
 
     def calculateRawTime(self):
         self.rawTime = self.echoEndTime - self.echoStartTime
@@ -134,21 +125,13 @@ class UltrasonicStateMachine:
     def calculateBlipFrequency(self):
         if self.rawDistance > self.distanceOptions.maxDistance:
             self.blipsFrequency = 0.001
-        elif self.rawDistance < self.distanceOptions.minDistance:
-            self.blipsFrequency = self.distanceOptions.maxBlipFrequency
+        elif self.rawDistance <= self.distanceOptions.minDistance:
+            self.blipsFrequency = 20
         else:
             # Do a linear conversion between the two scales.
-            w = (self.rawDistance - self.distanceOptions.minDistance) / (self.distanceOptions.maxDistance / self.distanceOptions.minDistance)
-            self.blipsFrequency = self.distanceOptions.maxBlipFrequency - (w * (self.distanceOptions.maxBlipFrequency - self.distanceOptions.minBlipFrequency))
+            #w = (self.rawDistance - self.distanceOptions.minDistance) / (self.distanceOptions.maxDistance / self.distanceOptions.minDistance)
+            #self.blipsFrequency = self.distanceOptions.maxBlipFrequency - (w * (self.distanceOptions.maxBlipFrequency - self.distanceOptions.minBlipFrequency))
 
-    waitEndTime = 0
-    waiting = False
-    def waitingPeriod(self):
-       if self.waiting == False:
-           self.waiting = True
-           self.waitEndTime = time.clock() + 0.05 
-       elif self.waitEndTime < time.clock():
-           self.waiting = False
-           self.state += 1
-        
+            # Do an inverse proportional relationship between distance and frequency.
+            self.blipsFrequency = self.distanceOptions.inverseConstant / (self.rawDistance - self.distanceOptions.minDistance)
 
