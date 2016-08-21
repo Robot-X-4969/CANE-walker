@@ -20,10 +20,11 @@ class UltrasonicThread (threading.Thread):
     def run(self):
         while True:
             for machine, soundThread in zip(self.stateMachines, self.soundThreads):
-                #if (machine.echoPin == 24):
-                    #print("Pin: " + str(machine.echoPin) + " State: " + str(machine.state))
                 machine.update()
-                soundThread.set_frequency(machine.blipsFrequency)
+                while machine.state != 0:
+                    #print("Pin: " + str(machine.echoPin) + " State: " + str(machine.state))
+                    machine.update()
+                    soundThread.set_frequency(machine.blipsFrequency)
                 #time.sleep(0.00001) # TODO Adjust this value.
 
 class DistanceOptions:
@@ -113,6 +114,8 @@ class UltrasonicStateMachine:
         if GPIO.input(self.echoPin) == GPIO.LOW:
             self.echoEndTime = time.clock()
             self.state += 1
+        elif time.clock() > self.echoStartTime + 0.2: # Timeout if it missed the echo.
+            self.state = 0
 
     def calculateValues(self):
         self.calculateRawTime()

@@ -17,7 +17,7 @@ leftFrontSound = SoxSoundThread("sound/884left.wav")
 rightFrontSound = SoxSoundThread("sound/884right.wav")
 rightSideSound = SoxSoundThread("sound/98right.wav")
 
-thread = UltrasonicThread([23,            None,           18,              None],
+thread = UltrasonicThread([23,            23,             18,              18],
                           [16,            21,             12,              24],
                           [sideOpt,       frontOpt,       frontOpt,        sideOpt],
                           [leftSideSound, leftFrontSound, rightFrontSound, rightSideSound])
