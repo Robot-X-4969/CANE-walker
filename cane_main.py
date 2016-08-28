@@ -7,10 +7,10 @@ from src import ultrasonic, sound, laser, vision, util
 # COMPILE SETTINGS
 
 # toggle ultrasonic sensing and feedback
-b_run_ultrasonic = True
+b_run_ultrasonic = False
 
 # toggle vision/dropoff sensing and feedback
-b_run_vision = False
+b_run_vision = True
 
 # change the way(s) in which log data is stored (print to stdout and/or file)
 util.set_log_modes(util.LogMode.USE_STDOUT, util.LogMode.USE_MEMORY_BUFFER)
@@ -105,10 +105,11 @@ try:
                                                      calibration_mask)
             is_dropoff = vision.is_dropoff(image_diff)
             
+            # sound clip is 1.5s, so loop it at 0.667 plays/s
+            dropoff_sound_thr.set_frequency(2./3. if is_dropoff 
+                                                else 0.000001)
+
             if is_dropoff: 
-                # sound clip is 1.5s, so loop it at 0.667 plays/s
-                dropoff_sound_thr.set_frequency(2./3. if is_dropoff 
-                                                    else 0.000001)
                 util.log("Dropoff!")
                 path = dropoff_debug_dir + '/' + util.time_stamp()
                 util.save_image(image_on, path+'/raw_on.jpg')
