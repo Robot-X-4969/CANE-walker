@@ -1,8 +1,8 @@
 import RPi.GPIO as GPIO
 import time
-import threading
+import processing
 
-class UltrasonicThread (threading.Thread):
+class UltrasonicProcess (processing.Process):
     stateMachines = None # List of state machines to loop through.  Cannot be initialized here, so is set to None.
     soundThreads = None
 
@@ -22,7 +22,7 @@ class UltrasonicThread (threading.Thread):
             for machine, soundThread in zip(self.stateMachines, self.soundThreads):
                 machine.findDistance()
                 soundThread.set_frequency(machine.blipsFrequency)
-                time.sleep(0.001)
+                time.sleep(0.005)
 
 class DistanceOptions:
     minDistance = 0 #Distance when the walker hits an obstacle, in meters.
