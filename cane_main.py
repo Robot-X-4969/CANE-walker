@@ -7,10 +7,10 @@ from src import ultrasonic, sound, laser, vision, util
 # COMPILE SETTINGS
 
 # toggle ultrasonic sensing and feedback
-b_run_ultrasonic = False
+b_run_ultrasonic = True
 
 # toggle vision/dropoff sensing and feedback
-b_run_vision = True
+b_run_vision = False
 
 # change the way(s) in which log data is stored (print to stdout and/or file)
 util.set_log_modes(util.LogMode.USE_STDOUT, util.LogMode.USE_MEMORY_BUFFER)
@@ -115,7 +115,6 @@ try:
                 util.save_image(image_off, path+'/raw_off.jpg')
                 util.save_image(image_diff, path+'/diff.jpg')
             else:
-                dropoff_sound_thr.set_frequency(0.00001)
                 util.set_log_path(None)
             
         util.log('threads active: '+str(threading.active_count()))
