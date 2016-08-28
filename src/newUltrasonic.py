@@ -1,8 +1,8 @@
 import RPi.GPIO as GPIO
 import time
-import processing
+import multiprocessing
 
-class UltrasonicProcess (processing.Process):
+class UltrasonicProcess (multiprocessing.Process):
     stateMachines = None # List of state machines to loop through.  Cannot be initialized here, so is set to None.
     soundThreads = None
 
