@@ -3,4 +3,5 @@
 *.aup
 sound/sounds_data/*
 *.swp
+dropoffEnabled.txt
 
