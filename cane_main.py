@@ -105,11 +105,11 @@ try:
                                                      calibration_mask)
             is_dropoff = vision.is_dropoff(image_diff)
             
-            file = open("dropoffEnabled.txt", "r")
-            dropoffEnabledB = file.read() == "True"
-            file.close()
+            #file = open("dropoffEnabled.txt", "r")
+            #dropoffEnabledB = file.read() == "True"
+            #file.close()
 
-            is_dropoff = is_dropoff and dropoffEnabledB
+            #is_dropoff = is_dropoff and dropoffEnabledB
 
             # sound clip is 1.5s, so loop it at 0.667 plays/s
             dropoff_sound_thr.set_frequency(2./3. if is_dropoff 
