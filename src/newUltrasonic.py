@@ -5,6 +5,7 @@ import threading
 class UltrasonicThread (threading.Thread):
     stateMachines = None # List of state machines to loop through.  Cannot be initialized here, so is set to None.
     soundThreads = None
+    #dropoffFile
 
     def __init__(self, triggerPins, echoPins, distanceOptions, soundThreads):
         threading.Thread.__init__(self)
@@ -13,6 +14,7 @@ class UltrasonicThread (threading.Thread):
             machine = UltrasonicStateMachine(trigger, echo)
             machine.distanceOptions = distOptions
             self.stateMachines.append(machine)
+        dropoffFile = open("dropoffEnabled.txt", "w")
         self.soundThreads = soundThreads
         for thread in soundThreads:
             thread.start()
@@ -22,15 +24,21 @@ class UltrasonicThread (threading.Thread):
             for machine, soundThread in zip(self.stateMachines, self.soundThreads):
                 machine.findDistance()
                 soundThread.set_frequency(machine.blipsFrequency)
+                if machine.distanceOptions.frontSensor && machine.rawDistance > 1.5:
+                    dropoffFile.write("True")
+                else if machine.distanceOptions.frontSensor
+                    dropoffFile.write("False")
                 time.sleep(0.001)
 
 class DistanceOptions:
     minDistance = 0 #Distance when the walker hits an obstacle, in meters.
     maxDistance = 0 #Distance after which objects are ignored, in meters.
     inverseConstant = 1 # k, where y=k/x . x is distance, and y is frequency.
+    frontSensor = False #Set True if it's a front sensor.  Used to disable dropoff detection if there is an obstacle.
 
     def __init__(self):
         self.inverseConstant = 1
+        self.frontSensor = False
 
 class UltrasonicStateMachine:
     # All methods in the state machine should be non-blocking.
