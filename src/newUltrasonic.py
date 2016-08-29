@@ -24,7 +24,7 @@ class UltrasonicThread (threading.Thread):
             for machine, soundThread in zip(self.stateMachines, self.soundThreads):
                 machine.findDistance()
                 soundThread.set_frequency(machine.blipsFrequency)
-                if machine.distanceOptions.frontSensor && machine.rawDistance > 1.5:
+                if machine.distanceOptions.frontSensor and machine.rawDistance > 1.5:
                     dropoffFile.write("True")
                 else if machine.distanceOptions.frontSensor
                     dropoffFile.write("False")
