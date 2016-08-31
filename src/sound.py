@@ -1,6 +1,6 @@
 from threading import Thread
 from os import system
-from time import clock, sleep
+import time
 
 class SoxSoundThread (Thread):
     # A class extending threading.Thread which plays a single sound file a
@@ -13,15 +13,15 @@ class SoxSoundThread (Thread):
     def __init__(self, filename):
         Thread.__init__(self)
         self.system_command = 'play -q ' + filename
-        self.t_last = clock()
+        self.t_last = time.time()
         self.delay = 1000000.0
         self.is_robotting = True
 
     def run(self):
         while self.is_robotting:
-            if clock() > self.t_last + self.delay:
+            if time.time() > self.t_last + self.delay:
                 #print('running', self.system_command)
-                self.t_last = clock()
+                self.t_last = time.time()
                 system( self.system_command )
                 #print('finished', self.system_command)
             else:
