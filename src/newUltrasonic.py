@@ -98,12 +98,12 @@ class UltrasonicStateMachine:
     echoStartTime = 0
     waitForEchoStartTime = 0
     def waitForEchoStart(self):
-        self.waitForEchoStartTime = time.clock()
+        self.waitForEchoStartTime = time.time()
         while True:
             if GPIO.input(self.echoPin) == GPIO.HIGH:
-                self.echoStartTime = time.clock()
+                self.echoStartTime = time.time()
                 break
-            elif time.clock() > self.waitForEchoStartTime + 0.01: # Timeout if it missed the echo.
+            elif time.time() > self.waitForEchoStartTime + 0.01: # Timeout if it missed the echo.
                 self.timedOut = True
                 break
 
@@ -111,9 +111,9 @@ class UltrasonicStateMachine:
     def waitForEchoEnd(self):
         while True:
             if GPIO.input(self.echoPin) == GPIO.LOW:
-                self.echoEndTime = time.clock()
+                self.echoEndTime = time.time()
                 break
-            elif time.clock() > self.waitForEchoStartTime + 0.02: # Timeout if it missed the echo.
+            elif time.time() > self.waitForEchoStartTime + 0.02: # Timeout if it missed the echo.
                 self.timedOut = True
                 break
 
