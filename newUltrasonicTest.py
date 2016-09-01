@@ -4,7 +4,7 @@ from src.sound import *
 sideOpt = DistanceOptions()
 sideOpt.minDistance = 0.02
 sideOpt.maxDistance = 1.0
-sideOpt.inverseConstant = 0.3
+sideOpt.inverseConstant = 0.7
 frontOpt = DistanceOptions()
 frontOpt.minDistance = 0.25
 frontOpt.maxDistance = 3.5
