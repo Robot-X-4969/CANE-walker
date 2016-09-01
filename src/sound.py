@@ -26,7 +26,7 @@ class SoxSoundThread (Thread):
                 #print('finished', self.system_command)
             else:
                 # check for blip start events ~50 times per second
-                sleep(0.02)
+                time.sleep(0.02)
 
     def set_frequency(self, frequency):
         self.delay = 1.0 / frequency
