@@ -138,8 +138,8 @@ class UltrasonicStateMachine:
 
     def getHistDistance(self): # Returns the mean of the distanceHistory with the min and max elements removed.
         hist = list(distanceHistory)
-        hist.remove(max(hist)))
-        hist.remove(min(hist)))
+        hist.remove(max(hist))
+        hist.remove(min(hist))
         
         sum = 0
         for item in hist:
