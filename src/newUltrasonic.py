@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 import threading
+import collections
 
 class UltrasonicThread (threading.Thread):
     stateMachines = None # List of state machines to loop through.  Cannot be initialized here, so is set to None.
@@ -55,12 +56,15 @@ class UltrasonicStateMachine:
 
     consecutiveTimeouts = 0
 
+    distanceHistory = None #collections.deque, a history of the most recent distance measurements.
+
     def __init__(self, triggerPin, echoPin):
         self.triggerPin = triggerPin
         self.echoPin = echoPin
 
         self.blipsFrequency = 0.001 # Default frequency when starting out.
 
+        self.distanceHistory = collections.deque([2.0]*5)
         self.setUpGPIO()
 
     def setUpGPIO(self):
@@ -120,6 +124,8 @@ class UltrasonicStateMachine:
     def calculateValues(self):
         self.calculateRawTime()
         self.calculateRawDistance()
+        self.distanceHistory.popleft() #Remove a value from the history.
+        self.distanceHistory.append(self.rawDistance) #Add new value to the history.
         self.calculateBlipFrequency()
         print("Pin: " + str(self.echoPin) + " Distance (m): " + str(self.rawDistance))
 
@@ -130,16 +136,30 @@ class UltrasonicStateMachine:
         speedOfSound = 343.2 # meters / second
         self.rawDistance = (self.rawTime / 2.0) * speedOfSound
 
+    def getHistDistance(self): # Returns the mean of the distanceHistory with the min and max elements removed.
+        hist = list(distanceHistory)
+        hist.remove(max(hist)))
+        hist.remove(min(hist)))
+        
+        sum = 0
+        for item in hist:
+            sum += item
+
+        mean = sum / len(hist)
+
+        return mean
+
     def calculateBlipFrequency(self):
-        if self.rawDistance > self.distanceOptions.maxDistance:
+        histDistance = self.getHistDistance()
+        if histDistance > self.distanceOptions.maxDistance:
             self.blipsFrequency = 0.001
-        elif self.rawDistance <= self.distanceOptions.minDistance:
+        elif histDistance <= self.distanceOptions.minDistance:
             self.blipsFrequency = 20
         else:
             # Do a linear conversion between the two scales.
-            #w = (self.rawDistance - self.distanceOptions.minDistance) / (self.distanceOptions.maxDistance / self.distanceOptions.minDistance)
+            #w = (histDistance - self.distanceOptions.minDistance) / (self.distanceOptions.maxDistance / self.distanceOptions.minDistance)
             #self.blipsFrequency = self.distanceOptions.maxBlipFrequency - (w * (self.distanceOptions.maxBlipFrequency - self.distanceOptions.minBlipFrequency))
 
             # Do an inverse proportional relationship between distance and frequency.
-            self.blipsFrequency = self.distanceOptions.inverseConstant / (self.rawDistance - self.distanceOptions.minDistance)
+            self.blipsFrequency = self.distanceOptions.inverseConstant / (histDistance - self.distanceOptions.minDistance)
 
