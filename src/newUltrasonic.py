@@ -137,7 +137,7 @@ class UltrasonicStateMachine:
         self.rawDistance = (self.rawTime / 2.0) * speedOfSound
 
     def getHistDistance(self): # Returns the mean of the distanceHistory with the min and max elements removed.
-        hist = list(distanceHistory)
+        hist = list(self.distanceHistory)
         hist.remove(max(hist))
         hist.remove(min(hist))
         
