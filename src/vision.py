@@ -12,7 +12,7 @@ imwidth = 640
 imheight = 480 
 
 # radius from calibration point to look for dots
-dropoff_radius = 20
+dropoff_radius = 900
 
 # Greyscale pixels (0-255) larger than this are binarized white, else black
 bw_cutoff = 160
@@ -21,7 +21,7 @@ bw_cutoff = 160
 blob_size_min = 3
 
 # number of pixels in a valid-sized laser dot (maximum)
-blob_size_max = 45
+blob_size_max = 110
 
 # Greyscale pixels (0-255) larger than this are binarized white, else black 
 bw_cutoff = 100 
@@ -143,7 +143,7 @@ class Calibration:
             return False
             
         p1,p2 = blobs[0].avg_position(), blobs[1].avg_position()
-        Calibration.leftpos = p1 if p1[1]>p2[1] else p2
+        Calibration.leftpos = p1 if p1[0]>p2[0] else p2
         Calibration.rightpos = p1 if p2 is Calibration.leftpos else p2
         if not filepath is None:
             util.save_image(image_on, filepath+'/calibration1.png')
@@ -232,20 +232,43 @@ def capture_images(camera, laser):
 # wrong, return true
 def is_dropoff(imdiff):
     blobs = ConnectedComponent.find_blobs(imdiff)
+    print("Num of blobs: " + str(len(blobs)))
     if len(blobs) < 2:
+        return True
+
+    if len(blobs) > 20:
         return True
         
     left_found, right_found = False, False
+    #leftBlob, rightBlob - blobs that have been found
+    n = 0 #Blob number, for debugging only.
     for blob in blobs:
+        #print("Blob #" + str(n))
+        n += 1
         if not is_blob_valid_size(blob):
+            #print("Invalid blob size: " + str(blob.size()))
             continue
         position = blob.avg_position()
+        #print("Position: " + str(position))
         if (get_dot_separation(position, Calibration.leftpos)
           < get_dot_separation(position, Calibration.rightpos)
         ):
+            #print("Left found!")
             left_found = True
+            leftBlob = blob
         else:
+            #print("Right found!")
             right_found = True
-    
-    return (not left_found) or (not right_found)
-    
+            rightBlob = blob
+    dropoff = (not left_found) or (not right_found) # If either of the blobs is not found
+    if dropoff:
+        print("Conclusion: Dropoff")
+    else:
+        #dropoffVal - The average x-value difference between the current dots and the calibration dots.
+        leftDiff = leftBlob.avg_position()[0] - Calibration.leftpos[0]
+        rightDiff = rightBlob.avg_position()[0] - Calibration.rightpos[0]
+        dropoffValue = (leftDiff + rightDiff) / 2.0
+        print("Dropoff Value: " + str(dropoffValue))
+        print("Conclusion: Not")
+    return dropoff
+
