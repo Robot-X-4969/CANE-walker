@@ -15,7 +15,7 @@ class UltrasonicThread (threading.Thread):
             machine = UltrasonicStateMachine(trigger, echo)
             machine.distanceOptions = distOptions
             self.stateMachines.append(machine)
-        dropoffFile = open("dropoffEnabled.txt", "w")
+        #self.dropoffFile = open("dropoffEnabled.txt", "w")
         self.soundThreads = soundThreads
         for thread in soundThreads:
             thread.start()
@@ -25,10 +25,10 @@ class UltrasonicThread (threading.Thread):
             for machine, soundThread in zip(self.stateMachines, self.soundThreads):
                 machine.findDistance()
                 soundThread.set_frequency(machine.blipsFrequency)
-                if machine.distanceOptions.frontSensor and machine.rawDistance > 1.5:
-                    dropoffFile.write("True")
-                elif machine.distanceOptions.frontSensor:
-                    dropoffFile.write("False")
+                #if machine.distanceOptions.frontSensor and machine.rawDistance > 1.0:
+                    #self.dropoffFile.write("True")
+                #elif machine.distanceOptions.frontSensor:
+                    #self.dropoffFile.write("False")
                 time.sleep(0.001)
 
 class DistanceOptions:
@@ -88,7 +88,7 @@ class UltrasonicStateMachine:
             self.consecutiveTimeouts += 1
             if self.consecutiveTimeouts > 50:
                 self.blipsFrequency = 0.001
-            print("Pin: " + str(self.echoPin) + " timed out!")
+            #print("Pin: " + str(self.echoPin) + " timed out!")
     
     def startTriggerPing(self):
         GPIO.output(self.triggerPin, GPIO.HIGH)
@@ -127,7 +127,7 @@ class UltrasonicStateMachine:
         self.distanceHistory.popleft() #Remove a value from the history.
         self.distanceHistory.append(self.rawDistance) #Add new value to the history.
         self.calculateBlipFrequency()
-        print("Pin: " + str(self.echoPin) + " Distance (m): " + str(self.rawDistance))
+        #print("Pin: " + str(self.echoPin) + " Distance (m): " + str(self.rawDistance))
 
     def calculateRawTime(self):
         self.rawTime = self.echoEndTime - self.echoStartTime

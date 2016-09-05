@@ -64,7 +64,12 @@ try:
         camera.resolution = (vision.imwidth, vision.imheight)
         camera.framerate = 55
         time.sleep(2.0)
-        vision.Calibration.calibrate(camera, laser, calibration_debug_dir)
+        while True:
+            calibrationSuccessful = vision.Calibration.calibrate(camera, laser, calibration_debug_dir)
+            if calibrationSuccessful:
+                break
+            else:
+                time.sleep(1.0)
         calibration_mask = vision.Calibration.get_mask()
         dropoff_sound_thr.start()
     
@@ -106,7 +111,7 @@ try:
             is_dropoff = vision.is_dropoff(image_diff)
             
             #file = open("dropoffEnabled.txt", "r")
-            #dropoffEnabledB = file.read() == "True"
+            #dropoffEnabledB = file.read() != "False"
             #file.close()
 
             #is_dropoff = is_dropoff and dropoffEnabledB

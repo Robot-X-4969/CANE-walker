@@ -9,6 +9,7 @@ frontOpt = DistanceOptions()
 frontOpt.minDistance = 0.25
 frontOpt.maxDistance = 3.5
 frontOpt.inverseConstant = 1
+frontOpt.frontSensor = True
 
 leftSideSound = SoxSoundThread("sound/98left.wav")
 leftFrontSound = SoxSoundThread("sound/884left.wav")
