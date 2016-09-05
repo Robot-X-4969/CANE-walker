@@ -89,6 +89,8 @@ class ConnectedComponent:
         #for every pixel in the image:
         for x in xrange(imwidth):
             for y in xrange(imheight):
+                if len(blobs) > 30: #If there are too many blobs, this bogs down the pi.  Skip the rest of the image.
+                    break
                 #if the pixel is false or already belongs to a blob, skip it
                 if (
                   pixelarray[x,y] < 1 or                  
@@ -234,10 +236,10 @@ def is_dropoff(imdiff):
     blobs = ConnectedComponent.find_blobs(imdiff)
     print("Num of blobs: " + str(len(blobs)))
     if len(blobs) < 2:
-        return True
+        return False
 
-    if len(blobs) > 20:
-        return True
+    if len(blobs) > 10:
+        return False
         
     left_found, right_found = False, False
     #leftBlob, rightBlob - blobs that have been found
@@ -269,6 +271,10 @@ def is_dropoff(imdiff):
         rightDiff = rightBlob.avg_position()[0] - Calibration.rightpos[0]
         dropoffValue = (leftDiff + rightDiff) / 2.0
         print("Dropoff Value: " + str(dropoffValue))
-        print("Conclusion: Not")
+        if dropoffValue > 45 :
+            dropoff = True
+            print("Conclusion: Dropoff")
+        else:
+            print("Conclusion: Not")
     return dropoff
 
