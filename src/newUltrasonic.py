@@ -64,7 +64,7 @@ class UltrasonicStateMachine:
 
         self.blipsFrequency = 0.001 # Default frequency when starting out.
 
-        self.distanceHistory = collections.deque([2.0]*5)
+        self.distanceHistory = collections.deque([2.0]*7)
         self.setUpGPIO()
 
     def setUpGPIO(self):
@@ -138,6 +138,8 @@ class UltrasonicStateMachine:
 
     def getHistDistance(self): # Returns the mean of the distanceHistory with the min and max elements removed.
         hist = list(self.distanceHistory)
+        hist.remove(max(hist))
+        hist.remove(min(hist))
         hist.remove(max(hist))
         hist.remove(min(hist))
         
